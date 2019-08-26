@@ -22,7 +22,7 @@ const styles = theme => ({
 
 })
 
-const signInLink = (props) => <Link to="/login" {...props} />;
+const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
 
 const NavBar = ({ classes }) => {
     return (
