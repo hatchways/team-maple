@@ -4,6 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { withStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
 
 const styles = theme => ({
     appbar: {
@@ -21,6 +22,8 @@ const styles = theme => ({
 
 })
 
+const signInLink = (props) => <Link to="/login" {...props} />;
+
 const NavBar = ({ classes }) => {
     return (
         <AppBar position="static" className={classes.appbar}>
@@ -28,7 +31,7 @@ const NavBar = ({ classes }) => {
                 <Typography variant="h6" className={classes.title}>
                     tattoo art
                 </Typography>
-                <Button variant="outlined" color="inherit" className={classes.button}>
+                <Button variant="outlined" color="inherit" className={classes.button} component={signInLink}>
                     sign in
                 </Button>
             </Toolbar>
