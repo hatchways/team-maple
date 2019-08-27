@@ -83,7 +83,6 @@ const SignUpForm = ({ classes }) => {
                     onChange={e => setName(e.target.value)}
                     name="Enter your name"
                     placeholder="Enter your name"
-                    autoFocus
                 />
                 <FormControl 
                     variant="outlined" 
