@@ -1,8 +1,11 @@
+require('dotenv').config();
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+
+import mongoose from "mongoose";
 
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
@@ -14,6 +17,11 @@ app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
+
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+}).then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
 
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
