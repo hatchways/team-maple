@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
+import authRoutes from './routes/auth';
 
 var app = express();
 
@@ -25,11 +26,14 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
+app.use('/auth', authRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
+// needs CORS??
 
 // error handler
 app.use(function(err, req, res, next) {
