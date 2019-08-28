@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { Link as RouterLink, withRouter } from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -10,7 +13,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
-import { Link as RouterLink } from "react-router-dom";
+import { loginUser } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -37,10 +40,15 @@ const styles = theme => ({
 
 const signUpLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} to="/signup" {...props} />);
 
-const LoginForm = ({ classes }) => {
+const LoginForm = ({ classes, loginUser, auth, history }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    useEffect(() => {
+        if (auth.isAuthenticated) {
+            history.push("/home");
+        }
+    }, [auth]);
     const validatePassword = (password) => {
         setPassword(password);
         if (password.length < 6) {
@@ -53,6 +61,8 @@ const LoginForm = ({ classes }) => {
         e.preventDefault();
         if (!passwordError) {
             console.log("Attempt to log in");
+            const userData = { email, password };
+            loginUser(userData);
         }
     }
     return (
@@ -124,4 +134,19 @@ const LoginForm = ({ classes }) => {
     )
 }
 
-export default withStyles(styles)(LoginForm);
+const mapStateToProps = ({auth, errors}) => ({
+    auth,
+    errors,
+});
+
+const mapDispatchToProps = {
+    loginUser,
+};
+
+const enhance = compose(
+    withRouter,
+    withStyles(styles),
+    connect(mapStateToProps, mapDispatchToProps),
+);
+
+export default enhance(LoginForm);

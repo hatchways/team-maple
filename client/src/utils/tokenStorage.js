@@ -2,10 +2,10 @@ const tokenStorage = {
     saveAuthToken(token) {
         window.localStorage.setItem("jwtToken", token);
     },
-    deleteAuthToken(token) {
+    deleteAuthToken() {
         window.localStorage.removeItem("jwtToken");
     },
-    getAuthToken(token) {
+    getAuthToken() {
         return window.localStorage.getItem("jwtToken");
     },
 }

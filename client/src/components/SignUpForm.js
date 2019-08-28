@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -8,6 +11,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
+import { registerUser } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -32,7 +36,7 @@ const styles = theme => ({
     }
 })
 
-const SignUpForm = ({ classes }) => {
+const SignUpForm = ({ classes, history, registerUser, auth }) => {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
@@ -49,6 +53,12 @@ const SignUpForm = ({ classes }) => {
         e.preventDefault();
         if (!passwordError) {
             console.log("Attempt to log in");
+            const newUser = {
+                name,
+                email,
+                password,
+            };
+            registerUser(newUser, history);
         }
     }
     return (
@@ -120,4 +130,19 @@ const SignUpForm = ({ classes }) => {
     )
 }
 
-export default withStyles(styles)(SignUpForm);
+const mapStateToProps = ({auth, errors}) => ({
+    auth,
+    errors,
+});
+
+const mapDispatchToProps = {
+    registerUser,
+};
+
+const enhance = compose(
+    withRouter,
+    withStyles(styles),
+    connect(mapStateToProps, mapDispatchToProps),
+);
+
+export default enhance(SignUpForm);
