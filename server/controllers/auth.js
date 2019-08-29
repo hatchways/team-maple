@@ -4,10 +4,8 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator");
 
 exports.signup = (req, res, next) => {
-  console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log("errors are", errors);
     return res
       .status(422)
       .json({ message: "validation failed", errorData: errors.array() });
@@ -36,20 +34,25 @@ exports.signup = (req, res, next) => {
 exports.login = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "Invalid email or password", data: errors.array() });
+  }
   let loggedUser;
   User.findOne({ email })
     .then(user => {
       if (!user) {
-        console.log("user with email doesnt exist");
-        return;
+        return res.status(401).json({message: 'email doesnt exist'})
+       
       }
       loggedUser = user;
       return bcrypt.compare(password, user.password);
     })
     .then(equal => {
       if (!equal) {
-        console.log("password dont match");
-        return;
+        return res.status(401).json({message: 'wrong password'})
       }
 
       const token = jwt.sign(
@@ -64,6 +67,9 @@ exports.login = (req, res, next) => {
       res.status(200).json({ message: "logged in!", token });
     })
     .catch(err => {
-      console.log(err);
+      if (!err.code) {
+        err.code = 500;
+      }
+      next(err);
     });
 };

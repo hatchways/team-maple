@@ -9,8 +9,8 @@ router.post(
   [
     body("name")
       .trim()
-      .custom((value, {req}) => {
-        return value.length > 0
+      .custom((value, { req }) => {
+        return value.length > 0;
       }),
     body("email")
       .isEmail()
@@ -30,6 +30,25 @@ router.post(
   authController.signup
 );
 
-router.post("/login", [], authController.login);
+router.post(
+  "/login",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Email not valid")
+      .custom((value, { req }) => {
+        return User.findOne({ email: value }).then(exEmail => {
+          if (exEmail) {
+            return Promise.reject("Email already exists!");
+          }
+        });
+      })
+      .normalizeEmail(),
+    body("password")
+      .trim()
+      .isLength({ min: 8 })
+  ],
+  authController.login
+);
 
 module.exports = router;
