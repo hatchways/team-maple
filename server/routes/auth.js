@@ -9,7 +9,9 @@ router.post(
   [
     body("name")
       .trim()
-      .isEmpty(),
+      .custom((value, {req}) => {
+        return value.length > 0
+      }),
     body("email")
       .isEmail()
       .withMessage("Email not valid")
@@ -28,6 +30,6 @@ router.post(
   authController.signup
 );
 
-router.post("/login", authController.login);
+router.post("/login", [], authController.login);
 
 module.exports = router;
