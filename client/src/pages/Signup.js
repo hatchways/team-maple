@@ -13,7 +13,6 @@ const styles = theme => ({
 const Signup = ({classes }) => {
     return (
         <div>
-            <NavBar />
             <Grid container spacing={0} alignItems="center" justify="center" className={classes.grid}>
                 <Grid item xs={8} sm={6} lg={4}>
                     <SignUpForm />
