@@ -19,7 +19,7 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect('mongodb://team-maple:map1e-password@ds133137.mlab.com:33137/team-maple', {
   useNewUrlParser: true,
 }).then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
