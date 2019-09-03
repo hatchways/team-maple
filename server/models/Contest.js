@@ -15,6 +15,7 @@ const contestSchema = new Schema({
     type: Number,
     required: true
   },
+  images: [{ type: String, required: true }],
   status: {
     type: String,
     required: true
