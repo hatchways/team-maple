@@ -4,7 +4,9 @@ const User = require("../../models/User");
 const validation = [
   body("name")
     .trim()
-    .isEmpty(),
+    .custom((value, { req }) => {
+      return value.length > 0;
+    }, 'name field must not be empty'),
   body("email")
     .isEmail()
     .withMessage("Email not valid")
@@ -20,7 +22,5 @@ const validation = [
     .trim()
     .isLength({ min: 8 })
 ];
-
-
 
 module.exports = validation;

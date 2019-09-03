@@ -36,15 +36,18 @@ exports.login = (req, res, next) => {
     .then(user => {
       if (!user) {
         console.log("user with email doesnt exist");
-        return;
+        return res
+          .status(422)
+          .json({ message: "invalid email/password combination" });
       }
       loggedUser = user;
       return bcrypt.compare(password, user.password);
     })
     .then(equal => {
       if (!equal) {
-        console.log("password dont match");
-        return;
+        return res
+          .status(422)
+          .json({ message: "invalid email/password combination" });
       }
 
       const token = jwt.sign(
