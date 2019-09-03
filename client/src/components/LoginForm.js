@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { Link as RouterLink, withRouter } from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
+import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
+import { loginUser } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -13,6 +21,13 @@ const styles = theme => ({
     },
     form: {
         textAlign: "center"
+    },
+    controlLabel: {
+        backgroundColor: "white",
+    },
+    formControl: {
+        width: "100%",
+        margin: theme.spacing(2, 2, 2, 0),
     },
     grid: {
         marginBottom: theme.spacing(5),
@@ -23,17 +38,44 @@ const styles = theme => ({
     }
 })
 
-const LoginForm = ({ classes }) => {
+const signUpLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} to="/signup" {...props} />);
+
+const LoginForm = ({ classes, loginUser, auth, history }) => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    useEffect(() => {
+        if (auth.isAuthenticated) {
+            history.push("/home");
+        }
+    }, [auth]);
+    const validatePassword = (password) => {
+        setPassword(password);
+        if (password.length < 6) {
+            setPasswordError("Password must be at least 6 characters long")
+        } else {
+            setPasswordError("")
+        }
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!passwordError) {
+            console.log("Attempt to log in");
+            const userData = { email, password };
+            loginUser(userData);
+        }
+    }
     return (
         <Paper className={classes.root}>
             <CssBaseline />
             <Typography component="h1" variant="h4" align="center">
                 Sign in
             </Typography>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} onSubmit={handleSubmit}>
                 <TextField
                     variant="outlined"
                     margin="normal"
+                    type="email"
                     required
                     fullWidth
                     id="email"
@@ -41,18 +83,32 @@ const LoginForm = ({ classes }) => {
                     name="email"
                     placeholder="Enter e-mail address"
                     autoFocus
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    placeholder="Enter password"
-                    id="password"
-                />
+                <FormControl 
+                    variant="outlined" 
+                    error={passwordError.length > 0 ? true : false}
+                    className={classes.formControl}
+                >
+                    <InputLabel style={{backgroundColor :"white"}} htmlFor="component-outlined" className={classes.controlLabel}>
+                        Password *
+                    </InputLabel>
+                    <OutlinedInput
+                        variant="outlined"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        placeholder="Enter password"
+                        id="password"
+                        value={password}
+                        onChange={e => validatePassword(e.target.value)}
+                        aria-describedby="component-helper-text"
+                    />
+                    <FormHelperText id="component-helper-text">{passwordError}</FormHelperText>
+                </FormControl>
                 <Grid container justify="space-between" className={classes.grid}>
                     <Grid item>
                         <Link href="#" variant="body2">
@@ -60,7 +116,7 @@ const LoginForm = ({ classes }) => {
                         </Link>
                     </Grid>
                     <Grid item>
-                        <Link href="#" variant="body2">
+                        <Link component={signUpLink} variant="body2" to="/signup">
                             {"Don't have an account? Sign Up"}
                         </Link>
                     </Grid>
@@ -78,4 +134,19 @@ const LoginForm = ({ classes }) => {
     )
 }
 
-export default withStyles(styles)(LoginForm);
+const mapStateToProps = ({auth, errors}) => ({
+    auth,
+    errors,
+});
+
+const mapDispatchToProps = {
+    loginUser,
+};
+
+const enhance = compose(
+    withRouter,
+    withStyles(styles),
+    connect(mapStateToProps, mapDispatchToProps),
+);
+
+export default enhance(LoginForm);
