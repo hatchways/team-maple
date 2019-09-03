@@ -1,4 +1,6 @@
-require('dotenv').config();
+const path = require("path");
+const dotEnvPath = path.resolve("../.env");
+require("dotenv").config({ path: dotEnvPath });
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
@@ -19,7 +21,7 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "public")));
 
-mongoose.connect('mongodb://team-maple:map1e-password@ds133137.mlab.com:33137/team-maple', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
 }).then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
@@ -33,7 +35,6 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// needs CORS??
 
 // error handler
 app.use(function(err, req, res, next) {
