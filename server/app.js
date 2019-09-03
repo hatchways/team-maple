@@ -1,4 +1,6 @@
-require('dotenv').config();
+const path = require("path");
+const dotEnvPath = path.resolve("../.env");
+require("dotenv").config({ path: dotEnvPath });
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
@@ -24,20 +26,20 @@ mongoose.connect(process.env.MONGODB_URI, {
 }).then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
 
+app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
-app.use('/auth', authRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// needs CORS??
 
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+  console.log(err);
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
