@@ -1,8 +1,17 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { validationResult } = require("express-validator");
 
 exports.signup = (req, res, next) => {
+  console.log(req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log("errors are", errors);
+    return res
+      .status(422)
+      .json({ message: "validation failed", errorData: errors.array() });
+  }
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
@@ -14,7 +23,7 @@ exports.signup = (req, res, next) => {
       return user.save();
     })
     .then(result => {
-      res.status(201).send("user created!");
+      res.status(201).json({ message: "User Created" });
     })
     .catch(err => console.log(err));
 };
@@ -27,15 +36,18 @@ exports.login = (req, res, next) => {
     .then(user => {
       if (!user) {
         console.log("user with email doesnt exist");
-        return;
+        return res
+          .status(422)
+          .json({ message: "invalid email/password combination" });
       }
       loggedUser = user;
       return bcrypt.compare(password, user.password);
     })
     .then(equal => {
       if (!equal) {
-        console.log("password dont match");
-        return;
+        return res
+          .status(422)
+          .json({ message: "invalid email/password combination" });
       }
 
       const token = jwt.sign(
