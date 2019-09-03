@@ -23,7 +23,7 @@ exports.signup = (req, res, next) => {
       return user.save();
     })
     .then(result => {
-      res.status(201).send("user created!");
+      res.status(201).json({ message: "User Created" });
     })
     .catch(err => console.log(err));
 };
