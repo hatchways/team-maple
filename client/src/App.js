@@ -15,6 +15,7 @@ import LandingPage from "./pages/Landing";
 import SignupPage from "./pages/Signup";
 import LoginPage from "./pages/Login";
 import DashboardPage from "./pages/Dashboard";
+import SubmissionPage from './components/UpSubmission';
 
 import "./App.css";
 
@@ -40,6 +41,7 @@ function App() {
           <Route path="/" exact component={LandingPage} />
           <Route path="/signup" exact component={SignupPage} />
           <Route path="/login" exact component={LoginPage} />
+          <Route path='/submit'exact component={SubmissionPage} />
           <PrivateRoute exact path="/home" component={DashboardPage} />
         </BrowserRouter>
       </MuiThemeProvider>
