@@ -11,11 +11,6 @@ exports.signup = (req, res, next) => {
     return res
       .status(422)
       .json({ message: "validation failed", errorData: errors.array() });
-    // const error = new Error('Validation failed');
-    // error.statusCode = 422;
-    // error.data = error.array();
-
-    // throw error;
   }
   const name = req.body.name;
   const email = req.body.email;
@@ -28,7 +23,7 @@ exports.signup = (req, res, next) => {
       return user.save();
     })
     .then(result => {
-      res.status(201).send("user created!");
+      res.status(201).json({ message: "User Created" });
     })
     .catch(err => console.log(err));
 };
@@ -41,15 +36,18 @@ exports.login = (req, res, next) => {
     .then(user => {
       if (!user) {
         console.log("user with email doesnt exist");
-        return;
+        return res
+          .status(422)
+          .json({ message: "invalid email/password combination" });
       }
       loggedUser = user;
       return bcrypt.compare(password, user.password);
     })
     .then(equal => {
       if (!equal) {
-        console.log("password dont match");
-        return;
+        return res
+          .status(422)
+          .json({ message: "invalid email/password combination" });
       }
 
       const token = jwt.sign(
