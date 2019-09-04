@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -9,9 +9,14 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
+import { green, amber } from '@material-ui/core/colors'
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
-import { registerUser } from "../actions/authActions";
+import { registerUser, setUserLoading } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -33,18 +38,26 @@ const styles = theme => ({
     submit: {
         color: "white",
         backgroundColor: theme.secondary,
+    },
+    successSnackBar: {
+        backgroundColor: green[600],
+    },
+    errorSnackBar: {
+        backgroundColor: amber[700],
     }
 })
 
-const SignUpForm = ({ classes, history, registerUser, auth }) => {
+const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors }) => {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [openSuccess, setOpenSuccess] = useState(true);
+    const [openError, setOpenError] = useState(false);
     const validatePassword = (password) => {
         setPassword(password);
-        if (password.length < 6) {
-            setPasswordError("Password must be at least 6 characters long")
+        if (password.length < 8) {
+            setPasswordError("Password must be at least 8 characters long")
         } else {
             setPasswordError("")
         }
@@ -52,15 +65,34 @@ const SignUpForm = ({ classes, history, registerUser, auth }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!passwordError) {
-            console.log("Attempt to log in");
+            setUserLoading();
             const newUser = {
                 name,
                 email,
                 password,
             };
-            registerUser(newUser, history);
+            registerUser(newUser);
         }
     }
+    const handleSuccessClose = () => {
+        setOpenSuccess(false);
+        history.push("/login");
+    }
+    
+    const handleErrorsClose = () => {
+        setOpenError(false);
+    }
+
+    useEffect(() => {
+        if (errors.status) {
+            setOpenError(true);
+        } else {
+            // only want to trigger after first render, so setting it true
+            // initially then false to not have it show
+            setOpenSuccess(status => !status);
+        }
+    }, [errors]);
+
     return (
         <Paper className={classes.root}>
             <CssBaseline />
@@ -124,19 +156,70 @@ const SignUpForm = ({ classes, history, registerUser, auth }) => {
                     className={classes.submit}
                 >
                     Sign In
-                </Button>`
+                </Button>
             </form>
+            <button onClick={e => setOpenSuccess(!openSuccess)}>A button</button>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                open={openSuccess}
+                autoHideDuration={4000}
+                onClose={handleSuccessClose} 
+            >
+                <SnackbarContent
+                    className={classes.successSnackBar}
+                    aria-describedby="client-snackbar"
+                    message={<span id="message-id">{errors.message}</span>}
+                    action={[
+                    <IconButton
+                        key="close"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={handleSuccessClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                    ]}
+                />
+            </Snackbar>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                open={openError}
+                autoHideDuration={6000}
+                onClose={handleErrorsClose} 
+            >
+                <SnackbarContent
+                    className={classes.errorSnackBar}
+                    aria-describedby="client-snackbar"
+                    message={<span id="message-id">{errors.message}</span>}
+                    action={[
+                    <IconButton
+                        key="close"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={handleErrorsClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                    ]}
+                />
+            </Snackbar>
         </Paper>
     )
 }
 
-const mapStateToProps = ({auth, errors}) => ({
-    auth,
-    errors,
+const mapStateToProps = ({ errors }) => ({
+    errors: errors.signup,
 });
 
 const mapDispatchToProps = {
     registerUser,
+    setUserLoading,
 };
 
 const enhance = compose(

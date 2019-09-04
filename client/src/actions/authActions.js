@@ -1,16 +1,16 @@
 import jwtDecode from "jwt-decode";
-import { GET_ERRORS, SET_CURRENT_USER, USER_LOADING } from "./types";
+import { SET_SIGNUP_ERRORS, SET_SIGNUP_SUCCESS, SET_CURRENT_USER, USER_LOADING } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
 import axios from "axios";
 
-export const registerUser = (userData, history) => async dispatch => {
+export const registerUser = (userData) => async dispatch => {
     try {
         await axios.post("/auth/signup", userData);
-        history.push("/login");
+        dispatch({ type: SET_SIGNUP_SUCCESS });
     } catch (err) {
         dispatch({
-            type: GET_ERRORS,
+            type: SET_SIGNUP_ERRORS,
             payload: err.response.data,
         })
     }
@@ -26,7 +26,7 @@ export const loginUser = userData => async dispatch => {
         dispatch(setCurrentUser(decoded));
     } catch (err) {
         dispatch({
-            type: GET_ERRORS,
+            type: SET_SIGNUP_ERRORS,
             payload: err.response.data,
         })
     }
