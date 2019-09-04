@@ -1,4 +1,10 @@
-import { SET_SIGNUP_ERRORS, SET_SIGNUP_SUCCESS, SET_LOGIN_ERRORS, CLEAR_LOGIN_ERRORS } from "../actions/types";
+import { 
+    SET_SIGNUP_ERRORS,
+    SET_SIGNUP_SUCCESS,
+    SET_LOGIN_ERRORS,
+    CLEAR_LOGIN_ERRORS,
+    CLEAR_SIGNUP_ERRORS,
+} from "../actions/types";
 
 const initialState = {
     login: {},
@@ -13,7 +19,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 signup: {
-                    status: true,
+                    status: "error",
                     message,
                 }
             }
@@ -23,7 +29,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 signup: {
-                    status: false,
+                    status: "success",
                     message, 
                 }
             }
@@ -32,7 +38,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 login: {
-                    status: true,
+                    status: "error",
                     message: action.payload.message,
                 }
             }
@@ -41,6 +47,12 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 login: {}
+            }
+        }
+        case CLEAR_SIGNUP_ERRORS: {
+            return {
+                ...state,
+                signup: {}
             }
         }
         default:

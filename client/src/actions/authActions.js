@@ -2,6 +2,7 @@ import jwtDecode from "jwt-decode";
 import { 
     SET_SIGNUP_ERRORS,
     SET_SIGNUP_SUCCESS,
+    CLEAR_SIGNUP_ERRORS,
     SET_CURRENT_USER,
     SET_LOGIN_ERRORS,
     CLEAR_LOGIN_ERRORS,
@@ -62,5 +63,11 @@ export const logoutUser = () => async dispatch => {
 export const clearLoginErrors = () => {
     return {
         type: CLEAR_LOGIN_ERRORS,
+    }
+}
+
+export const clearSignupErrors = () => {
+    return {
+        type: CLEAR_SIGNUP_ERRORS,
     }
 }

@@ -78,10 +78,17 @@ const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors
         setOpenError(false);
         clearLoginErrors();
     }
+    
+    useEffect(() => {
+        clearLoginErrors();
+        setOpenError(false);
+    }, []);
 
     useEffect(() => {
         if (errors.status) {
             setOpenError(true);
+        } else {
+            setOpenError(false);
         }
     }, [errors]);
     return (

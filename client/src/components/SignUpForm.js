@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
-import { registerUser, setUserLoading } from "../actions/authActions";
+import { registerUser, setUserLoading, clearSignupErrors } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -47,12 +47,12 @@ const styles = theme => ({
     }
 })
 
-const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors, auth }) => {
+const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors, auth, clearSignupErrors }) => {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const [openSuccess, setOpenSuccess] = useState(true);
+    const [openSuccess, setOpenSuccess] = useState(false);
     const [openError, setOpenError] = useState(false);
     const validatePassword = (password) => {
         setPassword(password);
@@ -81,7 +81,13 @@ const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors, au
     
     const handleErrorsClose = () => {
         setOpenError(false);
+        clearSignupErrors();
     }
+
+    useEffect(() => {
+        clearSignupErrors();
+        setOpenError(false);
+    }, []);
 
     useEffect(() => {
         if (auth.isAuthenticated) {
@@ -91,11 +97,14 @@ const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors, au
 
     useEffect(() => {
         if (errors.status) {
-            setOpenError(true);
+            if (errors.status === "error") {
+                setOpenError(true);
+            } else if (errors.status === "success") {
+                setOpenSuccess(true);
+            }
         } else {
-            // only want to trigger after first render, so setting it true
-            // initially then false to not have it show
-            setOpenSuccess(status => !status);
+            setOpenError(false);
+            setOpenSuccess(false);
         }
     }, [errors]);
 
@@ -226,6 +235,7 @@ const mapStateToProps = ({ auth, errors }) => ({
 const mapDispatchToProps = {
     registerUser,
     setUserLoading,
+    clearSignupErrors,
 };
 
 const enhance = compose(
