@@ -18,7 +18,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { amber } from '@material-ui/core/colors'
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
-import { loginUser } from "../actions/authActions";
+import { loginUser, clearLoginErrors } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -48,7 +48,7 @@ const styles = theme => ({
 
 const signUpLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} to="/signup" {...props} />);
 
-const LoginForm = ({ classes, loginUser, auth, history, errors }) => {
+const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -76,6 +76,7 @@ const LoginForm = ({ classes, loginUser, auth, history, errors }) => {
 
     const handleErrorsClose = () => {
         setOpenError(false);
+        clearLoginErrors();
     }
 
     useEffect(() => {
@@ -184,6 +185,7 @@ const mapStateToProps = ({auth, errors}) => ({
 
 const mapDispatchToProps = {
     loginUser,
+    clearLoginErrors,
 };
 
 const enhance = compose(

@@ -164,7 +164,6 @@ const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors, au
                     Sign In
                 </Button>
             </form>
-            <button onClick={e => setOpenSuccess(!openSuccess)}>A button</button>
             <Snackbar
                 anchorOrigin={{
                     vertical: 'bottom',

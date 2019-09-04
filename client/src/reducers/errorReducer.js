@@ -1,4 +1,4 @@
-import { SET_SIGNUP_ERRORS, SET_SIGNUP_SUCCESS, SET_LOGIN_ERRORS } from "../actions/types";
+import { SET_SIGNUP_ERRORS, SET_SIGNUP_SUCCESS, SET_LOGIN_ERRORS, CLEAR_LOGIN_ERRORS } from "../actions/types";
 
 const initialState = {
     login: {},
@@ -35,6 +35,12 @@ export default (state = initialState, action) => {
                     status: true,
                     message: action.payload.message,
                 }
+            }
+        }
+        case CLEAR_LOGIN_ERRORS: {
+            return {
+                ...state,
+                login: {}
             }
         }
         default:

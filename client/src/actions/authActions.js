@@ -4,6 +4,7 @@ import {
     SET_SIGNUP_SUCCESS,
     SET_CURRENT_USER,
     SET_LOGIN_ERRORS,
+    CLEAR_LOGIN_ERRORS,
     USER_LOADING,
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
@@ -56,4 +57,10 @@ export const logoutUser = () => async dispatch => {
     tokenStorage.deleteAuthToken();
     setAuthToken(false);
     dispatch(setCurrentUser({}));
+}
+
+export const clearLoginErrors = () => {
+    return {
+        type: CLEAR_LOGIN_ERRORS,
+    }
 }
