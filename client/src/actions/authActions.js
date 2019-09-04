@@ -1,5 +1,11 @@
 import jwtDecode from "jwt-decode";
-import { SET_SIGNUP_ERRORS, SET_SIGNUP_SUCCESS, SET_CURRENT_USER, USER_LOADING } from "./types";
+import { 
+    SET_SIGNUP_ERRORS,
+    SET_SIGNUP_SUCCESS,
+    SET_CURRENT_USER,
+    SET_LOGIN_ERRORS,
+    USER_LOADING,
+} from "./types";
 import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
 import axios from "axios";
@@ -25,8 +31,9 @@ export const loginUser = userData => async dispatch => {
         const decoded = jwtDecode(token);
         dispatch(setCurrentUser(decoded));
     } catch (err) {
+        console.log(err.response.data);
         dispatch({
-            type: SET_SIGNUP_ERRORS,
+            type: SET_LOGIN_ERRORS,
             payload: err.response.data,
         })
     }
