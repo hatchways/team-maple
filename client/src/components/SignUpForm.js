@@ -47,7 +47,7 @@ const styles = theme => ({
     }
 })
 
-const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors }) => {
+const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors, auth }) => {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
@@ -82,6 +82,12 @@ const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors }) 
     const handleErrorsClose = () => {
         setOpenError(false);
     }
+
+    useEffect(() => {
+        if (auth.isAuthenticated) {
+            history.push("/home");
+        }
+    }, [auth]);
 
     useEffect(() => {
         if (errors.status) {
@@ -213,7 +219,8 @@ const SignUpForm = ({ classes, history, registerUser, setUserLoading, errors }) 
     )
 }
 
-const mapStateToProps = ({ errors }) => ({
+const mapStateToProps = ({ auth, errors }) => ({
+    auth,
     errors: errors.signup,
 });
 
