@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
+import submitRoutes from "./routes/submission";
 const multer = require("multer");
 const uuidv4 = require("uuid/v4");
 
@@ -39,7 +40,7 @@ app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(join(__dirname, "images")));
-app.use(multer({storage, fileFilter}).single('image'));
+app.use(multer({ storage, fileFilter }).single("image"));
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -49,8 +50,9 @@ mongoose
   .catch(err => console.log(err));
 
 app.use("/auth", authRoutes);
-app.use("/", indexRouter);
+app.use(submitRoutes);
 app.use("/ping", pingRouter);
+app.use("/", indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
