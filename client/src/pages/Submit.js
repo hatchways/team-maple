@@ -1,11 +1,17 @@
 import React, { Component, Fragment } from "react";
 import { Button, Paper, Typography, IconButton, Grid } from "@material-ui/core";
 import { CloudUpload } from "@material-ui/icons";
-
+import axios from 'axios';
 
 export default class extends Component {
+
+  submissionHandler = () => {
+
+
+  }
+
   render() {
-    const { file, classes, onSelect } = this.props;
+    const { file, classes, onSelect, submit } = this.props;
     return (
       <Fragment>
         <Grid item sm>

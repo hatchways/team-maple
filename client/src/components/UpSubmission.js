@@ -40,6 +40,15 @@ export default withStyles(styles)(
       });
     };
 
+    submissionHandler = () => {
+      /*
+      1. formData?
+      2.axios.post ?
+      3. no need for headers
+      4.setState?
+      */
+    }
+
     render() {
       const { classes } = this.props;
       const { file } = this.state;
@@ -56,6 +65,7 @@ export default withStyles(styles)(
               file={file}
               classes={classes}
               onSelect={this.onSelectHandler}
+              submit={this.submissionHandler}
             />
           </Grid>
         </div>
