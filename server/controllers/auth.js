@@ -58,7 +58,7 @@ exports.login = (req, res, next) => {
         "secretpassword",
         { expiresIn: "1h" }
       );
-
+      req.user = loggedUser;
       res.status(200).json({ message: "logged in!", token });
     })
     .catch(err => {
