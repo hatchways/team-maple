@@ -12,17 +12,38 @@ import mongoose from "mongoose";
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
+const multer = require("multer");
+const uuidv4 = require("uuid/v4");
 import uploadRouter from "./routes/upload";
 import contestRouter from "./routes/contest";
 import profileRouter from "./routes/profile";
 
+
 var app = express();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "images"),
+  filename: (req, file, cb) => cb(null, uuidv4())
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, "public")));
+app.use(express.static(join(__dirname, "images")));
+app.use(multer({storage, fileFilter}).single('image'));
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -33,7 +54,6 @@ mongoose
 
 app.use(passport.initialize());
 require("./services/passport")(passport);
-
 app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
@@ -45,7 +65,6 @@ app.use("/profile", profileRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
 
 // error handler
 app.use(function(err, req, res, next) {
