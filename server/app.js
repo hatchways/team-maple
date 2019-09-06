@@ -6,7 +6,7 @@ import express, { json, urlencoded } from "express";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-
+import passport from "passport";
 import mongoose from "mongoose";
 
 import indexRouter from "./routes/index";
@@ -27,6 +27,9 @@ mongoose
   })
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
+
+app.use(passport.initialize());
+require("./services/passport")(passport);
 
 app.use('/auth', authRoutes);
 app.use("/", indexRouter);
