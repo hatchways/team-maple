@@ -19,7 +19,7 @@ const uuidv4 = require("uuid/v4");
 var app = express();
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "images"),
+  destination: (req, file, cb) => cb(null, 'images'),
   filename: (req, file, cb) => cb(null, uuidv4())
 });
 
@@ -35,19 +35,22 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(join(__dirname, "images")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(multer({ storage, fileFilter }).single("image"));
-
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true
-  })
-  .then(() => console.log("MongoDB successfully connected"))
-  .catch(err => console.log(err));
 
 app.use("/auth", authRoutes);
 app.use(submitRoutes);
@@ -70,5 +73,12 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({ error: err });
 });
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true
+  })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
 
 module.exports = app;
