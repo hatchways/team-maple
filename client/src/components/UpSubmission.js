@@ -60,10 +60,7 @@ export default withStyles(styles)(
         });
 
         setAuthToken(tokenStorage.getAuthToken());
-
-        // your post request to update submission model
-        // image url is in uploadConfig.data.key, contestId in match.params.id
-        console.log("done");
+        
         await axios.post("/submit", {
           imageUrl: uploadConfig.data.key,
           contestId: match.params.id,
