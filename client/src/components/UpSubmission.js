@@ -46,25 +46,28 @@ export default withStyles(styles)(
 
     submissionHandler = async () => {
       const { file } = this.state;
+      const { match } = this.props;
       if (file) {
-        const { match } = this.props;
         const uploadConfig = await axios.post("/upload/submission", {
-          contestId: match.params.id,
-         });
-        
-        setAuthToken();
+          contestId: match.params.id
+        });
+
         await axios.put(uploadConfig.data.url, file, {
           headers: {
             "Content-type": file.type,
-            "Cache-Control": "public, max-age=31536000",
-          },
+            "Cache-Control": "public, max-age=31536000"
+          }
         });
 
         setAuthToken(tokenStorage.getAuthToken());
-        
+
         // your post request to update submission model
         // image url is in uploadConfig.data.key, contestId in match.params.id
-
+        console.log("done");
+        await axios.post("/submit", {
+          imageUrl: uploadConfig.data.key,
+          contestId: match.params.id,
+        });
       }
     };
 
