@@ -13,11 +13,11 @@ const submissionSchema = new Schema(
       ref: "User",
       required: true
     },
-    // contest: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Contest",
-    //   required: true
-    // }
+    contest: {
+      type: Schema.Types.ObjectId,
+      ref: "Contest",
+      required: true
+    }
   },
   { timestamps: true }
 );

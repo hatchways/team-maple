@@ -5,6 +5,6 @@ import defaultImagesReducer from "./defaultImagesReducer";
 
 export default combineReducers({
     auth: authReducer,
-    error: errorReducer,
+    errors: errorReducer,
     defaultImages: defaultImagesReducer,
 });

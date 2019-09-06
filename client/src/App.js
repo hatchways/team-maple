@@ -43,10 +43,10 @@ function App() {
           <Route path="/" exact component={LandingPage} />
           <Route path="/signup" exact component={SignupPage} />
           <Route path="/login" exact component={LoginPage} />
-          <Route path='/submit'exact component={SubmissionPage} />
           <PrivateRoute exact path="/home" component={DashboardPage} />
           <PrivateRoute exact path="/create" component={CreateContestPage} />
           <PrivateRoute exact path="/contest/:id" component={ContestDetailPage} />
+          <PrivateRoute exact path='/contest/:id/submit' component={SubmissionPage} />
         </BrowserRouter>
       </MuiThemeProvider>
     </Provider>
