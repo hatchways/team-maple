@@ -72,9 +72,6 @@ export default withStyles(styles)(
       })
     };
 
-    }
-
-
     render() {
       const { classes } = this.props;
       const { file } = this.state;
