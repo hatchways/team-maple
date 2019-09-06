@@ -23,7 +23,7 @@ import profileRouter from "./routes/profile";
 var app = express();
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'images'),
+  destination: (req, file, cb) => cb(null, "images"),
   filename: (req, file, cb) => cb(null, uuidv4())
 });
 
@@ -55,10 +55,16 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(multer({ storage, fileFilter }).single("image"));
+app.use(express.static(join(__dirname, "images")));
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true
+  })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
 
 app.use(passport.initialize());
 require("./services/passport")(passport);
-
 app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);

@@ -5,8 +5,6 @@ import axios from 'axios';
 
 export default class extends Component {
 
-  
-
   render() {
     const { file, classes, onSelect, submit } = this.props;
     return (

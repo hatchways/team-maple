@@ -49,6 +49,7 @@ export default withStyles(styles)(
       3. no need for headers
       4.setState?
       */
+
       console.log("in the submit handler");
       const formData = new FormData();
       formData.append("image", this.state.file);
@@ -70,6 +71,9 @@ export default withStyles(styles)(
         body: formData
       })
     };
+
+    }
+
 
     render() {
       const { classes } = this.props;
