@@ -6,7 +6,7 @@ import express, { json, urlencoded } from "express";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-
+import passport from "passport";
 import mongoose from "mongoose";
 
 import indexRouter from "./routes/index";
@@ -15,6 +15,10 @@ import authRoutes from "./routes/auth";
 import submitRoutes from "./routes/submission";
 const multer = require("multer");
 const uuidv4 = require("uuid/v4");
+import uploadRouter from "./routes/upload";
+import contestRouter from "./routes/contest";
+import profileRouter from "./routes/profile";
+
 
 var app = express();
 
@@ -52,10 +56,17 @@ app.use(cookieParser());
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(multer({ storage, fileFilter }).single("image"));
 
-app.use("/auth", authRoutes);
-app.use(submitRoutes);
-app.use("/ping", pingRouter);
+app.use(passport.initialize());
+require("./services/passport")(passport);
+
+app.use('/auth', authRoutes);
 app.use("/", indexRouter);
+app.use("/ping", pingRouter);
+app.use("/upload", uploadRouter);
+app.use("/contest", contestRouter);
+app.use("/profile", profileRouter);
+app.use(submitRoutes);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -55,7 +55,7 @@ exports.login = (req, res, next) => {
           email: loggedUser.email,
           userId: loggedUser._id.toString()
         },
-        "secretpassword",
+        process.env.SECRETORKEY,
         { expiresIn: "1h" }
       );
 

@@ -1,7 +1,6 @@
 import React from "react";
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from "@material-ui/core/styles";
-import NavBar from "../components/NavBar";
 import SignUpForm from "../components/SignUpForm";
 
 const styles = theme => ({
