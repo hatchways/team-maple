@@ -24,7 +24,12 @@ const contestSchema = new Schema(
     deadline: {
       type: Date,
       required: true
-    }
+    },
+    creator: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
   },
   { timestamps: true }
 );

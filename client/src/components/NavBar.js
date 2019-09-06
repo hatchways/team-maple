@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Avatar from '@material-ui/core/Avatar';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from "@material-ui/core/styles";
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Avatar,
+    Menu,
+    MenuItem,
+    withStyles,
+} from "@material-ui/core";
 import { logoutUser } from "../actions/authActions"; 
 
 const styles = theme => ({
@@ -34,6 +36,7 @@ const styles = theme => ({
 })
 
 const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
+const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
 
 const NavBar = ({ classes, auth, logoutUser }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -54,7 +57,7 @@ const NavBar = ({ classes, auth, logoutUser }) => {
                         <Link component="button" variant="body2" to="#" className={classes.link}>Discover</Link>
                         <Link component="button" variant="body2" to="#" className={classes.link}>Messages</Link>
                         <Link component="button" variant="body2" to="#" className={classes.link}>Notifications</Link>
-                        <Button variant="outlined" color="inherit" className={classes.button}>
+                        <Button variant="outlined" color="inherit" className={classes.button} component={createContestLink}>
                             Create Contest
                         </Button>
                         <Avatar alt={auth.user.email} src="" />

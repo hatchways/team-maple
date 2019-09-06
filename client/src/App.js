@@ -16,6 +16,8 @@ import SignupPage from "./pages/Signup";
 import LoginPage from "./pages/Login";
 import DashboardPage from "./pages/Dashboard";
 import SubmissionPage from './components/UpSubmission';
+import CreateContestPage from "./pages/CreateContest";
+import ContestDetailPage from "./pages/ContestDetailPage";
 
 import "./App.css";
 
@@ -43,6 +45,8 @@ function App() {
           <Route path="/login" exact component={LoginPage} />
           <Route path='/submit'exact component={SubmissionPage} />
           <PrivateRoute exact path="/home" component={DashboardPage} />
+          <PrivateRoute exact path="/create" component={CreateContestPage} />
+          <PrivateRoute exact path="/contest/:id" component={ContestDetailPage} />
         </BrowserRouter>
       </MuiThemeProvider>
     </Provider>

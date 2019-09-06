@@ -11,9 +11,14 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import { amber } from '@material-ui/core/colors'
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
-import { loginUser } from "../actions/authActions";
+import { loginUser, clearLoginErrors } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -35,15 +40,19 @@ const styles = theme => ({
     submit: {
         color: "white",
         backgroundColor: theme.secondary,
-    }
+    },
+    errorSnackBar: {
+        backgroundColor: amber[700],
+    },
 })
 
 const signUpLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} to="/signup" {...props} />);
 
-const LoginForm = ({ classes, loginUser, auth, history }) => {
+const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [openError, setOpenError] = useState(false);
     useEffect(() => {
         if (auth.isAuthenticated) {
             history.push("/home");
@@ -60,11 +69,28 @@ const LoginForm = ({ classes, loginUser, auth, history }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!passwordError) {
-            console.log("Attempt to log in");
             const userData = { email, password };
             loginUser(userData);
         }
     }
+
+    const handleErrorsClose = () => {
+        setOpenError(false);
+        clearLoginErrors();
+    }
+    
+    useEffect(() => {
+        clearLoginErrors();
+        setOpenError(false);
+    }, []);
+
+    useEffect(() => {
+        if (errors.status) {
+            setOpenError(true);
+        } else {
+            setOpenError(false);
+        }
+    }, [errors]);
     return (
         <Paper className={classes.root}>
             <CssBaseline />
@@ -130,17 +156,43 @@ const LoginForm = ({ classes, loginUser, auth, history }) => {
                     Sign In
                 </Button>`
             </form>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                open={openError}
+                autoHideDuration={6000}
+                onClose={handleErrorsClose} 
+            >
+                <SnackbarContent
+                    className={classes.errorSnackBar}
+                    aria-describedby="client-snackbar"
+                    message={<span id="message-id">{errors.message}</span>}
+                    action={[
+                    <IconButton
+                        key="close"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={handleErrorsClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                    ]}
+                />
+            </Snackbar>
         </Paper>
     )
 }
 
 const mapStateToProps = ({auth, errors}) => ({
     auth,
-    errors,
+    errors: errors.login,
 });
 
 const mapDispatchToProps = {
     loginUser,
+    clearLoginErrors,
 };
 
 const enhance = compose(
