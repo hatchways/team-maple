@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
+import uploadRouter from "./routes/upload";
 
 var app = express();
 
@@ -34,6 +35,7 @@ require("./services/passport")(passport);
 app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
+app.use("/upload", uploadRouter);
 
 
 // catch 404 and forward to error handler
