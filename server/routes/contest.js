@@ -46,7 +46,8 @@ router.post('/create',
       const contest = await Contest.findOne({
         creator: req.user._id,
         _id: id,
-      }).select("-createdAt -updatedAt");
+      }).populate("creator", "name email profileUrl")
+        .select("-createdAt -updatedAt");
       if (contest) {
         res.status(200).send(contest.toObject());
       } else {
