@@ -9,6 +9,7 @@ export const getDefaultImages = () => async dispatch => {
   });
 }
 
-export const createContest = () => async dispatch => {
-  const payload = await axios.get("/contest/create");
+
+export const createContest = (contest) => async dispatch => {
+  const payload = await axios.post("/contest/create", contest);
 }
