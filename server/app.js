@@ -39,7 +39,6 @@ app.use("/ping", pingRouter);
 app.use("/upload", uploadRouter);
 app.use("/contest", contestRouter);
 
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

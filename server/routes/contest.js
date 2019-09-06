@@ -5,6 +5,7 @@ const defaultLinks = require("../services/defaultLinks");
 
 const router = express.Router();
 
+
 router.get('/defaultImages', passport.authenticate('jwt', { session: false }), (req, res) => {
   res.status(200).send({
    links: defaultLinks.default,
