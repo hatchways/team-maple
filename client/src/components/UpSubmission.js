@@ -60,9 +60,11 @@ export default withStyles(styles)(
           },
         });
 
-        // your post request
-
         setAuthToken(tokenStorage.getAuthToken());
+        
+        // your post request to update submission model
+        // image url is in uploadConfig.data.key, contestId in match.params.id
+
       }
     };
 
