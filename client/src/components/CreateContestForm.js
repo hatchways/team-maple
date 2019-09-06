@@ -198,7 +198,7 @@ const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createCon
                 <Typography variant="h6" className={classes.pictureLabel}>
                   Which designs do you like?
                 </Typography>
-                <Typography variant="body" className={classes.pictureHelperLabel}>
+                <Typography variant="body2" className={classes.pictureHelperLabel}>
                   Let's start by helping your designers understand which styles you prefer.
                 </Typography>
                 <Paper className={classes.gridListPaper}>
