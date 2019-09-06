@@ -5,10 +5,7 @@ import axios from 'axios';
 
 export default class extends Component {
 
-  submissionHandler = () => {
-
-
-  }
+  
 
   render() {
     const { file, classes, onSelect, submit } = this.props;
@@ -47,6 +44,7 @@ export default class extends Component {
             variant="outlined"
             component="label"
             className={classes.button}
+            onClick={submit}
           >
             Submit
           </Button>
