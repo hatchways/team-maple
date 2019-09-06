@@ -13,6 +13,7 @@ import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
 import uploadRouter from "./routes/upload";
+import contestRouter from "./routes/contest";
 
 var app = express();
 
@@ -36,6 +37,8 @@ app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/upload", uploadRouter);
+app.use("/contest", contestRouter);
+
 
 
 // catch 404 and forward to error handler
