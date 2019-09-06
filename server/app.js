@@ -12,6 +12,7 @@ import mongoose from "mongoose";
 import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
+import submitRoutes from "./routes/submission";
 const multer = require("multer");
 const uuidv4 = require("uuid/v4");
 import uploadRouter from "./routes/upload";
@@ -38,13 +39,23 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
 app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(multer({ storage, fileFilter }).single("image"));
 app.use(express.static(join(__dirname, "images")));
-app.use(multer({storage, fileFilter}).single('image'));
-
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true
@@ -60,6 +71,8 @@ app.use("/ping", pingRouter);
 app.use("/upload", uploadRouter);
 app.use("/contest", contestRouter);
 app.use("/profile", profileRouter);
+app.use(submitRoutes);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -77,5 +90,12 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({ error: err });
 });
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true
+  })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
 
 module.exports = app;

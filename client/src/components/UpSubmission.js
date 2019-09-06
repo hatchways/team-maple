@@ -3,6 +3,7 @@ import { Button, Paper, Typography, IconButton, Grid } from "@material-ui/core";
 import { CloudUpload, PhotoCamera, FilterNone } from "@material-ui/icons";
 import { withStyles } from "@material-ui/core/styles";
 import Submit from "../pages/Submit";
+import axios from "axios";
 
 const styles = theme => ({
   root: {
@@ -35,6 +36,7 @@ export default withStyles(styles)(
     };
 
     onSelectHandler = event => {
+      console.log(event.target.files);
       this.setState({
         file: event.target.files[0]
       });
@@ -47,7 +49,31 @@ export default withStyles(styles)(
       3. no need for headers
       4.setState?
       */
+
+      console.log("in the submit handler");
+      const formData = new FormData();
+      formData.append("image", this.state.file);
+      const userId = localStorage.getItem('userId');
+      formData.append('userId', userId);
+      
+      // axios
+      //   .post("http://localhost:3001/submit", {
+      //     method: "POST",
+      //     body: formData
+      //   })
+      //   .then(sub => {
+      //     console.log(sub);
+      //   })
+      //   .catch(err => console.log(err));
+
+      fetch("http://localhost:3001/submit", {
+        method: "POST",
+        body: formData
+      })
+    };
+
     }
+
 
     render() {
       const { classes } = this.props;

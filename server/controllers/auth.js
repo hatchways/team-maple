@@ -59,7 +59,13 @@ exports.login = (req, res, next) => {
         { expiresIn: "1h" }
       );
 
-      res.status(200).json({ message: "logged in!", token });
+      res
+        .status(200)
+        .json({
+          message: "logged in!",
+          token,
+          userId: loggedUser._id.toString()
+        });
     })
     .catch(err => {
       console.log(err);
