@@ -18,6 +18,9 @@ const UserSchema = new Schema ({
         type: Date,
         default: Date.now,
     },
+    profileUrl: {
+        type: String,
+    }
 })
 
 module.exports = mongoose.model("User", UserSchema);
