@@ -4,6 +4,8 @@ import { CloudUpload, PhotoCamera, FilterNone } from "@material-ui/icons";
 import { withStyles } from "@material-ui/core/styles";
 import Submit from "../pages/Submit";
 import axios from "axios";
+import setAuthToken from "../utils/setAuthToken";
+import tokenStorage from "../utils/tokenStorage";
 
 const styles = theme => ({
   root: {
@@ -42,34 +44,26 @@ export default withStyles(styles)(
       });
     };
 
-    submissionHandler = () => {
-      /*
-      1. formData?
-      2.axios.post ?
-      3. no need for headers
-      4.setState?
-      */
+    submissionHandler = async () => {
+      const { file } = this.state;
+      if (file) {
+        const { match } = this.props;
+        const uploadConfig = await axios.post("/upload/submission", {
+          contestId: match.params.id,
+         });
+        
+        setAuthToken();
+        await axios.put(uploadConfig.data.url, file, {
+          headers: {
+            "Content-type": file.type,
+            "Cache-Control": "public, max-age=31536000",
+          },
+        });
 
-      console.log("in the submit handler");
-      const formData = new FormData();
-      formData.append("image", this.state.file);
-      const userId = localStorage.getItem('userId');
-      formData.append('userId', userId);
-      
-      // axios
-      //   .post("http://localhost:3001/submit", {
-      //     method: "POST",
-      //     body: formData
-      //   })
-      //   .then(sub => {
-      //     console.log(sub);
-      //   })
-      //   .catch(err => console.log(err));
+        // your post request
 
-      fetch("http://localhost:3001/submit", {
-        method: "POST",
-        body: formData
-      })
+        setAuthToken(tokenStorage.getAuthToken());
+      }
     };
 
     render() {
