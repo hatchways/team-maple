@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const User = require("../models/User");
 const passport = require("passport");
 
@@ -34,5 +33,32 @@ router.patch("/",
       res.status(404).send({ error: "Invalid request" });
     }
 });
+
+router.get("/:id",
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findOne({
+        _id: id,
+      }).populate({
+        path: "submissions",
+        select: "id url",
+        populate: {
+          path: "contest",
+          select: "title description prize"
+        }
+      });
+
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).send({ message: "Invalid Request" });
+      }
+    } catch (e) {
+      res.status(422).send({ message: "Invalid Request" });
+    }
+  }
+);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const UserSchema = new Schema ({
+const UserSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -20,7 +20,18 @@ const UserSchema = new Schema ({
     },
     profileUrl: {
         type: String,
+    },
+},
+    {
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
-})
+);
+
+UserSchema.virtual("submissions", {
+    ref: "Submission",
+    localField: "_id",
+    foreignField: "creator"
+});
 
 module.exports = mongoose.model("User", UserSchema);
