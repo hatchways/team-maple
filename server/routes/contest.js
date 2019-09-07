@@ -44,12 +44,12 @@ router.post('/create',
     try {
       const { id } = req.params;
       const contest = await Contest.findOne({
-        creator: req.user._id,
         _id: id,
       }).populate("creator", "name email profileUrl")
+        .populate("submissions", "url creator contest")
         .select("-createdAt -updatedAt");
       if (contest) {
-        res.status(200).send(contest.toObject());
+        res.status(200).json(contest);
       } else {
         res.status(404).send({ message: "Invalid Request" })
       }

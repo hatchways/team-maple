@@ -14,8 +14,7 @@ import {
     Paper,
     GridList,
     GridListTile,
-} from "@material-ui/core";
-import { logoutUser } from "../actions/authActions"; 
+} from "@material-ui/core"; 
 
 const styles = theme => ({
   firstRow: {
@@ -76,11 +75,10 @@ const submitLink = React.forwardRef((props, ref) => {
   );
 });
 
-const ContestDetail = ({ classes, auth, logoutUser, contest, match }) => {
+const ContestDetail = ({ classes, auth, contest, match }) => {
   const [tabPage, setTabPage] = useState(0);
   const { title, prize, creator } = contest;
   const isCreator = contest.creator._id === auth.user.userId;
-  console.log(contest);
   return (
     <>
       <Grid container className={classes.container}>
@@ -101,7 +99,7 @@ const ContestDetail = ({ classes, auth, logoutUser, contest, match }) => {
               </Typography>
             </Grid>
           </Grid>
-          {isCreator && 
+          {!isCreator && 
             <Grid>
               <Button variant="outlined" color="inherit" className={classes.button} component={submitLink} match={match}>
                   Submit Design
@@ -157,7 +155,7 @@ const mapStateToProps = ({ auth }) => ({
 
 const enhance = compose(
   withStyles(styles),
-  connect(mapStateToProps, { logoutUser }),
+  connect(mapStateToProps),
 );
 
 export default enhance(ContestDetail);
