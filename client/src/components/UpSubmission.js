@@ -52,6 +52,8 @@ export default withStyles(styles)(
           contestId: match.params.id
         });
 
+        setAuthToken();
+
         await axios.put(uploadConfig.data.url, file, {
           headers: {
             "Content-type": file.type,

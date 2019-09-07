@@ -14,9 +14,6 @@ import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
 import submitRoutes from "./routes/submission";
 const uuidv4 = require("uuid/v4");
-import uploadRouter from "./routes/upload";
-import contestRouter from "./routes/contest";
-import profileRouter from "./routes/profile";
 
 
 var app = express();
@@ -34,9 +31,9 @@ require("./services/passport")(passport);
 app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
-app.use("/upload", uploadRouter);
-app.use("/contest", contestRouter);
-app.use("/profile", profileRouter);
+require("./routes/upload")(app);
+require("./routes/contest")(app);
+require("./routes/profile")(app);
 app.use(submitRoutes);
 
 
