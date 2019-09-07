@@ -27,6 +27,7 @@ if (tokenStorage.getAuthToken()) {
   
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
+    tokenStorage.deleteAuthToken();
     store.dispatch(logoutUser);
     window.location.href = "./login";
   } else {

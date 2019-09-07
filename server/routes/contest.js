@@ -46,7 +46,14 @@ router.post('/create',
       const contest = await Contest.findOne({
         _id: id,
       }).populate("creator", "name email profileUrl")
-        .populate("submissions", "url creator contest")
+        .populate({
+          path: "submissions",
+          select: "url creator",
+          populate: {
+            path: "creator",
+            select: "name"
+          }
+        })
         .select("-createdAt -updatedAt");
       if (contest) {
         res.status(200).json(contest);

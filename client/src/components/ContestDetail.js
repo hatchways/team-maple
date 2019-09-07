@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import {
     Typography,
     Grid,
@@ -14,7 +14,12 @@ import {
     Paper,
     GridList,
     GridListTile,
-} from "@material-ui/core"; 
+    GridListTileBar,
+    IconButton,
+} from "@material-ui/core";
+import {
+  Info as InfoIcon,
+} from "@material-ui/icons";
 
 const styles = theme => ({
   firstRow: {
@@ -49,6 +54,9 @@ const styles = theme => ({
   tabPanelContainer: {
     marginBottom: theme.spacing(4),
   },
+  textContainer: {
+    flexGrow: 1,
+  },
   tabPanelLabel: {
     margin: theme.spacing(2),
   },
@@ -57,6 +65,9 @@ const styles = theme => ({
   },
   gridList: {
     padding: theme.spacing(2, 4),
+  },
+  icon: {
+    color: "white",
   }
 })
 
@@ -75,10 +86,15 @@ const submitLink = React.forwardRef((props, ref) => {
   );
 });
 
-const ContestDetail = ({ classes, auth, contest, match }) => {
+const ContestDetail = ({ classes, auth, contest, match, history }) => {
   const [tabPage, setTabPage] = useState(0);
-  const { title, prize, creator } = contest;
+  const { title, prize, creator, submissions } = contest;
   const isCreator = contest.creator._id === auth.user.userId;
+
+  const handleInfoClick = (creator) => {
+    history.push(`/profile/${creator._id}`)
+  }
+  console.log(contest);
   return (
     <>
       <Grid container className={classes.container}>
@@ -113,16 +129,38 @@ const ContestDetail = ({ classes, auth, contest, match }) => {
               onChange={(e, tabNum) => setTabPage(tabNum)}
               className={classes.tabHeader}
               classes={{ indicator: classes.indicator }}
-              textColor="black"
               centered
               variant="fullWidth"
             >
-            <Tab label={`Designs ()`} />
+            <Tab label={`Designs (${submissions.length})`} />
             <Tab label="Brief" />
           </Tabs>
           <Box className={classes.tabPanelContainer}>
             <TabPanel value={tabPage} index={0}>
-              Submissions
+              <GridList cellHeight={260} className={classes.gridList} spacing={8} cols={4}>
+                {submissions.length !== 0 ? submissions.map(submission => {
+                  const { url, creator } = submission;
+                  return (
+                    <GridListTile key={url} cols={1}>
+                      <img src={`${process.env.REACT_APP_S3_URL}/${url}`} alt={"tattoo"} />
+                      <GridListTileBar
+                        title={`by: ${creator.name}`}
+                        actionIcon={
+                          <IconButton aria-label={`info about ${creator}`} className={classes.icon}>
+                            <InfoIcon onClick={() => handleInfoClick(creator)}/>
+                          </IconButton>
+                        }
+                      />
+                    </GridListTile>
+                  )
+                }) : (
+                  <Grid container spacing={0} alignItems="center" justify="center" className={classes.textContainer}>
+                    <Typography variant="h5">
+                      No Submissions
+                    </Typography>
+                  </Grid>
+                )}
+              </GridList>
             </TabPanel>
             <TabPanel value={tabPage} index={1}>
               <Typography variant="h6" className={classes.tabPanelLabel}>
@@ -154,6 +192,7 @@ const mapStateToProps = ({ auth }) => ({
 });
 
 const enhance = compose(
+  withRouter,
   withStyles(styles),
   connect(mapStateToProps),
 );
