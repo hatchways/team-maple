@@ -34,4 +34,10 @@ UserSchema.virtual("submissions", {
     foreignField: "creator"
 });
 
+UserSchema.virtual("contests", {
+    ref: "Contest",
+    localField: "_id",
+    foreignField: "creator",
+});
+
 module.exports = mongoose.model("User", UserSchema);

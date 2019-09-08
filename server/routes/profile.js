@@ -42,6 +42,9 @@ router.get("/:id",
       const user = await User.findOne({
         _id: id,
       }).populate({
+        path: "contests",
+        select: "title description prize status",
+      }).populate({
         path: "submissions",
         select: "id url",
         populate: {
