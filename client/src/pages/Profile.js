@@ -55,13 +55,13 @@ const Profile = ({ classes, match }) => {
       setLoading(false);
     }
     getProfileDetails();
-  }, []);
+  }, [match.params.id]);
 
   const refresh = async () => {
     const { data } = await axios.get(`/profile/${match.params.id}`);
     setProfile(data);
   };
-  
+
   const completedSub = [];
   const inProgressSub = !loading && profile.submissions.filter(submission => {
     if (submission.contest.status === "COMPLETED") {

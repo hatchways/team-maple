@@ -46,6 +46,10 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
         history.push(`/profile/${auth.user.userId}`);
         handleClose(e);
     }
+    const handleLogout = (e) => {
+        handleClose(e);
+        logoutUser();
+    }
     const { profileUrl } = profile;
     const url = profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "";
     return (
@@ -79,7 +83,7 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
                             className="menu"
                         >
                             <MenuItem onClick={() => redirect()}>My Profile</MenuItem>
-                            <MenuItem onClick={() => logoutUser()}>Logout</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
                     </>
                 }
