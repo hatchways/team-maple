@@ -4,9 +4,12 @@ import {
   withStyles,
   Grid,
 } from "@material-ui/core";
+import ProfileImage from "../components/ProfileImage";
 
 const styles = theme => ({
-
+  firstRow: {
+    marginTop: theme.spacing(5),
+  }
 })
 
 const Profile = ({ classes, match }) => {
@@ -15,7 +18,7 @@ const Profile = ({ classes, match }) => {
   useEffect(() => {
     const getProfileDetails = async () => {
       const { data } = await axios.get(`/profile/${match.params.id}`);
-      setProfile(profile);
+      setProfile(data);
       setLoading(false);
     }
     getProfileDetails();
@@ -24,6 +27,9 @@ const Profile = ({ classes, match }) => {
     <>
       {!loading && 
         <Grid container spacing={0} alignItems="center" justify="center">
+          <Grid item xs={4} className={classes.firstRow}>
+            <ProfileImage profile={profile} />         
+          </Grid>
           <Grid item xs={12} sm={10}>
             YAY
           </Grid>

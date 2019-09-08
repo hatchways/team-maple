@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import {
     AppBar,
     Toolbar,
@@ -38,10 +38,14 @@ const styles = theme => ({
 const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
 const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
 
-const NavBar = ({ classes, auth, logoutUser }) => {
+const NavBar = ({ classes, auth, logoutUser, history }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const handleClick = (e) => setAnchorEl(e.currentTarget);
     const handleClose = (e) => setAnchorEl(null);
+    const redirect = (e) => {
+        history.push(`/profile/${auth.user.userId}`);
+        handleClose(e);
+    }
     return (
         <AppBar position="static" className={classes.appbar}>
             <Toolbar>
@@ -72,7 +76,7 @@ const NavBar = ({ classes, auth, logoutUser }) => {
                             onClose={handleClose}
                             className="menu"
                         >
-                            <MenuItem onClick={handleClose}>My Profile</MenuItem>
+                            <MenuItem onClick={() => redirect()}>My Profile</MenuItem>
                             <MenuItem onClick={() => logoutUser()}>Logout</MenuItem>
                         </Menu>
                     </>
@@ -87,6 +91,7 @@ const mapStateToProps = ({ auth }) => ({
 });
 
 const enhance = compose(
+    withRouter,
     withStyles(styles),
     connect(mapStateToProps, { logoutUser }),
 );

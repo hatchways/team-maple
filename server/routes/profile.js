@@ -48,7 +48,7 @@ router.get("/:id",
           path: "contest",
           select: "title description prize"
         }
-      });
+      }).select("email id name profileUrl");
 
       if (user) {
         res.status(200).json(user);
