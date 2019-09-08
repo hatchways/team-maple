@@ -46,8 +46,8 @@ router.get("/:id",
         select: "id url",
         populate: {
           path: "contest",
-          select: "title description prize"
-        }
+          select: "title description prize status",
+        },
       }).select("email id name profileUrl");
 
       if (user) {
