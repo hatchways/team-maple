@@ -94,7 +94,7 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
   const handleInfoClick = (creator) => {
     history.push(`/profile/${creator._id}`)
   }
-  console.log(contest);
+  const url = `${process.env.REACT_APP_S3_URL}/${creator.profileUrl}`;
   return (
     <>
       <Grid container className={classes.container}>
@@ -109,7 +109,7 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
               </Typography>
             </Grid>
             <Grid container alignItems="center">
-              <Avatar alt={auth.user.email} src="" className={classes.avatar}/>
+              <Avatar alt={auth.user.email} src={url} className={classes.avatar}/>
               <Typography variant="subtitle2">
                 {`By ${creator.name}`}
               </Typography>
@@ -146,8 +146,12 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
                       <GridListTileBar
                         title={`by: ${creator.name}`}
                         actionIcon={
-                          <IconButton aria-label={`info about ${creator}`} className={classes.icon}>
-                            <InfoIcon onClick={() => handleInfoClick(creator)}/>
+                          <IconButton 
+                            aria-label={`info about ${creator}`}
+                            className={classes.icon}
+                            onClick={() => handleInfoClick(creator)}
+                          >
+                            <InfoIcon/>
                           </IconButton>
                         }
                       />

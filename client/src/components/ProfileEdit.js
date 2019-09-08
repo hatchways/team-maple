@@ -3,7 +3,6 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import axios from "axios";
 import {
-  Typography,
   withStyles,
   Avatar,
   Grid,
@@ -31,7 +30,6 @@ const styles = theme => ({
 })
 
 const ProfileEdit = ({ classes, profile, getProfile, refresh, handleClose }) => {
-  // console.log(profile)
   const { name, profileUrl } = profile;
   const [ newName, setNewName] = useState(name);
   const [ nameChanged, setNameChanged ] = useState(false);
