@@ -38,7 +38,7 @@ const styles = theme => ({
 const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
 const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
 
-const NavBar = ({ classes, auth, logoutUser, history }) => {
+const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const handleClick = (e) => setAnchorEl(e.currentTarget);
     const handleClose = (e) => setAnchorEl(null);
@@ -46,6 +46,8 @@ const NavBar = ({ classes, auth, logoutUser, history }) => {
         history.push(`/profile/${auth.user.userId}`);
         handleClose(e);
     }
+    const { profileUrl } = profile;
+    const url = profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "";
     return (
         <AppBar position="static" className={classes.appbar}>
             <Toolbar>
@@ -64,7 +66,7 @@ const NavBar = ({ classes, auth, logoutUser, history }) => {
                         <Button variant="outlined" color="inherit" className={classes.button} component={createContestLink}>
                             Create Contest
                         </Button>
-                        <Avatar alt={auth.user.email} src="" />
+                        <Avatar alt={auth.user.email} src={url} />
                         <Button aria-controls="account-menu" aria-haspopup="true" className={classes.button} onClick={handleClick}>
                             Account &#9660;
                         </Button>
@@ -86,8 +88,9 @@ const NavBar = ({ classes, auth, logoutUser, history }) => {
     )
 }
 
-const mapStateToProps = ({ auth }) => ({
+const mapStateToProps = ({ auth, profile }) => ({
     auth,
+    profile,
 });
 
 const enhance = compose(

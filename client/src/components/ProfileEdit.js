@@ -14,6 +14,7 @@ import {
 import { green } from "@material-ui/core/colors";
 import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
+import { getProfile } from "../actions/profileActions";
 
 const styles = theme => ({
   avatar: {
@@ -29,13 +30,14 @@ const styles = theme => ({
   }
 })
 
-const ProfileEdit = ({ classes, profile }) => {
+const ProfileEdit = ({ classes, profile, getProfile, refresh, handleClose }) => {
   // console.log(profile)
   const { name, profileUrl } = profile;
   const [ newName, setNewName] = useState(name);
   const [ nameChanged, setNameChanged ] = useState(false);
   const [ file, setFile ] = useState(null);
   const [ imgSrc, setImgSrc] = useState(profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "")
+  const [ submitting, setSubmitting] = useState(false);
   const handleSelect = e => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
@@ -48,9 +50,9 @@ const ProfileEdit = ({ classes, profile }) => {
   }
 
   const handleSubmit = async () => {
+    setSubmitting(true);
     if (file) {
       const uploadConfig = await axios.get("/upload/profile");
-      console.log(uploadConfig);
 
       setAuthToken();
       await axios.put(uploadConfig.data.url, file, {
@@ -65,12 +67,22 @@ const ProfileEdit = ({ classes, profile }) => {
         name: newName,
         profileUrl: uploadConfig.data.key,
       });
-    }
-    if (nameChanged && !file) {
+
+      await refetch();
+    } else if (nameChanged && !file) {
       await axios.patch("/profile", {
         name: newName,
       });
+
+      await refetch();
+    } else {
+      setSubmitting(false);
     }
+  }
+  const refetch = async () => {
+    getProfile(profile.id);
+    await refresh();
+    handleClose();
   }
   return (
     <>
@@ -100,7 +112,7 @@ const ProfileEdit = ({ classes, profile }) => {
         />
       </Grid>
       <Grid container alignItems="center" justify="flex-end">
-        <Button variant="outlined" className={classes.button} onClick={handleSubmit}>
+        <Button variant="outlined" className={classes.button} onClick={handleSubmit} disabled={submitting}>
             Save Changes
         </Button>
       </Grid>
@@ -108,4 +120,13 @@ const ProfileEdit = ({ classes, profile }) => {
   )
 }
 
-export default withStyles(styles)(ProfileEdit);
+const mapDispatchToProps = {
+  getProfile,
+};
+
+const enhance = compose(
+  withStyles(styles),
+  connect(null, mapDispatchToProps),
+);
+
+export default enhance(ProfileEdit);

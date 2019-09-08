@@ -32,7 +32,7 @@ const styles = theme => ({
   },
 })
 
-const ProfileImage = ({ classes, profile, auth }) => {
+const ProfileImage = ({ classes, profile, auth, refresh }) => {
   const { name, profileUrl } = profile;
   const [open, setOpen] = useState(false);
   const isUser = auth.user.userId === profile.id;
@@ -67,7 +67,7 @@ const ProfileImage = ({ classes, profile, auth }) => {
           className={classes.modal}
         >
           <div className={classes.modalContainer}>
-            <ProfileEdit profile={profile} />
+            <ProfileEdit profile={profile} refresh={refresh} handleClose={handleClose}/>
           </div>
         </Modal>
       }

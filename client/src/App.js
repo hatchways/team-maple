@@ -6,6 +6,7 @@ import jwtDecode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import tokenStorage from "./utils/tokenStorage";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
+import { getProfile } from "./actions/profileActions";
 import store from "./store";
 
 import { theme } from "./themes/theme";
@@ -34,6 +35,7 @@ if (tokenStorage.getAuthToken()) {
   } else {
     setAuthToken(token);
     store.dispatch(setCurrentUser(decoded));
+    store.dispatch(getProfile(decoded.userId));
   }
 }
 
