@@ -44,6 +44,10 @@ router.get("/:id",
       }).populate({
         path: "contests",
         select: "title description prize status",
+        populate: {
+          path: "submissions",
+          select: "id url",
+        },
       }).populate({
         path: "submissions",
         select: "id url",

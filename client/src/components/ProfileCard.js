@@ -19,6 +19,10 @@ const styles = theme => ({
     height: 160,
     width: 160,
   },
+  imgSubTitle: {
+    color: "white",
+    backgroundColor: "rgba(0,0,0, 0.4)",
+  },
   cardContent: {
     flexGrow: 1,
     margin: theme.spacing(0, 4),
@@ -38,7 +42,7 @@ const styles = theme => ({
   },
 })
 
-const SubmissionCard = ({ classes, imgUrl, title, description, prize, contestId, history }) => {
+const ProfileCard = ({ classes, imgUrl, title, description, prize, contestId, imgSubTitle, history }) => {
   const handleClick = () => {
     history.push(`/contest/${contestId}`);
   }
@@ -46,7 +50,20 @@ const SubmissionCard = ({ classes, imgUrl, title, description, prize, contestId,
     <Card className={classes.card}>
       <CardActionArea onClick={handleClick}>
         <Grid container justify="space-between">
-          <CardMedia className={classes.media} image={imgUrl} />
+          <Grid>
+            <CardMedia className={classes.media} image={imgUrl ? imgUrl : ""}>
+              { imgSubTitle > 0 &&
+                <Typography className={classes.imgSubTitle} align="center">
+                  {`${imgSubTitle} Sketches`}
+                </Typography>
+              }
+              { imgSubTitle === 0 &&
+                <Typography className={classes.imgSubTitle} align="center">
+                  {`No Sketches`}
+                </Typography>
+              }
+            </CardMedia>
+          </Grid>
           <CardContent className={classes.cardContent}>
             <Typography variant="h6" className={classes.cardTitle}>
               {title}
@@ -65,4 +82,4 @@ const SubmissionCard = ({ classes, imgUrl, title, description, prize, contestId,
 };
 
 
-export default withRouter(withStyles(styles)(SubmissionCard));
+export default withRouter(withStyles(styles)(ProfileCard));
