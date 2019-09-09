@@ -28,12 +28,10 @@ export default withStyles(styles)(
     };
 
     componentDidMount() {
-      //send get request to back end, get data back, store in state and pass down
-      //to Contests component
+
       axios
         .get("/contests")
         .then(response => {
-          console.log(response);
           this.setState({
             contests: response.data.contests
           });

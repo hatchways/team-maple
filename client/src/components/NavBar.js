@@ -54,7 +54,7 @@ const NavBar = ({ classes, auth, logoutUser }) => {
                     </Button>
                     :
                     <>
-                        <Link component="button" variant="body2" to="#" className={classes.link}>Discover</Link>
+                        <Link component="button" variant="body2" to="/contests" className={classes.link}>Discover</Link>
                         <Link component="button" variant="body2" to="#" className={classes.link}>Messages</Link>
                         <Link component="button" variant="body2" to="#" className={classes.link}>Notifications</Link>
                         <Button variant="outlined" color="inherit" className={classes.button} component={createContestLink}>
