@@ -1,7 +1,7 @@
 const Submission = require("../models/Submission");
+const Contest = require("../models/Contest");
 
 exports.postSubmission = (req, res, next) => {
-
   const { imageUrl, contestId } = req.body;
   const userId = req.user._id;
 
@@ -21,7 +21,26 @@ exports.postSubmission = (req, res, next) => {
 };
 
 exports.getSummary = (req, res, next) => {
-  console.log(req.params);
-  // const { contestId } = req.params;
-
-}
+  const { subId } = req.params;
+  let savedSubmission = {};
+  Submission.findById(subId)
+    .then(sub => {
+      if (!sub) {
+        return res.status(422).json({ message: "resource not found" });
+      }
+      savedSubmission = sub;
+      return Contest.findOne({
+        _id: savedSubmission.contest
+      });
+    })
+    .then(contest => {
+      const newContest = {
+        ...contest,
+        submission: savedSubmission
+      };
+      return res
+        .status(201)
+        .json({ message: "successfully fetched", contest: newContest });
+    })
+    .catch(err => console.log(err));
+};

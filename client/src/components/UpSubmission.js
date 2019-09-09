@@ -61,19 +61,24 @@ export default withRouter(withStyles(styles)(
         });
         setAuthToken(tokenStorage.getAuthToken());
         
-        await axios.post("/submit", {
+        axios.post("/submit", {
           imageUrl: uploadConfig.data.key,
           contestId: match.params.id,
+        }).then(result => {
+          console.log(result);
+          console.log(result.data.result._id);
+          history.push(`/submitted/${result.data.result._id}`);
         });
-
-        history.push(`/contest/${match.params.id}`);
+        
+       
+        // this.redirectHandler(submission.data.result._id);
       }
 
-      // this.redirectHandler();
+      
     };
 
-    redirectHandler = () => {
-      this.props.history.push('/contests');
+    redirectHandler = async (subId) => {
+      await this.props.history.push(`/submitted/${subId}`);
     }
 
     render() {

@@ -26,62 +26,77 @@ export default withStyles(styles)(
     };
 
     componentDidMount() {
+      const { subId } = this.props.match.params;
+      console.log("subId", subId);
       axios
-        .get("/submitted")
+        .get("/submitted/" + subId)
         .then(response => {
-        //   this.setState({
-        //     contests: response.data.contests
-        //   });
+          const trimmedContest = {
+            ...response.data.contest._doc,
+            submission: response.data.contest.submission
+          };
+          this.setState({
+            contest: trimmedContest
+          });
         })
         .catch(err => console.log(err));
     }
 
+    redirectHandler = () => {
+        this.props.history.push('/contests');
+    }
+
     render() {
       const { classes } = this.props;
-      return (
-        <Fragment>
-          <CssBaseline />
+      const { contest } = this.state;
+      console.log(contest);
+      let display = null;
+      if (contest) {
+        display = (
+          <Fragment>
+            <CssBaseline />
 
-          <main>
-            <div className={classes.heroContent}>
-              <Container maxWidth="sm">
-                <Typography
-                  variant="h1"
-                  align="center"
-                  color="textPrimary"
-                  gutterBottom
-                >
-                  Congratulations on your submission!
-                </Typography>
-                <Typography
-                  variant="h5"
-                  align="center"
-                  color="textSecondary"
-                  paragraph
-                >
-                  Your confirmation number is ##insert submissionId#. The winner
-                  of this contest will be decided by ##contest creator## on
-                  ###x_date### so until then check out all the other available
-                  contests and submit your designs!
-                </Typography>
-              </Container>
+            <main>
+              <div className={classes.heroContent}>
+                <Container maxWidth="sm">
+                  <Typography
+                    variant="h1"
+                    align="center"
+                    color="textPrimary"
+                    gutterBottom
+                  >
+                    Congratulations on your submission!
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    align="center"
+                    color="textSecondary"
+                    paragraph
+                  >
+                    Your confirmation number is #{contest.submission._id}. The
+                    winner of this contest will be decided by JACK on{" "}
+                    {new Date(contest.deadline).toString()} so until then check
+                    out all the other available contests and submit your
+                    designs!
+                  </Typography>
+                </Container>
 
-              <div className={classes.heroButton}>
-                <Grid container spacing={2} justify="center">
-                  <Grid item>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                    >
-                      Go Now!
-                    </Button>
+                <div className={classes.heroButton}>
+                  <Grid container spacing={2} justify="center">
+                    <Grid item>
+                      <Button variant="contained" color="primary" onClick={this.redirectHandler}>
+                        View More Contests
+                      </Button>
+                    </Grid>
                   </Grid>
-                </Grid>
+                </div>
               </div>
-            </div>
-          </main>
-        </Fragment>
-      );
+            </main>
+          </Fragment>
+        );
+      }
+
+      return display;
     }
   }
 );

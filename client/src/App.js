@@ -55,7 +55,7 @@ function App() {
           <PrivateRoute exact path="/create" component={CreateContestPage} />
           <PrivateRoute exact path="/contest/:id" component={ContestDetailPage} />
           <PrivateRoute exact path='/contest/:id/submit' component={SubmissionPage} />
-          <PrivateRoute exact path='/submitted/:contestId' component={SummaryPage} />
+          <PrivateRoute exact path='/submitted/:subId' component={SummaryPage} />
           <PrivateRoute exact path='/profile/:id' component={ProfilePage} />
         </BrowserRouter>
       </MuiThemeProvider>
