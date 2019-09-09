@@ -66,7 +66,13 @@ export default withStyles(styles)(
           contestId: match.params.id,
         });
       }
+
+      // this.redirectHandler();
     };
+
+    redirectHandler = () => {
+      this.props.history.push('/contests');
+    }
 
     render() {
       const { classes } = this.props;

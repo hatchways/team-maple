@@ -39,6 +39,7 @@ router.post(
     const contest = await Contest.findOne({ _id: contestId });
 
     if (contest) {
+      console.log(contest);
       const key = `${contestId}/${uuidv4()}.jpeg`;
       s3.getSignedUrl(
         "putObject",
@@ -48,6 +49,7 @@ router.post(
           Key: key
         },
         (err, url) => {
+          console.log('upload route', err);
           res.send({ key, url });
         }
       );
