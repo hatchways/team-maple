@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from "react";
-import { Button, Paper, Typography, IconButton, Grid } from "@material-ui/core";
-import { CloudUpload, PhotoCamera, FilterNone } from "@material-ui/icons";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import Submit from "../pages/Submit";
 import axios from "axios";
@@ -31,7 +31,7 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(
+export default withRouter(withStyles(styles)(
   class extends Component {
     state = {
       file: null
@@ -46,28 +46,27 @@ export default withStyles(styles)(
 
     submissionHandler = async () => {
       const { file } = this.state;
-      const { match } = this.props;
+      const { match, history } = this.props;
       if (file) {
         const uploadConfig = await axios.post("/upload/submission", {
           contestId: match.params.id
         });
 
+        setAuthToken();
         await axios.put(uploadConfig.data.url, file, {
           headers: {
             "Content-type": file.type,
             "Cache-Control": "public, max-age=31536000"
           }
         });
-
         setAuthToken(tokenStorage.getAuthToken());
-
-        // your post request to update submission model
-        // image url is in uploadConfig.data.key, contestId in match.params.id
-        console.log("done");
+        
         await axios.post("/submit", {
           imageUrl: uploadConfig.data.key,
           contestId: match.params.id,
         });
+
+        history.push(`/contest/${match.params.id}`);
       }
     };
 
@@ -94,4 +93,4 @@ export default withStyles(styles)(
       );
     }
   }
-);
+));

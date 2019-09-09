@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import axios from "axios";
 import {
   Paper,
   Typography,
@@ -22,7 +24,7 @@ import {
 } from "@material-ui/pickers";
 import { grey } from "@material-ui/core/colors";
 import DateFnsUtils from '@date-io/date-fns';
-import { getDefaultImages, createContest } from "../actions/contestActions";
+import { getDefaultImages } from "../actions/contestActions";
 
 const styles = theme => ({
   label: {
@@ -69,7 +71,7 @@ const styles = theme => ({
   }
 })
 
-const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createContest }) => {
+const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createContest, history }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [prize, setPrize] = useState(0);
@@ -82,7 +84,7 @@ const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createCon
     }
   },[]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newContest = {
       title,
@@ -91,18 +93,22 @@ const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createCon
       deadline,
       images: selectedLinks,
     };
-    createContest(newContest);
+    const contest = await axios.post("/contest/create", newContest);
+    const { _id } = contest.data;
+    history.push(`/contest/${_id}`);
   }
 
 
   const handleImageSelect = (e) => {
-    const fullUrlArray = e.target.src.split("/");
-    const url = fullUrlArray[fullUrlArray.length - 1];
-    const index = selectedLinks.indexOf(url);
-    if (index === -1) {
-      setSelectedLinks([...selectedLinks, url]);
-    } else {
-      setSelectedLinks(selectedLinks.filter(link => link !== url));
+    if (e.target && e.target.src) {
+      const fullUrlArray = e.target.src.split("/");
+      const url = fullUrlArray[fullUrlArray.length - 1];
+      const index = selectedLinks.indexOf(url);
+      if (index === -1) {
+        setSelectedLinks([...selectedLinks, url]);
+      } else {
+        setSelectedLinks(selectedLinks.filter(link => link !== url));
+      }
     }
   }
 
@@ -234,10 +240,10 @@ const mapStateToProps = ({ defaultImages }) => ({
 
 const mapDispatchToProps = {
   getDefaultImages,
-  createContest,
 }
 
 const enhance = compose(
+  withRouter,
   withStyles(styles),
   connect(mapStateToProps, mapDispatchToProps),
 );
