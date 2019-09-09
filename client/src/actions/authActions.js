@@ -1,4 +1,5 @@
 import jwtDecode from "jwt-decode";
+import axios from "axios";
 import { 
     SET_SIGNUP_ERRORS,
     SET_SIGNUP_SUCCESS,
@@ -10,7 +11,7 @@ import {
 } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
-import axios from "axios";
+import { getProfile, clearProfile } from "./profileActions";
 
 export const registerUser = (userData) => async dispatch => {
     try {
@@ -33,8 +34,8 @@ export const loginUser = userData => async dispatch => {
         setAuthToken(token);
         const decoded = jwtDecode(token);
         dispatch(setCurrentUser(decoded));
+        dispatch(getProfile(decoded.userId));
     } catch (err) {
-        console.log(err.response.data);
         dispatch({
             type: SET_LOGIN_ERRORS,
             payload: err.response.data,
@@ -59,6 +60,7 @@ export const logoutUser = () => async dispatch => {
     tokenStorage.deleteAuthToken();
     setAuthToken(false);
     dispatch(setCurrentUser({}));
+    dispatch(clearProfile());
 }
 
 export const clearLoginErrors = () => {

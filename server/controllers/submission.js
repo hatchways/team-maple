@@ -19,3 +19,9 @@ exports.postSubmission = (req, res, next) => {
     })
     .catch(err => console.log(err));
 };
+
+exports.getSummary = (req, res, next) => {
+  console.log(req.params);
+  // const { contestId } = req.params;
+
+}

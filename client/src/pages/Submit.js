@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Button, Paper, Typography, IconButton, Grid } from "@material-ui/core";
 import { CloudUpload } from "@material-ui/icons";
-import axios from 'axios';
 
 export default class extends Component {
 
