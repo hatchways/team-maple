@@ -8,7 +8,7 @@ exports.getContests = (req, res, next) => {
       }
       return res
         .status(200)
-        .json({ message: "contests successfull fetched", contests });
+        .json({ message: "contests successfully fetched", contests });
     })
     .catch(err => {
       return res.status(500).json({ message: "connection error" });
