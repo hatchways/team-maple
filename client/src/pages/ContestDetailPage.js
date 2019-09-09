@@ -26,7 +26,7 @@ const CreateContest = ({ classes, match }) => {
       {!loading && 
         <Grid container spacing={0} alignItems="center" justify="center">
           <Grid item xs={12} sm={10}>
-            <ContestDetail contest={contest} match={match}/>
+            <ContestDetail contest={contest}/>
           </Grid>
         </Grid>
       }

@@ -31,7 +31,17 @@ const contestSchema = new Schema(
       required: true
     },
   },
-  { timestamps: true }
+  { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+contestSchema.virtual("submissions", {
+  ref: "Submission",
+  localField: "_id",
+  foreignField: "contest",
+});
 
 module.exports = mongoose.model("Contest", contestSchema);

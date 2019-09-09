@@ -23,14 +23,16 @@ import "./App.css";
 
 if (tokenStorage.getAuthToken()) {
   const token = tokenStorage.getAuthToken();
-  setAuthToken(token);
   const decoded = jwtDecode(token);
-  store.dispatch(setCurrentUser(decoded));
-
+  
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
+    tokenStorage.deleteAuthToken();
     store.dispatch(logoutUser);
     window.location.href = "./login";
+  } else {
+    setAuthToken(token);
+    store.dispatch(setCurrentUser(decoded));
   }
 }
 
