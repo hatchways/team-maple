@@ -94,6 +94,7 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
   const handleInfoClick = (creator) => {
     history.push(`/profile/${creator._id}`)
   }
+
   const url = `${process.env.REACT_APP_S3_URL}/${creator.profileUrl}`;
   return (
     <>
