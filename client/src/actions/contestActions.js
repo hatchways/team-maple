@@ -7,8 +7,4 @@ export const getDefaultImages = () => async dispatch => {
     type: SET_DEFAULT_IMAGES,
     payload, 
   });
-}
-
-export const createContest = (contest) => async dispatch => {
-  const payload = await axios.post("/contest/create", contest);
-}
+};
