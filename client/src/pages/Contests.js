@@ -46,7 +46,7 @@ export default ({ cards }) => {
                 <Typography gutterBottom variant="h5" component="h2">
                   {card.title}
                 </Typography>
-                <Typograph>{card.description}</Typograph>
+                <Typography>{card.description}</Typography>
               </CardContent>
               <CardActions>
                 <Button size="small" color="primary" variant="outlined">
