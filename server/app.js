@@ -1,6 +1,4 @@
-const path = require("path");
-const dotEnvPath = path.resolve("../.env");
-require("dotenv").config({ path: dotEnvPath });
+require("dotenv").config();
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
