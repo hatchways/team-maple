@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 const AWS = require("aws-sdk");
 const uuidv4 = require("uuid/v4");
-const Contest = require("../models/Contest");
+const Contest = require("../models/Contest"); 
 
 const s3 = new AWS.S3({
   region: process.env.S3_REGION,
