@@ -42,7 +42,7 @@ export default withStyles(styles)(
     }
 
     selectContest = id => {
-      this.props.history.push(`/contest/${id}`);
+      this.props.history.push(`/contest/${id.toString()}`);
     };
 
     render() {
