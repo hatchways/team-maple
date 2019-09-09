@@ -17,6 +17,7 @@ const uuidv4 = require("uuid/v4");
 import uploadRouter from "./routes/upload";
 import contestRouter from "./routes/contest";
 import profileRouter from "./routes/profile";
+import contestsRouter from './routes/contests';
 
 
 var app = express();
@@ -38,6 +39,7 @@ app.use("/upload", uploadRouter);
 app.use("/contest", contestRouter);
 app.use("/profile", profileRouter);
 app.use(submitRoutes);
+app.use(contestRouter);
 
 
 // catch 404 and forward to error handler
