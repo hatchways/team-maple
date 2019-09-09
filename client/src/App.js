@@ -18,7 +18,7 @@ import DashboardPage from "./pages/Dashboard";
 import SubmissionPage from './components/UpSubmission';
 import CreateContestPage from "./pages/CreateContest";
 import ContestDetailPage from "./pages/ContestDetailPage";
-import DiscoveryPage from './components/Discovery';
+import DiscoveryPage from './pages/Discovery';
 
 import "./App.css";
 

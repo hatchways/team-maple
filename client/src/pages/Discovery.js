@@ -7,7 +7,8 @@ import {
   Button
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import Contests from "../pages/Contests";
+
+import Contests from "../components/Contests";
 import axios from "axios";
 
 const styles = theme => ({
@@ -30,7 +31,7 @@ export default withStyles(styles)(
       //send get request to back end, get data back, store in state and pass down
       //to Contests component
       axios
-        .get("http://localhost:3001/contests")
+        .get("/contests")
         .then(response => {
           console.log(response);
           this.setState({
@@ -40,7 +41,12 @@ export default withStyles(styles)(
         .catch(err => console.log(err));
     }
 
+    selectContest = id => {
+      this.props.history.push(`/contest/${id}`);
+    };
+
     render() {
+        console.log(this.props.history);
       const { classes } = this.props;
       const { contests } = this.state;
       return (
@@ -79,7 +85,7 @@ export default withStyles(styles)(
                 </Grid>
               </div>
             </div>
-            <Contests cards={contests} />
+            <Contests cards={contests} selectContest={this.selectContest} />
           </main>
         </Fragment>
       );
