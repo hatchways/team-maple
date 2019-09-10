@@ -22,25 +22,14 @@ exports.postSubmission = (req, res, next) => {
 
 exports.getSummary = (req, res, next) => {
   const { subId } = req.params;
-  let savedSubmission = {};
   Submission.findById(subId)
-    .then(sub => {
-      if (!sub) {
-        return res.status(422).json({ message: "resource not found" });
-      }
-      savedSubmission = sub;
-      return Contest.findOne({
-        _id: savedSubmission.contest
-      });
+    .populate({
+      path: "creator",
+      select: "name"
     })
-    .then(contest => {
-      const newContest = {
-        ...contest,
-        submission: savedSubmission
-      };
-      return res
-        .status(201)
-        .json({ message: "successfully fetched", contest: newContest });
+    .populate("contest")
+    .then(sub => {
+      return res.status(200).json({ msg: "successfully fetched", sub });
     })
     .catch(err => console.log(err));
 };

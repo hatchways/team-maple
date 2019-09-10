@@ -4,7 +4,9 @@ import {
   Container,
   Typography,
   Grid,
-  Button
+  Button,
+  Paper,
+  ButtonBase
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
@@ -16,13 +18,25 @@ const styles = theme => ({
   },
   heroButton: {
     marginTop: theme.spacing(4)
+  },
+  button: {
+    margin: theme.spacing(2)
+  },
+  paper: {
+    padding: 20,
+    margin: "20px auto",
+    maxWidth: "50%",
+    backgroundColor: 'lightgreen'
+  },
+  img: {
+    width: "100%"
   }
 });
 
 export default withStyles(styles)(
   class SubmissionComplete extends Component {
     state = {
-      contest: null
+      submission: null
     };
 
     componentDidMount() {
@@ -31,61 +45,127 @@ export default withStyles(styles)(
       axios
         .get("/submitted/" + subId)
         .then(response => {
-          const trimmedContest = {
-            ...response.data.contest._doc,
-            submission: response.data.contest.submission
-          };
+          console.log(response.data);
           this.setState({
-            contest: trimmedContest
+            submission: response.data.sub
           });
         })
         .catch(err => console.log(err));
     }
 
     redirectHandler = () => {
-        this.props.history.push('/contests');
-    }
+      this.props.history.push("/contests");
+    };
+
+    goBackHandler = () => {
+      this.props.history.go(-2);
+    };
 
     render() {
       const { classes } = this.props;
-      const { contest } = this.state;
-      console.log(contest);
+      const { submission } = this.state;
+      console.log(submission);
       let display = null;
-      if (contest) {
+      if (submission) {
         display = (
           <Fragment>
             <CssBaseline />
 
             <main>
               <div className={classes.heroContent}>
-                <Container maxWidth="sm">
+                <Container maxWidth="md">
                   <Typography
-                    variant="h1"
+                    variant="h3"
                     align="center"
                     color="textPrimary"
                     gutterBottom
                   >
-                    Congratulations on your submission!
+                    Congratulations on your Submission!
                   </Typography>
+                  <Paper className={classes.paper}>
+                    <Grid
+                      container
+                      direction="column"
+                      justify
+                      spacing={1}
+                      justify="flex-start"
+                    >
+                      <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Typography
+                          variant="h4"
+                          align="center"
+                          color="textPrimary"
+                        >
+                          {" "}
+                          Details{" "}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography>
+                          <strong> Title: </strong>
+                          {submission.contest.title}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography>
+                          <strong> Description: </strong>
+                          {submission.contest.description}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography>
+                          <strong> Prize: </strong>${submission.contest.prize}
+                        </Typography>
+                      </Grid>
+                      <Grid item container>
+                        <Grid item>
+                          <Typography><strong>Tatoo Design:</strong></Typography>
+                        </Grid>
+                        <Grid item>
+                          <ButtonBase className={classes.image}>
+                            <img
+                              className={classes.img}
+                              alt="complex"
+                              src={`${process.env.REACT_APP_S3_URL}/${submission.url}`}
+                            />
+                          </ButtonBase>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+
                   <Typography
                     variant="h5"
                     align="center"
                     color="textSecondary"
                     paragraph
                   >
-                    Your confirmation number is #{contest.submission._id}. The
-                    winner of this contest will be decided by JACK on{" "}
-                    {new Date(contest.deadline).toString()} so until then check
-                    out all the other available contests and submit your
-                    designs!
+                    Your confirmation number is #{submission._id}. The winner of
+                    this contest will be decided by {submission.creator.name} on{" "}
+                    {new Date(submission.contest.deadline).toDateString()} so
+                    until then check out all the other available contests and
+                    submit your designs!
                   </Typography>
                 </Container>
 
                 <div className={classes.heroButton}>
                   <Grid container spacing={2} justify="center">
                     <Grid item>
-                      <Button variant="contained" color="primary" onClick={this.redirectHandler}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={this.redirectHandler}
+                      >
                         View More Contests
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        className={classes.button}
+                        onClick={this.goBackHandler}
+                      >
+                        Contest Detail Page
                       </Button>
                     </Grid>
                   </Grid>
