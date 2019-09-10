@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import * as io from "socket.io-client";
-import tokenStorage from "../utils/tokenStorage";
+import React, { useState } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
 
 import { 
   Grid,
@@ -14,36 +14,13 @@ const styles = theme => ({
 
 })
 
-const Chat = ({ classes }) => {
-  const [ socket, setSocket ] = useState(null);
+const Chat = ({ classes, socket }) => {
   const [ content, setContent ] = useState("");
-  useEffect(() => {
-    const token = tokenStorage.getAuthToken() || "";
-    const newSocket = io({
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-            'authorization': token,
-          }
-        }
-      }
-    });
-    newSocket.on("error", error => {
-      console.log(error);
-    })
-    newSocket.on("message", body => {
-      console.log(body);
-    })
-    newSocket.on("updateChat", body => {
-      console.log(body);
-    })
-    setSocket(newSocket);
-  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     const body = {
       content,
-      conversationId: "",
+      conversationId: "5d7782404087120980ed5c0d",
     };
     socket.emit("message", body, (error) => {
       console.log(error);
@@ -81,4 +58,13 @@ const Chat = ({ classes }) => {
   )
 }
 
-export default withStyles(styles)(Chat);
+const mapStateToProps = ({ socket }) => ({
+  socket,
+});
+
+const enhance = compose(
+  withStyles(styles),
+  connect(mapStateToProps),
+);
+
+export default enhance(Chat);

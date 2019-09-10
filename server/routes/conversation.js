@@ -60,7 +60,9 @@ router.get('/messages',
       const conversations = await Conversation
         .find()
         .or([{ user1: id}, { user2: id }])
-        .populate("messages");
+        .populate("user1", "name")
+        .populate("user2", "name")
+        .populate("messages", "-updatedAt");
       if (conversations) {
         return res.status(200).json(conversations);
       } else {

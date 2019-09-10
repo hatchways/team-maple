@@ -7,6 +7,8 @@ import setAuthToken from "./utils/setAuthToken";
 import tokenStorage from "./utils/tokenStorage";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { getProfile } from "./actions/profileActions";
+import { getConversations } from "./actions/conversationActions";
+import { initializeSocket } from "./actions/socketActions";
 import store from "./store";
 
 import { theme } from "./themes/theme";
@@ -37,6 +39,8 @@ if (tokenStorage.getAuthToken()) {
     setAuthToken(token);
     store.dispatch(setCurrentUser(decoded));
     store.dispatch(getProfile(decoded.userId));
+    store.dispatch(getConversations(decoded.userId));
+    store.dispatch(initializeSocket(token));
   }
 }
 
