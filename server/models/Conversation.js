@@ -13,8 +13,17 @@ const conversationSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      validate: [this.user !== value, "Users must be different people"],
+      validate: {
+        validator: function (value) {
+          return this.user1 !== value;
+        },
+        message: "Users must be different people",
+      },
     },
+  },
+  { 
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
 );
 

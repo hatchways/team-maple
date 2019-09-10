@@ -17,6 +17,8 @@ const uuidv4 = require("uuid/v4");
 import uploadRouter from "./routes/upload";
 import contestRouter from "./routes/contest";
 import profileRouter from "./routes/profile";
+import conversationRouter from "./routes/conversation";
+import messageRouter from "./routes/message";
 
 
 var app = express();
@@ -37,6 +39,8 @@ app.use("/ping", pingRouter);
 app.use("/upload", uploadRouter);
 app.use("/contest", contestRouter);
 app.use("/profile", profileRouter);
+app.use("/conversation", conversationRouter);
+app.use("/message", messageRouter);
 app.use(submitRoutes);
 
 
