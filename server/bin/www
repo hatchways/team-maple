@@ -9,6 +9,10 @@ require("dotenv").config();
 
 var app = require("../app");
 var http = require("http");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const Conversation = require("../models/Conversation");
+const Message = require("../models/Message");
 
 /**
  * Get port from environment and store in Express.
@@ -22,6 +26,95 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * Socket.IO
+ */
+
+const socket = require("socket.io");
+const io = socket.listen(server);
+
+const users = {};
+
+io.use((socket, next) => {
+  
+  console.log("Middleware was run!");
+  let token = socket.handshake.headers["authorization"];
+  if (!token) {
+    console.log("user not authenticated!");
+    return next(new Error("Authentication Error"));
+  }
+  
+  const decoded = jwt.verify(token, process.env.SECRETORKEY);
+  const user = User.findOne({ email: decoded.email });
+  if (!user) {
+    console.log("User not found");
+    return next(new Error("Authentication Error"));
+  }
+  const userId = decoded.userId;
+
+  if (users[userId]) {
+    console.log("Already connected in another socket");
+    return next(new Error("Already connected in another socket"));
+  }
+  users[decoded.userId] = socket.id;
+  socket.userId = decoded.userId;
+  console.log("User authenticated!");
+  return next();
+})
+
+io.on("connection", socket => {
+  const userId = socket.userId;
+  const socketId = socket.id;
+  console.log("User connected with socket: ", socket.id);
+  console.log("User id: " + socket.userId);
+  console.log(users);
+
+  socket.on("disconnect", () => {
+    console.log("A socket disconnected: ",socketId);
+    console.log("User id: " + userId);
+    delete users[userId];
+    console.log(users);
+  });
+
+  socket.on("message", async body => {
+    const id = userId;
+    const { content, conversationId } = body;
+    try {
+      const conversationExist = await Conversation.findById(conversationId);
+      if (!conversationExist) {
+        return socket.emit("message", { message: "Conversation doesn't exist!" });
+      }
+      const { user1, user2 } = conversationExist;
+      const user1Str = user1.toString();
+      const user2Str = user2.toString();
+      if (userId !== user1Str && userId !== user2Str) {
+        return; // add error handling
+      }
+      const message = new Message({
+        content,
+        sender: userId,
+        conversation: conversationId,
+      });
+      const body = await message.save();
+      console.log("Message sent: " + body);
+      // add ok handling
+      // send request to update chat with response
+     
+      if (users[user1Str]) {
+        console.log("emitting for user 1");
+        io.in(users[user1Str]).emit("updateChat", body);
+      }
+      if (users[user2Str]) {
+        console.log("emitting for user 2");
+        io.in(users[user2Str]).emit("updateChat", body);
+      }
+    } catch (e) {
+      console.log(e);
+      // add error handling
+    }
+  });
+})
 
 /**
  * Listen on provided port, on all network interfaces.

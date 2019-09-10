@@ -20,6 +20,7 @@ import SubmissionPage from './components/UpSubmission';
 import CreateContestPage from "./pages/CreateContest";
 import ContestDetailPage from "./pages/ContestDetailPage";
 import ProfilePage from "./pages/Profile";
+import ChatPage from "./pages/Chat";
 
 import "./App.css";
 
@@ -53,6 +54,7 @@ function App() {
           <PrivateRoute exact path="/contest/:id" component={ContestDetailPage} />
           <PrivateRoute exact path='/contest/:id/submit' component={SubmissionPage} />
           <PrivateRoute exact path='/profile/:id' component={ProfilePage} />
+          <Route exact path='/chat' component={ChatPage} />
         </BrowserRouter>
       </MuiThemeProvider>
     </Provider>
