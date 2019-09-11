@@ -78,6 +78,7 @@ io.on("connection", socket => {
   });
 
   socket.on("message", async body => {
+    console.log("Got here")
     const id = userId;
     const { content, conversationId } = body;
     try {
@@ -98,8 +99,6 @@ io.on("connection", socket => {
       });
       const body = await message.save();
       console.log("Message sent: " + body);
-      // add ok handling
-      // send request to update chat with response
      
       if (users[user1Str]) {
         console.log("emitting for user 1");
@@ -111,6 +110,48 @@ io.on("connection", socket => {
       }
     } catch (e) {
       console.log(e);
+      // add error handling
+    }
+  });
+
+  socket.on("startConversation", async body => {
+    const otherId = body.other;
+    try {
+      if (userId === otherId) {
+        console.log("user can't start a conversation with themself");
+        return; // add error handling
+      }
+      const other = await User.findById(otherId);
+      if (!other) {
+        console.log("user doesn't exist");
+        return; // add error handling
+      }
+  
+      const [ user1, user2 ] = [userId, otherId].sort((a, b) => a > b);
+      const conversationExist = await Conversation.find({ user1, user2 });
+      if (conversationExist.length) {
+        console.log("user already has a conversation with id");
+        return; // add error handling
+      }
+      const conversation = new Conversation({ user1, user2 });
+      await conversation.save();
+      const body = await Conversation.findOne({ user1, user2 })
+        .populate("user1")
+        .populate("user2");
+      console.log(body);
+  
+      const user1Str = user1.toString();
+      const user2Str = user2.toString();
+      if (users[user1Str]) {
+        console.log("emitting for user 1");
+        io.in(users[user1Str]).emit("updateConversation", { body, user: user2});
+      }
+      if (users[user2Str]) {
+        console.log("emitting for user 2");
+        io.in(users[user2Str]).emit("updateConversation", {body, user: user1 });
+      }
+    } catch (err) {
+      console.log(err);
       // add error handling
     }
   });

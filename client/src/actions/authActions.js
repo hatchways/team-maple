@@ -13,7 +13,7 @@ import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
 import { getProfile, clearProfile } from "./profileActions";
 import { getConversations } from "./conversationActions";
-import { initializeSocket } from "./socketActions";
+import { initializeSocket, closeSocket } from "./socketActions";
 
 export const registerUser = (userData) => async dispatch => {
     try {
@@ -65,6 +65,7 @@ export const logoutUser = () => async dispatch => {
     setAuthToken(false);
     dispatch(setCurrentUser({}));
     dispatch(clearProfile());
+    dispatch(closeSocket());
 }
 
 export const clearLoginErrors = () => {

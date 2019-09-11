@@ -9,12 +9,13 @@ import {
   TextField,
   Button,
 } from "@material-ui/core";
+import { sendMessage, startConversation } from "../actions/socketActions";
 
 const styles = theme => ({
 
 })
 
-const Chat = ({ classes, socket }) => {
+const Chat = ({ classes, sendMessage, startConversation }) => {
   const [ content, setContent ] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,12 +23,20 @@ const Chat = ({ classes, socket }) => {
       content,
       conversationId: "5d7782404087120980ed5c0d",
     };
-    socket.emit("message", body, (error) => {
-      console.log(error);
-    });
+    // socket.emit("message", body, (error) => {
+    //   console.log(error);
+    // });
+    sendMessage(body);
     setContent("");
   }
-  if(!socket) console.log("socket undefined");
+  const handleConversation = (e) => {
+    e.preventDefault();
+    const body = {
+      // chat 1
+      other: "5d7729d1b43f3f36d40eb305",
+    }
+    startConversation(body);
+  }
   return (
     <div>
       <Grid container spacing={0} alignItems="center" justify="center" className={classes.grid}>
@@ -40,7 +49,6 @@ const Chat = ({ classes, socket }) => {
             margin="normal"
             variant="outlined"
             placeholder="Write a message"
-            required
             value={content}
             onChange={e => setContent(e.target.value)}
             />
@@ -54,17 +62,27 @@ const Chat = ({ classes, socket }) => {
           </Button>
         </form>
       </Grid>
+      <Grid container spacing={0} alignItems="center" justify="center">
+        <Button
+          onClick={handleConversation}
+          variant="contained"
+          size="large"
+        >
+          Start Conversation
+        </Button>
+      </Grid>
     </div>
   )
 }
 
-const mapStateToProps = ({ socket }) => ({
-  socket,
-});
+const mapDispatchToProps = {
+  sendMessage,
+  startConversation,
+}
 
 const enhance = compose(
   withStyles(styles),
-  connect(mapStateToProps),
+  connect(null, mapDispatchToProps),
 );
 
 export default enhance(Chat);
