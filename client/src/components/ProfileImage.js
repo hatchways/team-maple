@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import {
   withStyles,
   Typography,
@@ -10,6 +11,7 @@ import {
   Modal,
 } from "@material-ui/core";
 import ProfileEdit from "./ProfileEdit";
+import { startConversation } from "../actions/socketActions";
 
 const styles = theme => ({
   avatar: {
@@ -32,12 +34,19 @@ const styles = theme => ({
   },
 })
 
-const ProfileImage = ({ classes, profile, auth, refresh }) => {
+const ProfileImage = ({ classes, profile, auth, refresh, startConversation, match }) => {
   const { name, profileUrl } = profile;
   const [open, setOpen] = useState(false);
   const isUser = auth.user.userId === profile.id;
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleMessage = (e) => {
+    e.preventDefault();
+    const body = {
+      other: match.params.id,
+    }
+    startConversation(body);
+  }
   return (
     <>
       <Grid container alignItems="center" justify="center">
@@ -53,9 +62,13 @@ const ProfileImage = ({ classes, profile, auth, refresh }) => {
         </Typography>
       </Grid>
       <Grid container alignItems="center" justify="center">
-        { isUser &&
+        { isUser ?
           <Button variant="outlined" className={classes.button} onClick={handleOpen}>
               Edit Profile
+          </Button>
+          :
+          <Button variant="outlined" className={classes.button} onClick={handleMessage}>
+              Message User
           </Button>
         }
       </Grid>
@@ -80,8 +93,9 @@ const mapStateToProps = ({ auth }) => ({
 });
 
 const enhance = compose(
+  withRouter,
   withStyles(styles),
-  connect(mapStateToProps),
+  connect(mapStateToProps, { startConversation }),
 )
 
 export default enhance(ProfileImage);

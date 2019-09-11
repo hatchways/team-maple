@@ -8,7 +8,6 @@ export default (state = initialState, action) => {
       const { data } = action.payload.data;
 
       const chatObject = data.reduce((prev, curr) => {
-        console.log(curr);
         const user = action.payload.userId;
         const other = curr.user1.id !== user ? curr.user1 : curr.user2;
 
@@ -16,7 +15,10 @@ export default (state = initialState, action) => {
         let index = curr.messages.length - 1;
         while (index >= 0) {
           if (curr.messages[index].sender !== user) {
-            lastMessage = curr.messages[index].content;
+            lastMessage =  { 
+              content: curr.messages[index].content,
+              createdAt: curr.messages[index].createdAt,
+            }
             break;
           }
           index--;
@@ -33,7 +35,7 @@ export default (state = initialState, action) => {
       return chatObject;
     }
     case UPDATE_CHAT: {
-      const { conversation: conversationId, content, sender } = action.payload;
+      const { conversation: conversationId, content, sender, createdAt } = action.payload;
       return { 
         ...state,
         [conversationId]: {
@@ -42,7 +44,7 @@ export default (state = initialState, action) => {
             ...state[conversationId].messages,
             action.payload,
           ],
-          lastMessage: state[conversationId].user.id === sender ? content : state[conversationId].lastMessage,
+          lastMessage: state[conversationId].user.id === sender ? { content, createdAt } : state[conversationId].lastMessage,
         },
       }
     }

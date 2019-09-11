@@ -8,7 +8,6 @@ export const getConversations = (userId) => async dispatch => {
     const data = await axios.get("/conversation/messages");
     dispatch({ type: SET_CHAT, payload: { data, userId }, });
   } catch (err) {
-    console.log("ACTION FAILED TO WORK")
     console.log(err);
   }
 }

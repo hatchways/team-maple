@@ -37,6 +37,7 @@ const styles = theme => ({
 
 const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
 const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
+const MessagesLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/chat" {...props} />);
 
 const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -65,7 +66,7 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
                     :
                     <>
                         <Link component="button" variant="body2" to="#" className={classes.link}>Discover</Link>
-                        <Link component="button" variant="body2" to="#" className={classes.link}>Messages</Link>
+                        <Link component="button" variant="body2" to="/chat" className={classes.link}>Messages</Link>
                         <Link component="button" variant="body2" to="#" className={classes.link}>Notifications</Link>
                         <Button variant="outlined" color="inherit" className={classes.button} component={createContestLink}>
                             Create Contest
