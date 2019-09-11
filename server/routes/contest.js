@@ -51,7 +51,7 @@ router.get(
         .populate("creator", "name email profileUrl")
         .populate({
           path: "submissions",
-          select: "url creator",
+          select: "url creator winner",
           populate: {
             path: "creator",
             select: "name"
