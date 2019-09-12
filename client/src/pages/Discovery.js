@@ -34,7 +34,6 @@ export default withStyles(styles)(
       axios
         .get("/contests")
         .then(response => {
-          console.log(response);
           this.setState({
             contests: response.data.contests
           });
@@ -71,7 +70,6 @@ export default withStyles(styles)(
                   align="center"
                   color="textPrimary"
                   gutterBottom
-                  style={{}}
                 >
                   Discover Contests
                 </Typography>

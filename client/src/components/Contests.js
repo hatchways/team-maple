@@ -48,7 +48,7 @@ export default withRouter(({ cards, selectContest, history }) => {
                     image={
                       card.submissions.length > 0
                         ? `${process.env.REACT_APP_S3_URL}/${card.submissions[Math.floor(Math.random() * card.submissions.length)].url}`
-                        : "https://source.unsplash.com/random"
+                        : ""
                     }
                     title="Image Title"
                   />
