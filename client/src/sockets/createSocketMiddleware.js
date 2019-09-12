@@ -47,14 +47,12 @@ const createSocketMiddleware = () => {
         return;
       }
       case "message": {
-        console.log(action.payload);
         socket.emit("message", action.payload, (error) => {
           console.log("ERROR from message: " + error);
         });
         return;
       }
       case "startConversation": {
-        console.log(action.payload);
         socket.emit("startConversation", action.payload, (error) => {
           console.log("Error from message: " + error);
         })

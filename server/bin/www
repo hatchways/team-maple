@@ -44,8 +44,13 @@ io.use((socket, next) => {
     console.log("user not authenticated!");
     return next(new Error("Authentication Error"));
   }
-  
-  const decoded = jwt.verify(token, process.env.SECRETORKEY);
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.SECRETORKEY);
+  } catch (e) {
+    console.log(e);
+    return next(new Error("Authentication Error"));
+  }
   const user = User.findOne({ email: decoded.email });
   if (!user) {
     console.log("User not found");
