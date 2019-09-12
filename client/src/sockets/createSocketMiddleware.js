@@ -5,6 +5,8 @@ import {
   CLOSE_SOCKET,
   UPDATE_CONVERSATION,
   SET_CURRENT_CHAT,
+  UPDATE_ONLINE_STATUS,
+  ALL_ONLINE_STATUS,
 } from "../actions/types";
 
 const createSocketMiddleware = () => {
@@ -44,7 +46,19 @@ const createSocketMiddleware = () => {
             type: SET_CURRENT_CHAT,
             payload: body.body.id,
           });
-        })
+        });
+        socket.on("statusUpdate", body => {
+          store.dispatch({
+            type: UPDATE_ONLINE_STATUS,
+            payload: body,
+          });
+        });
+        socket.on("allOnline", body => {
+          store.dispatch({
+            type: ALL_ONLINE_STATUS,
+            payload: body,
+          });
+        });
         return;
       }
       case CLOSE_SOCKET: {

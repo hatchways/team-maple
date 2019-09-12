@@ -5,6 +5,7 @@ import defaultImagesReducer from "./defaultImagesReducer";
 import profileReducer from "./profileReducer";
 import chatReducer from "./chatReducer";
 import currentChatReducer from "./currentChatReducer";
+import onlineStatusReducer from "./onlineStatusReducer";
 
 export default combineReducers({
     auth: authReducer,
@@ -13,4 +14,5 @@ export default combineReducers({
     profile: profileReducer,
     chat: chatReducer,
     currentChat: currentChatReducer,
+    online: onlineStatusReducer,
 });

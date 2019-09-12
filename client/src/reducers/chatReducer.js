@@ -1,4 +1,8 @@
-import { SET_CHAT, UPDATE_CHAT, UPDATE_CONVERSATION } from "../actions/types";
+import {
+  SET_CHAT,
+  UPDATE_CHAT,
+  UPDATE_CONVERSATION,
+} from "../actions/types";
 
 const initialState = {};
 
@@ -26,7 +30,6 @@ export default (state = initialState, action) => {
         const conversationObject = {
           user: other,
           lastMessage,
-          status: "offline",
           messages: curr.messages,
         };
         prev[curr.id] = conversationObject;
@@ -57,7 +60,6 @@ export default (state = initialState, action) => {
           user: user1.id === otherId ? user1 : user2,
           messages: [],
           lastMessage: "",
-          status: "offline",
         },
       };
     }

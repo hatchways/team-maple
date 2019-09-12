@@ -34,9 +34,15 @@ const ChatInbox = ({ classes, chat }) => {
             })
             .map(( [id, conversation] ) => {
             const { lastMessage } = conversation;
-            const { name, profileUrl } = conversation.user;
+            const { name, profileUrl, id: userId } = conversation.user;
             return (
-              <ChatInboxItem key={id} id={id} lastMessage={lastMessage} name={name} profileUrl={profileUrl} />
+              <ChatInboxItem key={id}
+                id={id}
+                lastMessage={lastMessage}
+                name={name}
+                profileUrl={profileUrl}
+                userId={userId}
+              />
             );
           })
         }

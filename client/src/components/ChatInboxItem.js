@@ -8,9 +8,11 @@ import {
   withStyles,
   Paper,
   Avatar,
+  Badge,
 } from "@material-ui/core";
 import {
   grey,
+  green,
 } from "@material-ui/core/colors";
 import { setCurrentChat } from "../actions/currentChatActions";
 
@@ -22,6 +24,10 @@ const styles = theme => ({
     marginLeft: theme.spacing(2),
     flexGrow: 1,
   },
+  badge: {
+    backgroundColor: green[400],
+    padding: theme.spacing(1),
+  },
   name: {
     fontWeight: "bold",
   },
@@ -30,7 +36,16 @@ const styles = theme => ({
   }
 })
 
-const ChatInboxItem = ({ classes, lastMessage, name, profileUrl, id, setCurrentChat }) => {
+const ChatInboxItem = ({
+    classes,
+    lastMessage,
+    name,
+    profileUrl,
+    conversationId,
+    setCurrentChat,
+    online,
+    userId,
+  }) => {
   const url = profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "";
   
   let timeString;
@@ -60,13 +75,19 @@ const ChatInboxItem = ({ classes, lastMessage, name, profileUrl, id, setCurrentC
     }
   }
   const handleClick = (e) => {
-    setCurrentChat(id);
+    setCurrentChat(conversationId);
   }
   return (
     <>
       <Paper className={classes.container} height="100%" onClick={handleClick}>
         <Grid container>
-          <Avatar alt={name} src={url} />
+          {online[userId] ? 
+            <Badge overlap="circle" badgeContent=" " variant="dot" classes={{ badge: classes.badge}}>
+              <Avatar alt={name} src={url} />
+            </Badge>
+            :
+            <Avatar alt={name} src={url} />
+          }
           <Grid item className={classes.info}>
             <Typography variant="body1" className={classes.name}>
               {name}
@@ -84,9 +105,13 @@ const ChatInboxItem = ({ classes, lastMessage, name, profileUrl, id, setCurrentC
   )
 };
 
+const mapStateToProps = ({ online }) => ({
+  online,
+});
+
 const enhance = compose(
   withStyles(styles),
-  connect(null, { setCurrentChat }),
+  connect(mapStateToProps, { setCurrentChat }),
 );
 
 export default enhance(ChatInboxItem);
