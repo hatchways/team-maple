@@ -21,7 +21,7 @@ const styles = theme => ({
     flexGrow: 1,
   },
   body: {
-    flexGrow: 4,
+    flexGrow: 5,
   }
 })
 

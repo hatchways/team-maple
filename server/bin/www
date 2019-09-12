@@ -119,7 +119,7 @@ io.on("connection", socket => {
     }
   });
 
-  socket.on("startConversation", async body => {
+  socket.on("startConversation", async (body, cb) => {
     const otherId = body.other;
     try {
       if (userId === otherId) {
@@ -136,7 +136,7 @@ io.on("connection", socket => {
       const conversationExist = await Conversation.find({ user1, user2 });
       if (conversationExist.length) {
         console.log("user already has a conversation with id");
-        return; // add error handling
+        return cb("user already has a conversation with id");
       }
       const conversation = new Conversation({ user1, user2 });
       await conversation.save();

@@ -37,13 +37,11 @@ if (tokenStorage.getAuthToken()) {
     store.dispatch(logoutUser);
     window.location.href = "./login";
   } else {
-    console.log("here");
     setAuthToken(token);
     store.dispatch(setCurrentUser(decoded));
     store.dispatch(getProfile(decoded.userId));
     store.dispatch(getConversations(decoded.userId));
     store.dispatch(initializeSocket(token));
-    console.log("got here");
   }
 }
 

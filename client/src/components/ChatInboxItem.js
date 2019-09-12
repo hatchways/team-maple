@@ -66,7 +66,7 @@ const ChatInboxItem = ({ classes, lastMessage, name, profileUrl, id, setCurrentC
   }
   return (
     <>
-      <Paper borderBottom={1} className={classes.container} height="100%" onClick={handleClick}>
+      <Paper className={classes.container} height="100%" onClick={handleClick}>
         <Grid container>
           <Avatar alt={name} src={url} />
           <Grid item className={classes.info}>

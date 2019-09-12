@@ -22,7 +22,7 @@ const createSocketMiddleware = () => {
         });
 
         socket.on("error", error => {
-          console.log(error);
+          console.log("Error received from server: ", error);
         })
         socket.on("message", body => {
           console.log(body);
@@ -54,7 +54,7 @@ const createSocketMiddleware = () => {
       }
       case "startConversation": {
         socket.emit("startConversation", action.payload, (error) => {
-          console.log("Error from message: " + error);
+          console.log("Error from conversation: " + error);
         })
       }
       default: {

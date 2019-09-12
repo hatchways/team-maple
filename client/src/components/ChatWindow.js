@@ -14,6 +14,7 @@ import {
 import {
   grey,
 } from "@material-ui/core/colors";
+import ChatMessage from "./ChatMessage";
 import { sendMessage } from "../actions/socketActions";
 
 const NoChatSelected = () => (
@@ -39,11 +40,16 @@ const styles = theme => ({
   },
   body: {
     flexGrow: 1,
+    padding: theme.spacing(4),
+    overflow: "auto",
   },
   inputRow: {
     flexGrow: 1,
   },
   input: {
+    flexGrow: 1,
+  },
+  form: {
     flexGrow: 1,
   },
   button: {
@@ -60,7 +66,7 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
       <NoChatSelected />
     )
   }
-  const { profileUrl, name } = chat.user;
+  const { profileUrl, name, id: otherId } = chat.user;
   const { messages } = chat;
 
   const handleSubmit = (e) => {
@@ -87,22 +93,25 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
         </Paper>
         <Grid container>
           <Paper className={classes.body}>
-            {messages.map(message => (
-              <Typography key={message.id}>
-                {`${message.sender}: ${message.content}`}
-              </Typography>
-            ))}
+            {messages.map(message => {
+                return message.sender === otherId ? (
+                  <ChatMessage key={message._id} profileUrl={profileUrl} content={message.content} name={name} />
+                ) : (
+                  <ChatMessage key={message._id} content={message.content} />
+                )
+              }
+            )}
           </Paper>
         </Grid>
         <Grid container>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className={classes.form}>
             <Paper className={classes.inputRow}>
               <Grid container spacing={0} alignItems="center" justify="center">
                 <TextField
                   className={classes.input}
                   margin="normal"
                   variant="outlined"
-                  placeholder="Reply to"
+                  placeholder={`Reply to ${name}`}
                   required
                   value={content}
                   onChange={e => setContent(e.target.value)}
