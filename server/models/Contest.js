@@ -30,6 +30,10 @@ const contestSchema = new Schema(
       ref: "User",
       required: true
     },
+    winner:{
+      type: Schema.Types.ObjectId,
+      ref: 'Submission'
+    }
   },
   { 
     timestamps: true,
