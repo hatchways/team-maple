@@ -135,8 +135,7 @@ io.on("connection", socket => {
       const [ user1, user2 ] = [userId, otherId].sort((a, b) => a > b);
       const conversationExist = await Conversation.find({ user1, user2 });
       if (conversationExist.length) {
-        console.log("user already has a conversation with id");
-        return cb("user already has a conversation with id");
+        return cb({ message: "conversation exist", conversationId: conversationExist[0].id });
       }
       const conversation = new Conversation({ user1, user2 });
       await conversation.save();

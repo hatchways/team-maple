@@ -34,7 +34,7 @@ const styles = theme => ({
   },
 })
 
-const ProfileImage = ({ classes, profile, auth, refresh, startConversation, match }) => {
+const ProfileImage = ({ classes, profile, auth, refresh, startConversation, match, history }) => {
   const { name, profileUrl } = profile;
   const [open, setOpen] = useState(false);
   const isUser = auth.user.userId === profile.id;
@@ -46,6 +46,7 @@ const ProfileImage = ({ classes, profile, auth, refresh, startConversation, matc
       other: match.params.id,
     }
     startConversation(body);
+    history.push("/chat");
   }
   return (
     <>

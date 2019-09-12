@@ -4,6 +4,7 @@ import {
   UPDATE_CHAT,
   CLOSE_SOCKET,
   UPDATE_CONVERSATION,
+  SET_CURRENT_CHAT,
 } from "../actions/types";
 
 const createSocketMiddleware = () => {
@@ -39,6 +40,10 @@ const createSocketMiddleware = () => {
             type: UPDATE_CONVERSATION,
             payload: body,
           })
+          store.dispatch({
+            type: SET_CURRENT_CHAT,
+            payload: body.body.id,
+          });
         })
         return;
       }
@@ -54,7 +59,12 @@ const createSocketMiddleware = () => {
       }
       case "startConversation": {
         socket.emit("startConversation", action.payload, (error) => {
-          console.log("Error from conversation: " + error);
+          if (error.conversationId) {
+            store.dispatch({
+              type: SET_CURRENT_CHAT,
+              payload: error.conversationId,
+            });
+          };
         })
       }
       default: {
