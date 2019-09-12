@@ -2,6 +2,10 @@ import Contest from "../models/Contest";
 
 exports.getContests = (req, res, next) => {
   Contest.find()
+    .populate({
+      path: 'submissions',
+      select: '_id url'
+    })
     .then(contests => {
       if (!contests) {
         return res.status(422).json({ message: "No contests available!" });

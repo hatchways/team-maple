@@ -86,6 +86,7 @@ const submitLink = React.forwardRef((props, ref) => {
   );
 });
 
+
 const ContestDetail = ({ classes, auth, contest, match, history }) => {
   const [tabPage, setTabPage] = useState(0);
   const { title, prize, creator, submissions } = contest;

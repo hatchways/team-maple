@@ -14,7 +14,10 @@ import axios from "axios";
 const styles = theme => ({
   heroContent: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6)
+    padding: theme.spacing(8, 0, 6),
+    backgroundImage: 'url(https://www.gtreview.com/wp-content/uploads/2014/11/Sky-Clouds.jpg)',
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover"
   },
   heroButton: {
     marginTop: theme.spacing(4)
@@ -24,14 +27,14 @@ const styles = theme => ({
 export default withStyles(styles)(
   class Discovery extends Component {
     state = {
-      contests: []
+      contests: null
     };
 
     componentDidMount() {
-
       axios
         .get("/contests")
         .then(response => {
+          console.log(response);
           this.setState({
             contests: response.data.contests
           });
@@ -44,9 +47,18 @@ export default withStyles(styles)(
     };
 
     render() {
-        console.log(this.props.history);
       const { classes } = this.props;
       const { contests } = this.state;
+
+      let contestsFragment = null;
+
+      if (this.state.contests) {
+        contestsFragment = (
+          <Fragment>
+            <Contests cards={contests} selectContest={this.selectContest} />
+          </Fragment>
+        );
+      }
       return (
         <Fragment>
           <CssBaseline />
@@ -59,6 +71,7 @@ export default withStyles(styles)(
                   align="center"
                   color="textPrimary"
                   gutterBottom
+                  style={{}}
                 >
                   Discover Contests
                 </Typography>
@@ -72,18 +85,8 @@ export default withStyles(styles)(
                   design today!
                 </Typography>
               </Container>
-
-              <div className={classes.heroButton}>
-                <Grid container spacing={2} justify="center">
-                  <Grid item>
-                    <Button variant="contained" color="primary">
-                      Go Now!
-                    </Button>
-                  </Grid>
-                </Grid>
-              </div>
             </div>
-            <Contests cards={contests} selectContest={this.selectContest} />
+            {contestsFragment}
           </main>
         </Fragment>
       );
