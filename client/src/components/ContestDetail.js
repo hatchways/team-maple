@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
+
 import {
   Typography,
   Grid,
@@ -19,6 +20,13 @@ import {
 } from "@material-ui/core";
 import { Info as InfoIcon, Check } from "@material-ui/icons";
 import axios from "axios";
+import WinnerDialog from "./WinnerDialog/winnerDialog";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const styles = theme => ({
   firstRow: {
@@ -99,35 +107,60 @@ const submitLink = React.forwardRef((props, ref) => {
 
 const ContestDetail = ({ classes, auth, contest, match, history }) => {
   const [tabPage, setTabPage] = useState(0);
-  const [subs, setSubs] = useState(null);
+  const [sub, setSub] = useState(null);
   const { title, prize, creator, submissions } = contest;
   const isCreator = contest.creator._id === auth.user.userId;
-
+  const [open, setOpen] = useState(false);
   const handleInfoClick = creator => {
     history.push(`/profile/${creator._id}`);
   };
 
   const chooseWinner = subId => {
-    //check if authorized to choose winner -- do later
-    //check deadline -- do later
-    //send request to backend, get back all submissions then set in state
-    //add conditional styling to dom element
-
     let url = "/contest/" + contest._id + "/subWinner?winner=" + subId;
-
-    axios
-      .put(url)
-      .then(res => {
-        console.log(res);
-        setSubs(res.data);
-      })
-      .catch(err => console.log(err));
+    if (isCreator) {
+      if (new Date() >= new Date(contest.deadline)) {
+        if (!contest.winner) {
+          axios
+            .put(url)
+            .then(res => {
+              console.log(res);
+              setSub(res.data);
+            })
+            .catch(err => console.log(err));
+        } else {
+          console.log("already picked a winner");
+        }
+      } else {
+        console.log("contest still running");
+      }
+    } else {
+      console.log("only contest creator can choose a winner");
+    }
   };
+
+  function handleClickOpen(submission) {
+    setSub(submission);
+    setOpen(true);
+
+  }
+
+  function handleClose() {
+    setOpen(false);
+  }
 
   const url = `${process.env.REACT_APP_S3_URL}/${creator.profileUrl}`;
   return (
     <>
       <Grid container className={classes.container}>
+        <WinnerDialog
+          open={open}
+          handleClose={handleClose}
+          handleClickOpen={handleClickOpen}
+          sub={sub}
+          contest={contest}
+          chooseWinner={chooseWinner}
+          isCreator={isCreator}
+        />
         <Grid
           container
           className={classes.firstRow}
@@ -190,15 +223,17 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
               >
                 {submissions.length !== 0 ? (
                   submissions.map(submission => {
-                    const { url, creator, _id, winner } = submission;
-                    console.log(submissions[0]);
-                    if (subs && _id === subs.data._id || winner) {
+                    const { url, creator, _id } = submission;
+                    if (
+                      contest.winner &&
+                      contest.winner.toString() === _id.toString()
+                    ) {
                       return (
                         <GridListTile
                           key={url}
                           cols={1}
                           className={classes.gridListContainer}
-                          onClick={() => chooseWinner(_id)}
+                          onClick={() => handleClickOpen(submission)}
                         >
                           <img
                             src={`${process.env.REACT_APP_S3_URL}/${url}`}
@@ -206,11 +241,17 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
                             style={{ opacity: "0.2" }}
                           />
                           <div className={classes.centered}>
-                            <h1 style={{margin: '0'}}>
+                            <h1 style={{ margin: "0" }}>
                               <strong>Winner</strong>
                             </h1>
-                            <IconButton size="large" align="center" style={{padding: '0'}}>
-                              <Check style={{ height: "3em", width: "3em", marginLeft: '5px' }} />
+                            <IconButton align="center" style={{ padding: "0" }}>
+                              <Check
+                                style={{
+                                  height: "3em",
+                                  width: "3em",
+                                  marginLeft: "5px"
+                                }}
+                              />
                             </IconButton>
                           </div>
                           <GridListTileBar
@@ -232,7 +273,8 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
                         <GridListTile
                           key={url}
                           cols={1}
-                          onClick={() => chooseWinner(_id)}
+                          onClick={() => handleClickOpen(submission)}
+                          // onClick={() => chooseWinner(_id)}
                         >
                           <img
                             src={`${process.env.REACT_APP_S3_URL}/${url}`}

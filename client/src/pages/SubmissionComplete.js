@@ -25,8 +25,7 @@ const styles = theme => ({
   paper: {
     padding: 20,
     margin: "20px auto",
-    maxWidth: "50%",
-    backgroundColor: 'lightgreen'
+    maxWidth: "50%"
   },
   img: {
     width: "100%"
