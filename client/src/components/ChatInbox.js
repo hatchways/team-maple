@@ -37,7 +37,7 @@ const ChatInbox = ({ classes, chat }) => {
             const { name, profileUrl, id: userId } = conversation.user;
             return (
               <ChatInboxItem key={id}
-                id={id}
+                conversationId={id}
                 lastMessage={lastMessage}
                 name={name}
                 profileUrl={profileUrl}

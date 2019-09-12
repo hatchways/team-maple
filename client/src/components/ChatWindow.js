@@ -94,9 +94,9 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
         <Grid container>
           <Paper className={classes.body}>
             {messages.map(message => {
-                return message.sender === otherId ? (
-                  <ChatMessage key={message._id} profileUrl={profileUrl} content={message.content} name={name} />
-                ) : (
+              return message.sender === otherId ? (
+                <ChatMessage other={true} key={message._id} profileUrl={profileUrl} content={message.content} name={name} />
+              ) : (
                   <ChatMessage key={message._id} content={message.content} />
                 )
               }

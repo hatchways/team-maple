@@ -26,14 +26,18 @@ const styles = theme => ({
   }
 })
 
-const ChatMessage = ({ classes, content, profileUrl, name }) => {
+const ChatMessage = ({ classes, content, other, profileUrl, name }) => {
   return (
     <>
       { 
-        profileUrl ? (
+        other ? (
           <>
             <Grid container justify="flex-start" alignItems="center" className={classes.otherMessage}>
-              <Avatar alt={name} src={`${process.env.REACT_APP_S3_URL}/${profileUrl}`} />
+              { profileUrl ? 
+                <Avatar alt={name} src={`${process.env.REACT_APP_S3_URL}/${profileUrl}`} />
+                :
+                <Avatar src=""/>
+              }
               <Paper className={classes.otherChatBox}>
                 <Typography variant="body1">
                   {content}
