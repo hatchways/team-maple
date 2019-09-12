@@ -22,7 +22,6 @@ import SubmissionPage from './components/UpSubmission';
 import CreateContestPage from "./pages/CreateContest";
 import ContestDetailPage from "./pages/ContestDetailPage";
 import ProfilePage from "./pages/Profile";
-import ChatExamplePage from "./pages/ChatExample";
 import ChatPage from "./pages/Chat";
 
 import "./App.css";

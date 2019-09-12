@@ -6,7 +6,6 @@ import {
   withStyles,
   Avatar,
   Paper,
-  Box,
 } from "@material-ui/core";
 
 const styles = theme => ({

@@ -6,9 +6,7 @@ import {
   Grid,
   Typography,
   withStyles,
-  Button,
   Paper,
-  Box,
   Avatar,
 } from "@material-ui/core";
 import {

@@ -66,6 +66,7 @@ const createSocketMiddleware = () => {
             });
           };
         })
+        return;
       }
       default: {
         return next(action);

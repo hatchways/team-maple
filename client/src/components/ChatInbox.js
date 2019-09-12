@@ -2,12 +2,9 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { 
-  Grid,
   Typography,
   withStyles,
-  Button,
   Paper,
-  Box,
 } from "@material-ui/core";
 import ChatInboxItem from "./ChatInboxItem";
 
@@ -18,7 +15,6 @@ const styles = theme => ({
 })
 
 const ChatInbox = ({ classes, chat }) => {
-  console.log(chat);
   return (
     <>
       <Paper>
@@ -27,7 +23,16 @@ const ChatInbox = ({ classes, chat }) => {
             Inbox Messages
           </Typography>
         </Paper>
-        { chat && Object.entries(chat).map(( [id, conversation] ) => {
+        { chat && Object.entries(chat)
+            .sort((a, b) => { 
+              if (!a[1].lastMessage.createdAt && !b[1].lastMessage.createdAt) {
+                return a[1].user.name.localeCompare(b[1].user.name);
+              }
+              if (!a[1].lastMessage.createdAt) return 1;
+              if (!b[1].lastMessage.createdAt) return -1;
+              return new Date(b[1].lastMessage.createdAt) - new Date(a[1].lastMessage.createdAt);
+            })
+            .map(( [id, conversation] ) => {
             const { lastMessage } = conversation;
             const { name, profileUrl } = conversation.user;
             return (

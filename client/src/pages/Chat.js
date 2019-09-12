@@ -1,13 +1,8 @@
-import React, { useState } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
+import React from "react";
 
 import { 
   Grid,
-  Typography,
   withStyles,
-  TextField,
-  Box,
   Paper,
 } from "@material-ui/core";
 import ChatInbox from "../components/ChatInbox";

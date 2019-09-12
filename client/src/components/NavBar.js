@@ -37,7 +37,6 @@ const styles = theme => ({
 
 const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
 const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
-const MessagesLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/chat" {...props} />);
 
 const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
     const [anchorEl, setAnchorEl] = useState(null);
