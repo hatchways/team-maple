@@ -68,6 +68,9 @@ const styles = theme => ({
   },
   icon: {
     color: "white",
+  },
+  clickable: {
+    cursor: "pointer",
   }
 })
 
@@ -95,6 +98,10 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
     history.push(`/profile/${creator._id}`)
   }
 
+  const handleCreatorClick = () => {
+    history.push(`/profile/${contest.creator._id}`);
+  };
+
   const url = `${process.env.REACT_APP_S3_URL}/${creator.profileUrl}`;
   return (
     <>
@@ -110,8 +117,8 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
               </Typography>
             </Grid>
             <Grid container alignItems="center">
-              <Avatar alt={auth.user.email} src={url} className={classes.avatar}/>
-              <Typography variant="subtitle2">
+              <Avatar alt={auth.user.email} src={url} className={`${classes.avatar} ${classes.clickable}`} onClick={handleCreatorClick} />
+              <Typography variant="subtitle2" onClick={handleCreatorClick} className={classes.clickable}>
                 {`By ${creator.name}`}
               </Typography>
             </Grid>
