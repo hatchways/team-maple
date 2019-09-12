@@ -1,18 +1,25 @@
 const Submission = require("../models/Submission");
 
 exports.getWinner = (req, res, next) => {
+  
   const subId = req.query.winner;
-  Submission.findByIdAndUpdate(subId, {
-    winner: true
-  })
-    .then(() => {
-      return Submission.findById(subId);
-    })
-    .then(sub => {
-      return res.status(200).json({ msg: "Successfully updated", data: sub });
-    })
-    .catch(err => {
-      console.log(err);
-      return res.status(422).json({ msg: "error updating submission", error: err });
+  const { contestId } = req.params;
+
+  try {
+    await Contest.findByIdAndUpdate(contestId, {
+      winner: subId
     });
+
+    const contest = await Contest.findById(contestId).populate("winner");
+    if (!contest) {
+      return res.status(404).json({ msg: "contest not found" });
+    }
+    console.log(contest);
+    return res
+      .status(200)
+      .json({ msg: "selected a winner successful", contest });
+  } catch (err) {
+    console.log(err);
+    return res.status(422).json({ msg: "error updating contest", error: err });
+  }
 };
