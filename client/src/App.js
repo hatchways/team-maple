@@ -52,11 +52,11 @@ function App() {
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
           <NavBar />
-          <Route path="/" exact component={LandingPage} />
+          <Route path="/" exact component={LoginPage} />
           <Route path="/signup" exact component={SignupPage} />
           <Route path="/login" exact component={LoginPage} />
           <Route path='/contests' exact component={DiscoveryPage} />
-          <PrivateRoute exact path="/home" component={DashboardPage} />
+          <PrivateRoute exact path="/home" component={DiscoveryPage} />
           <PrivateRoute exact path="/create" component={CreateContestPage} />
           <PrivateRoute exact path="/contest/:id" component={ContestDetailPage} />
           <PrivateRoute exact path='/contest/:id/submit' component={SubmissionPage} />
