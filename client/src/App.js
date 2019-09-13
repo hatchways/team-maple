@@ -7,6 +7,8 @@ import setAuthToken from "./utils/setAuthToken";
 import tokenStorage from "./utils/tokenStorage";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { getProfile } from "./actions/profileActions";
+import { getConversations } from "./actions/conversationActions";
+import { initializeSocket } from "./actions/socketActions";
 import store from "./store";
 
 import { theme } from "./themes/theme";
@@ -21,6 +23,7 @@ import CreateContestPage from "./pages/CreateContest";
 import ContestDetailPage from "./pages/ContestDetailPage";
 import DiscoveryPage from './pages/Discovery';
 import ProfilePage from "./pages/Profile";
+import ChatPage from "./pages/Chat";
 import SummaryPage from './pages/SubmissionComplete';
 
 import "./App.css";
@@ -38,6 +41,8 @@ if (tokenStorage.getAuthToken()) {
     setAuthToken(token);
     store.dispatch(setCurrentUser(decoded));
     store.dispatch(getProfile(decoded.userId));
+    store.dispatch(getConversations(decoded.userId));
+    store.dispatch(initializeSocket(token));
   }
 }
 
@@ -57,6 +62,7 @@ function App() {
           <PrivateRoute exact path='/contest/:id/submit' component={SubmissionPage} />
           <PrivateRoute exact path='/submitted/:subId' component={SummaryPage} />
           <PrivateRoute exact path='/profile/:id' component={ProfilePage} />
+          <PrivateRoute exact path='/chat' component={ChatPage} />
         </BrowserRouter>
       </MuiThemeProvider>
     </Provider>

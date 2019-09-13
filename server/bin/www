@@ -9,6 +9,10 @@ require("dotenv").config();
 
 var app = require("../app");
 var http = require("http");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const Conversation = require("../models/Conversation");
+const Message = require("../models/Message");
 
 /**
  * Get port from environment and store in Express.
@@ -22,6 +26,150 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * Socket.IO
+ */
+
+const socket = require("socket.io");
+const io = socket.listen(server);
+
+const users = {};
+
+io.use((socket, next) => {
+  
+  console.log("Middleware was run!");
+  let token = socket.handshake.headers["authorization"];
+  if (!token) {
+    console.log("user not authenticated!");
+    return next(new Error("Authentication Error"));
+  }
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.SECRETORKEY);
+  } catch (e) {
+    console.log(e);
+    return next(new Error("Authentication Error"));
+  }
+  const user = User.findOne({ email: decoded.email });
+  if (!user) {
+    console.log("User not found");
+    return next(new Error("Authentication Error"));
+  }
+  const userId = decoded.userId;
+
+  if (users[userId]) {
+    console.log("Already connected in another socket");
+    return next(new Error("Already connected in another socket"));
+  }
+  users[decoded.userId] = socket.id;
+  socket.userId = decoded.userId;
+  console.log("User authenticated!");
+  return next();
+})
+
+io.on("connection", socket => {
+  const userId = socket.userId;
+  const socketId = socket.id;
+  console.log("User connected with socket: ", socket.id);
+  console.log("User id: " + socket.userId);
+  console.log(users);
+  socket.broadcast.emit("statusUpdate", {
+    user: userId,
+    status: "online",
+  });
+  io.in(socketId).emit("allOnline", { online: Object.keys(users) });
+  
+
+  socket.on("disconnect", () => {
+    console.log("A socket disconnected: ",socketId);
+    console.log("User id: " + userId);
+    delete users[userId];
+    console.log(users);
+    socket.broadcast.emit("statusUpdate", {
+      user: userId,
+      status: "offline",
+    });
+  });
+
+  socket.on("message", async body => {
+    console.log("Got here")
+    const id = userId;
+    const { content, conversationId } = body;
+    try {
+      const conversationExist = await Conversation.findById(conversationId);
+      if (!conversationExist) {
+        return socket.emit("message", { message: "Conversation doesn't exist!" });
+      }
+      const { user1, user2 } = conversationExist;
+      const user1Str = user1.toString();
+      const user2Str = user2.toString();
+      if (userId !== user1Str && userId !== user2Str) {
+        return; // add error handling
+      }
+      const message = new Message({
+        content,
+        sender: userId,
+        conversation: conversationId,
+      });
+      const body = await message.save();
+      console.log("Message sent: " + body);
+     
+      if (users[user1Str]) {
+        console.log("emitting for user 1");
+        io.in(users[user1Str]).emit("updateChat", body);
+      }
+      if (users[user2Str]) {
+        console.log("emitting for user 2");
+        io.in(users[user2Str]).emit("updateChat", body);
+      }
+    } catch (e) {
+      console.log(e);
+      // add error handling
+    }
+  });
+
+  socket.on("startConversation", async (body, cb) => {
+    const otherId = body.other;
+    try {
+      if (userId === otherId) {
+        console.log("user can't start a conversation with themself");
+        return; // add error handling
+      }
+      const other = await User.findById(otherId);
+      if (!other) {
+        console.log("user doesn't exist");
+        return; // add error handling
+      }
+  
+      const [ user1, user2 ] = [userId, otherId].sort((a, b) => a > b);
+      const conversationExist = await Conversation.find({ user1, user2 });
+      if (conversationExist.length) {
+        return cb({ message: "conversation exist", conversationId: conversationExist[0].id });
+      }
+      const conversation = new Conversation({ user1, user2 });
+      await conversation.save();
+      const body = await Conversation.findOne({ user1, user2 })
+        .populate("user1")
+        .populate("user2");
+      console.log(body);
+  
+      const user1Str = user1.toString();
+      const user2Str = user2.toString();
+      if (users[user1Str]) {
+        console.log("emitting for user 1");
+        io.in(users[user1Str]).emit("updateConversation", { body, user: user2});
+      }
+      if (users[user2Str]) {
+        console.log("emitting for user 2");
+        io.in(users[user2Str]).emit("updateConversation", {body, user: user1 });
+      }
+    } catch (err) {
+      console.log(err);
+      // add error handling
+    }
+  });
+})
 
 /**
  * Listen on provided port, on all network interfaces.

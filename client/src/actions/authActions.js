@@ -12,6 +12,8 @@ import {
 import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
 import { getProfile, clearProfile } from "./profileActions";
+import { getConversations } from "./conversationActions";
+import { initializeSocket, closeSocket } from "./socketActions";
 
 export const registerUser = (userData) => async dispatch => {
     try {
@@ -35,6 +37,8 @@ export const loginUser = userData => async dispatch => {
         const decoded = jwtDecode(token);
         dispatch(setCurrentUser(decoded));
         dispatch(getProfile(decoded.userId));
+        dispatch(getConversations(decoded.userId));
+        dispatch(initializeSocket(token));
     } catch (err) {
         dispatch({
             type: SET_LOGIN_ERRORS,
@@ -61,6 +65,7 @@ export const logoutUser = () => async dispatch => {
     setAuthToken(false);
     dispatch(setCurrentUser({}));
     dispatch(clearProfile());
+    dispatch(closeSocket());
 }
 
 export const clearLoginErrors = () => {
