@@ -41,7 +41,7 @@ export default withStyles(styles)(props => {
     contest,
     isCreator
   } = props;
-  console.log('winner dialog', contest);
+  console.log("winner dialog", contest);
   return (
     <div>
       <Dialog
@@ -69,7 +69,7 @@ export default withStyles(styles)(props => {
             Cancel
           </Button>
 
-         
+          {isCreator ? (
             <Button
               onClick={() => chooseWinner(sub._id)}
               color="primary"
@@ -77,7 +77,7 @@ export default withStyles(styles)(props => {
             >
               Select
             </Button>
-         
+          ) : null}
         </DialogActions>
       </Dialog>
     </div>
