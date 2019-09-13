@@ -74,7 +74,10 @@ const styles = theme => ({
     padding: theme.spacing(2, 4)
   },
   icon: {
-    color: "white"
+    color: "white",
+  },
+  clickable: {
+    cursor: "pointer",
   },
   gridListContainer: {
     position: "relative"
@@ -169,10 +172,13 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     setOpen(true);
   }
 
+  const handleCreatorClick = () => {
+    history.push(`/profile/${contest.creator._id}`);
+  };
+
   function handleClose() {
     setOpen(false);
   }
-  
   
   const url = contest ? `${process.env.REACT_APP_S3_URL}/${contest.creator.profileUrl}` : '';
   return (
@@ -203,13 +209,9 @@ const ContestDetail = ({ classes, auth, match, history }) => {
               </Typography>
             </Grid>
             <Grid container alignItems="center">
-              <Avatar
-                alt={auth.user.email}
-                src={url}
-                className={classes.avatar}
-              />
-              <Typography variant="subtitle2">
-                {`By ${contest.creator.name}`}
+              <Avatar alt={auth.user.email} src={url} className={`${classes.avatar} ${classes.clickable}`} onClick={handleCreatorClick} />
+              <Typography variant="subtitle2" onClick={handleCreatorClick} className={classes.clickable}>
+                {`By ${creator.name}`}
               </Typography>
             </Grid>
           </Grid>

@@ -16,12 +16,14 @@ import {
   GridList,
   GridListTile,
   Button,
+  IconButton,
 } from '@material-ui/core';
 import {
   KeyboardDatePicker,
   KeyboardTimePicker,
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
+import { CheckCircleOutline } from "@material-ui/icons";
 import { grey } from "@material-ui/core/colors";
 import DateFnsUtils from '@date-io/date-fns';
 import { getDefaultImages } from "../actions/contestActions";
@@ -68,7 +70,20 @@ const styles = theme => ({
     backgroundColor: theme.secondary,
     padding: theme.spacing(2, 5),
     marginBottom: theme.spacing(5),
-  }
+  },
+  selectedImage: {
+    opacity: "0.2",
+  },
+  centered: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)"
+  },
+  check: {
+    height: theme.spacing(8),
+    width: theme.spacing(8),
+  },
 })
 
 const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createContest, history }) => {
@@ -209,11 +224,29 @@ const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createCon
                 </Typography>
                 <Paper className={classes.gridListPaper}>
                   <GridList cellHeight={160} className={classes.gridList} spacing={4} cols={4}>
-                    {defaultImages && defaultImages.map(image => (
-                      <GridListTile key={image} cols={1} onClick={handleImageSelect}>
-                        <img src={`${process.env.REACT_APP_S3_URL}/default/${image}`} alt={"tattoo"} />
-                      </GridListTile>
-                    ))}
+                    {defaultImages && defaultImages.map(image => {
+                        return selectedLinks.includes(image) ?
+                        <GridListTile key={image} cols={1} onClick={handleImageSelect}>
+                          <div className={classes.centered}>
+                            <IconButton size="large" align="center">
+                              <CheckCircleOutline className={classes.check} />
+                            </IconButton>
+                          </div>
+                          <img 
+                            src={`${process.env.REACT_APP_S3_URL}/default/${image}`}
+                            alt={"tattoo"}
+                            className={classes.selectedImage}
+                          />
+                        </GridListTile>
+                        :
+                        <GridListTile key={image} cols={1} onClick={handleImageSelect}>
+                          <img 
+                            src={`${process.env.REACT_APP_S3_URL}/default/${image}`}
+                            alt={"tattoo"}
+                          />
+                        </GridListTile>
+                      }
+                    )}
                   </GridList>
                 </Paper>
                 <Grid container justify="center">

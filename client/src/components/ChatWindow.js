@@ -26,36 +26,56 @@ const NoChatSelected = () => (
  );
 
 const styles = theme => ({
+  container: {
+    height: "100%",
+  },
   avatar: {
+    marginLeft: theme.spacing(2),
     width: theme.spacing(10),
     height: theme.spacing(10),
   },
+  headerContainer: {
+    height: "12%"
+  },
   header: {
-    flexGrow: 1,
     padding: theme.spacing(2),
     backgroundColor: grey[200],
+    height: "100%",
   },
   name: {
     marginLeft: theme.spacing(4)
   },
+  bodyContainer: {
+    height: "76%",
+  },
   body: {
-    flexGrow: 1,
     padding: theme.spacing(4),
     overflow: "auto",
+    height: "100%",
   },
-  inputRow: {
-    flexGrow: 1,
+  footerContainer: {
+    height: "12%",
+  },
+  footer: {
+    height: "100%",
+  },
+  form: {
+    width: "100%",
+    height: "100%",
+  },
+  inputContainer: {
+    display: "flex",
+    height: "100%",
   },
   input: {
     flexGrow: 1,
-  },
-  form: {
-    flexGrow: 1,
+    marginLeft: theme.spacing(2),
   },
   button: {
     backgroundColor: "black",
     color: "white",
-    padding: theme.spacing(2, 4),
+    padding: theme.spacing(1, 3),
+    marginLeft: theme.spacing(2),
   }
 })
 
@@ -81,8 +101,8 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
 
   const url = profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "";
   return (
-    <>
-      <Grid container>
+    <Grid container alignItems="stretch" className={classes.container}>
+      <Grid item xs={12} className={classes.headerContainer}>
         <Paper className={classes.header}>
           <Grid container alignItems="center">
             <Avatar alt={name} src={url} className={classes.avatar}/>
@@ -91,8 +111,9 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
             </Typography>
           </Grid>
         </Paper>
-        <Grid container>
-          <Paper className={classes.body}>
+      </Grid>
+      <Grid item xs={12} className={classes.bodyContainer}>
+        <Paper className={classes.body}>
             {messages.map(message => {
               return message.sender === otherId ? (
                 <ChatMessage other={true} key={message._id} profileUrl={profileUrl} content={message.content} name={name} />
@@ -101,31 +122,29 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
                 )
               }
             )}
-          </Paper>
-        </Grid>
-        <Grid container>
-          <form onSubmit={handleSubmit} className={classes.form}>
-            <Paper className={classes.inputRow}>
-              <Grid container spacing={0} alignItems="center" justify="center">
-                <TextField
-                  className={classes.input}
-                  margin="normal"
-                  variant="outlined"
-                  placeholder={`Reply to ${name}`}
-                  required
-                  value={content}
-                  onChange={e => setContent(e.target.value)}
-                />
-                <Button type="submit" variant="outlined" className={classes.button} onClick={handleSubmit}>
-                    Send
-                </Button>
-              </Grid>
-            </Paper>
-          </form>
-        </Grid>
+        </Paper>
       </Grid>
-      
-    </>
+      <Grid item xs={12} className={classes.footerContainer}>
+        <Paper className={classes.footer}>
+          <form onSubmit={handleSubmit} className={classes.form}>
+            <Grid item xs={12} alignItems="center" justify="center" className={classes.inputContainer}>
+              <TextField
+                className={classes.input}
+                margin="normal"
+                variant="outlined"
+                placeholder={`Reply to ${name}`}
+                required
+                value={content}
+                onChange={e => setContent(e.target.value)}
+              />
+              <Button type="submit" variant="outlined" className={classes.button} onClick={handleSubmit}>
+                Send
+              </Button>
+            </Grid>
+          </form>
+        </Paper>
+      </Grid>
+    </Grid>
   )
 }
 
