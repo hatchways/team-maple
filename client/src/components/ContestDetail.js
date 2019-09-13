@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -18,7 +18,7 @@ import {
   GridListTileBar,
   IconButton
 } from "@material-ui/core";
-import { Info as InfoIcon, Check } from "@material-ui/icons";
+import { Info as InfoIcon, CheckOutlined } from "@material-ui/icons";
 import axios from "axios";
 import WinnerDialog from "./WinnerDialog/winnerDialog";
 import TextField from "@material-ui/core/TextField";
@@ -84,6 +84,14 @@ const styles = theme => ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)"
+  },
+  selectedImage: {
+    opacity: "0.2"
+  },
+  checkOutLined: {
+    height: "3em",
+    width: "3em",
+    marginLeft: "5px"
   }
 });
 
@@ -105,18 +113,34 @@ const submitLink = React.forwardRef((props, ref) => {
   return <Link innerRef={ref} to={`${id}/submit`} {...props} />;
 });
 
-const ContestDetail = ({ classes, auth, contest, match, history }) => {
+const ContestDetail = ({ classes, auth, match, history }) => {
   const [tabPage, setTabPage] = useState(0);
   const [sub, setSub] = useState(null);
-  const { title, prize, creator, submissions } = contest;
-  const isCreator = contest.creator._id === auth.user.userId;
   const [open, setOpen] = useState(false);
+  const [contest, setContest] = useState(null);
+
+  useEffect(() => {
+    const getContestDetails = async () => {
+      const { data } = await axios.get(`/contest/${match.params.id}`);
+      setContest(data);
+    };
+    getContestDetails();
+  }, []);
+
   const handleInfoClick = creator => {
     history.push(`/profile/${creator._id}`);
   };
 
   const chooseWinner = subId => {
     let url = "/contest/" + contest._id + "/subWinner?winner=" + subId;
+    const isCreator = contest.creator._id === auth.user.userId;
+
+
+    if (contest.winner) {
+      console.log('winner already chosen');
+      return;
+    }
+
     if (isCreator) {
       if (new Date() >= new Date(contest.deadline)) {
         if (!contest.winner) {
@@ -124,7 +148,8 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
             .put(url)
             .then(res => {
               console.log(res);
-              setSub(res.data);
+              setContest(res.data.contest);
+              handleClose();
             })
             .catch(err => console.log(err));
         } else {
@@ -141,17 +166,16 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
   function handleClickOpen(submission) {
     setSub(submission);
     setOpen(true);
-
   }
 
   function handleClose() {
     setOpen(false);
   }
-
-  const url = `${process.env.REACT_APP_S3_URL}/${creator.profileUrl}`;
+  
+  const url = contest ? `${process.env.REACT_APP_S3_URL}/${contest.creator.profileUrl}` : '';
   return (
     <>
-      <Grid container className={classes.container}>
+      {contest ? <Grid container className={classes.container}>
         <WinnerDialog
           open={open}
           handleClose={handleClose}
@@ -159,7 +183,7 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
           sub={sub}
           contest={contest}
           chooseWinner={chooseWinner}
-          isCreator={isCreator}
+          isCreator={contest.creator._id === auth.user.userId}
         />
         <Grid
           container
@@ -170,10 +194,10 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
           <Grid>
             <Grid container alignItems="center">
               <Typography variant="h5" className={classes.title}>
-                {title}
+                {contest.title}
               </Typography>
               <Typography variant="body2" className={classes.prize}>
-                {`$${prize.toFixed(2)}`}
+                {`$${contest.prize.toFixed(2)}`}
               </Typography>
             </Grid>
             <Grid container alignItems="center">
@@ -183,11 +207,11 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
                 className={classes.avatar}
               />
               <Typography variant="subtitle2">
-                {`By ${creator.name}`}
+                {`By ${contest.creator.name}`}
               </Typography>
             </Grid>
           </Grid>
-          {!isCreator && (
+          {contest.creator._id !== auth.user.userId && (
             <Grid>
               <Button
                 variant="outlined"
@@ -210,7 +234,7 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
             centered
             variant="fullWidth"
           >
-            <Tab label={`Designs (${submissions.length})`} />
+            <Tab label={`Designs (${contest.submissions.length})`} />
             <Tab label="Brief" />
           </Tabs>
           <Box className={classes.tabPanelContainer}>
@@ -221,8 +245,8 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
                 spacing={8}
                 cols={4}
               >
-                {submissions.length !== 0 ? (
-                  submissions.map(submission => {
+                {contest.submissions.length !== 0 ? (
+                  contest.submissions.map(submission => {
                     const { url, creator, _id } = submission;
                     if (
                       contest.winner &&
@@ -238,19 +262,15 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
                           <img
                             src={`${process.env.REACT_APP_S3_URL}/${url}`}
                             alt={"tattoo"}
-                            style={{ opacity: "0.2" }}
+                            className={classes.selectedImage}
                           />
                           <div className={classes.centered}>
                             <h1 style={{ margin: "0" }}>
                               <strong>Winner</strong>
                             </h1>
                             <IconButton align="center" style={{ padding: "0" }}>
-                              <Check
-                                style={{
-                                  height: "3em",
-                                  width: "3em",
-                                  marginLeft: "5px"
-                                }}
+                              <CheckOutlined
+                                className={classes.checkOutLined}
                               />
                             </IconButton>
                           </div>
@@ -274,7 +294,6 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
                           key={url}
                           cols={1}
                           onClick={() => handleClickOpen(submission)}
-                          // onClick={() => chooseWinner(_id)}
                         >
                           <img
                             src={`${process.env.REACT_APP_S3_URL}/${url}`}
@@ -340,7 +359,7 @@ const ContestDetail = ({ classes, auth, contest, match, history }) => {
             </TabPanel>
           </Box>
         </Paper>
-      </Grid>
+      </Grid>: null}
     </>
   );
 };

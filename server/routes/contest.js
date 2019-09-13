@@ -71,7 +71,7 @@ router.get(
 
 router.put(
   "/:contestId/subWinner",
-  contestController.getWinner
+  contestController.putWinner
 );
 
 module.exports = router;
