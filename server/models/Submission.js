@@ -17,6 +17,9 @@ const submissionSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Contest",
       required: true
+    },
+    winner: {
+      type: Boolean
     }
   },
   { timestamps: true }

@@ -21,8 +21,10 @@ import DashboardPage from "./pages/Dashboard";
 import SubmissionPage from './components/UpSubmission';
 import CreateContestPage from "./pages/CreateContest";
 import ContestDetailPage from "./pages/ContestDetailPage";
+import DiscoveryPage from './pages/Discovery';
 import ProfilePage from "./pages/Profile";
 import ChatPage from "./pages/Chat";
+import SummaryPage from './pages/SubmissionComplete';
 
 import "./App.css";
 
@@ -53,10 +55,12 @@ function App() {
           <Route path="/" exact component={LandingPage} />
           <Route path="/signup" exact component={SignupPage} />
           <Route path="/login" exact component={LoginPage} />
+          <Route path='/contests' exact component={DiscoveryPage} />
           <PrivateRoute exact path="/home" component={DashboardPage} />
           <PrivateRoute exact path="/create" component={CreateContestPage} />
           <PrivateRoute exact path="/contest/:id" component={ContestDetailPage} />
           <PrivateRoute exact path='/contest/:id/submit' component={SubmissionPage} />
+          <PrivateRoute exact path='/submitted/:subId' component={SummaryPage} />
           <PrivateRoute exact path='/profile/:id' component={ProfilePage} />
           <PrivateRoute exact path='/chat' component={ChatPage} />
         </BrowserRouter>

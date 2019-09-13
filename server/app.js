@@ -1,6 +1,5 @@
 const path = require("path");
-const dotEnvPath = path.resolve("../.env");
-require("dotenv").config({ path: dotEnvPath });
+require("dotenv").config();
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
@@ -19,7 +18,7 @@ import contestRouter from "./routes/contest";
 import profileRouter from "./routes/profile";
 import conversationRouter from "./routes/conversation";
 import messageRouter from "./routes/message";
-
+import contestsRouter from './routes/discovery';
 
 var app = express();
 
@@ -42,6 +41,7 @@ app.use("/profile", profileRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
 app.use(submitRoutes);
+app.use(contestsRouter);
 
 
 // catch 404 and forward to error handler
