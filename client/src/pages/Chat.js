@@ -10,7 +10,10 @@ import ChatWindow from "../components/ChatWindow";
 
 const styles = theme => ({
   container : {
-    minHeight: "95vh",
+    height: "95vh",
+  },
+  paper: {
+    height: "100%",
   },
 })
 
@@ -19,12 +22,12 @@ const Chat = ({ classes }) => {
     <>
       <Grid container className={classes.container}>
         <Grid item xs={4}>
-          <Paper>
+          <Paper className={classes.paper}>
             <ChatInbox />
           </Paper>
         </Grid>
         <Grid item xs={8}>
-          <Paper>
+          <Paper className={classes.paper}>
             <ChatWindow/>
           </Paper>
         </Grid>
