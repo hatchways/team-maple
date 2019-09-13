@@ -75,7 +75,7 @@ const Profile = ({ classes, match }) => {
   const completedContest = [];
   const inProgressContest = !loading && profile.contests.filter(contest => {
     if (contest.status === "COMPLETED") {
-      completedSub.push(contest);
+      completedContest.push(contest);
     } else {
       return true;
     }
