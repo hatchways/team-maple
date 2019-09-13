@@ -113,6 +113,7 @@ const submitLink = React.forwardRef((props, ref) => {
   return <Link innerRef={ref} to={`${id}/submit`} {...props} />;
 });
 
+
 const ContestDetail = ({ classes, auth, match, history }) => {
   const [tabPage, setTabPage] = useState(0);
   const [sub, setSub] = useState(null);
