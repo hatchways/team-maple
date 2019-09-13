@@ -11,9 +11,22 @@ exports.putWinner = async (req, res, next) => {
       status: "COMPLETED"
     });
 
+    // const contest = await Contest.findOne({
+    //   _id: id
+    // })
+    
+
     const contest = await Contest.findById(contestId)
-      .populate("submissions")
-      .populate("creator", "name email profileUrl");
+      .populate("creator", "name email profileUrl")
+      .populate({
+        path: "submissions",
+        select: "url creator winner",
+        populate: {
+          path: "creator",
+          select: "name"
+        }
+      })
+      .select("-createdAt -updatedAt");
     if (!contest) {
       return res.status(404).json({ msg: "contest not found" });
     }

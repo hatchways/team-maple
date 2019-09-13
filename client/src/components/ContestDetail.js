@@ -142,7 +142,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     }
 
     if (isCreator) {
-      if (new Date() >= new Date(contest.deadline)) {
+      if (new Date() <= new Date(contest.deadline)) {
         if (!contest.winner) {
           axios
             .put(url)
@@ -171,6 +171,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
   function handleClose() {
     setOpen(false);
   }
+  
   
   const url = contest ? `${process.env.REACT_APP_S3_URL}/${contest.creator.profileUrl}` : '';
   return (
