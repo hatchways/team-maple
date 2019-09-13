@@ -26,12 +26,14 @@ const NoChatSelected = () => (
  );
 
 const styles = theme => ({
+  container: {
+    flexDirection: "column",
+  },
   avatar: {
     width: theme.spacing(10),
     height: theme.spacing(10),
   },
   header: {
-    flexGrow: 1,
     padding: theme.spacing(2),
     backgroundColor: grey[200],
   },
@@ -82,16 +84,18 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
   const url = profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "";
   return (
     <>
-      <Grid container>
-        <Paper className={classes.header}>
-          <Grid container alignItems="center">
-            <Avatar alt={name} src={url} className={classes.avatar}/>
-            <Typography variant="h5" className={classes.name}>
-              {name}
-            </Typography>
-          </Grid>
-        </Paper>
-        <Grid container>
+      <Grid container className={classes.container}>
+        <Grid item xs={12}>
+          <Paper className={classes.header}>
+            <Grid container alignItems="center">
+              <Avatar alt={name} src={url} className={classes.avatar}/>
+              <Typography variant="h5" className={classes.name}>
+                {name}
+              </Typography>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
           <Paper className={classes.body}>
             {messages.map(message => {
               return message.sender === otherId ? (
@@ -103,7 +107,7 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
             )}
           </Paper>
         </Grid>
-        <Grid container>
+        <Grid item xs={12}>
           <form onSubmit={handleSubmit} className={classes.form}>
             <Paper className={classes.inputRow}>
               <Grid container spacing={0} alignItems="center" justify="center">
