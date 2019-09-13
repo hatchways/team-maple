@@ -30,22 +30,22 @@ const contestSchema = new Schema(
       ref: "User",
       required: true
     },
-    winner:{
+    winner: {
       type: Schema.Types.ObjectId,
-      ref: 'Submission'
+      ref: "Submission"
     }
   },
-  { 
+  {
     timestamps: true,
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
 contestSchema.virtual("submissions", {
   ref: "Submission",
   localField: "_id",
-  foreignField: "contest",
+  foreignField: "contest"
 });
 
 module.exports = mongoose.model("Contest", contestSchema);

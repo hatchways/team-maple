@@ -1,13 +1,14 @@
 const Submission = require("../models/Submission");
 
-exports.getWinner = (req, res, next) => {
+exports.putWinner = async (req, res, next) => {
   
   const subId = req.query.winner;
   const { contestId } = req.params;
 
   try {
     await Contest.findByIdAndUpdate(contestId, {
-      winner: subId
+      winner: subId,
+      status: "COMPLETED"
     });
 
     const contest = await Contest.findById(contestId).populate("winner");
