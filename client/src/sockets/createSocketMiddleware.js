@@ -37,15 +37,16 @@ const createSocketMiddleware = () => {
           });
         });
         socket.on("updateConversation", body => {
-          console.log(body);
           store.dispatch({
             type: UPDATE_CONVERSATION,
             payload: body,
           })
-          store.dispatch({
-            type: SET_CURRENT_CHAT,
-            payload: body.body.id,
-          });
+          if (body.starter) {
+            store.dispatch({
+              type: SET_CURRENT_CHAT,
+              payload: body.body.id,
+            });
+          }
         });
         socket.on("statusUpdate", body => {
           store.dispatch({

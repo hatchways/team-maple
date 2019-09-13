@@ -158,11 +158,11 @@ io.on("connection", socket => {
       const user2Str = user2.toString();
       if (users[user1Str]) {
         console.log("emitting for user 1");
-        io.in(users[user1Str]).emit("updateConversation", { body, user: user2});
+        io.in(users[user1Str]).emit("updateConversation", { body, user: user2, starter: user1 !== otherId });
       }
       if (users[user2Str]) {
         console.log("emitting for user 2");
-        io.in(users[user2Str]).emit("updateConversation", {body, user: user1 });
+        io.in(users[user2Str]).emit("updateConversation", {body, user: user1, starter: user2 !== otherId });
       }
     } catch (err) {
       console.log(err);
