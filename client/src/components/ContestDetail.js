@@ -21,12 +21,6 @@ import {
 import { Info as InfoIcon, CheckOutlined } from "@material-ui/icons";
 import axios from "axios";
 import WinnerDialog from "./WinnerDialog/winnerDialog";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 
 const styles = theme => ({
   firstRow: {
@@ -146,7 +140,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     }
 
     if (isCreator) {
-      if (new Date() <= new Date(contest.deadline)) {
+      if (new Date() >= new Date(contest.deadline)) {
         if (!contest.winner) {
           axios
             .put(url)
@@ -211,7 +205,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
             <Grid container alignItems="center">
               <Avatar alt={auth.user.email} src={url} className={`${classes.avatar} ${classes.clickable}`} onClick={handleCreatorClick} />
               <Typography variant="subtitle2" onClick={handleCreatorClick} className={classes.clickable}>
-                {`By ${creator.name}`}
+                {`By ${contest.creator.name}`}
               </Typography>
             </Grid>
           </Grid>
