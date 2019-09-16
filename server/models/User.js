@@ -21,6 +21,9 @@ const UserSchema = new Schema({
     profileUrl: {
         type: String,
     },
+    customerId: {
+        type: String,
+    },
 },
     {
         toJSON: { virtuals: true },
