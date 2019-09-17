@@ -26,11 +26,8 @@ router.post("/charge", async (req, res) => {
 router.get("/setupIntent", 
   passport.authenticate('jwt', { session: false }),
   async (req, res) => {
-    console.log("body is");
-    console.log(req.body);
     try {
       const setupIntent = await stripe.setupIntents.create({});
-      console.log(setupIntent);
       const { client_secret } = setupIntent;
       res.status(200).send({ clientSecret: client_secret });
     } catch (e) { 
@@ -42,8 +39,6 @@ router.get("/setupIntent",
 router.post("/addCard", 
   passport.authenticate('jwt', { session: false }),  
   async (req, res) => {
-    console.log("body is");
-    console.log(req.body);
     try {
       const { payment_method } = req.body.setupIntent;
       const { _id: id } = req.user;
@@ -69,8 +64,6 @@ router.post("/addCard",
 router.get("/listCards", 
   passport.authenticate('jwt', { session: false }),  
   async (req, res) => {
-    console.log("body is");
-    console.log(req.body);
     try {
       const { _id: id } = req.user;
       const user = await User.findById(id);
@@ -79,7 +72,6 @@ router.get("/listCards",
         const paymentMethods = await stripe.paymentMethods.list({
           customer: user.customerId, type: 'card'
         });
-        console.log(paymentMethods);
         res.status(200).send({ status: "success", paymentMethods, });
       } else {
         res.status(200).send({ status: "error", message: "No cards added" });

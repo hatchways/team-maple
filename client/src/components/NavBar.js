@@ -42,13 +42,17 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const handleClick = (e) => setAnchorEl(e.currentTarget);
     const handleClose = (e) => setAnchorEl(null);
-    const redirect = (e) => {
+    const redirectProfile = (e) => {
         history.push(`/profile/${auth.user.userId}`);
+        handleClose(e);
+    }
+    const redirectPayments = (e) => {
+        history.push(`/payment`);
         handleClose(e);
     }
     const handleLogout = (e) => {
         handleClose(e);
-        logoutUser();
+        logoutUser(history);
     }
     const { profileUrl } = profile;
     const url = profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "";
@@ -82,7 +86,8 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
                             onClose={handleClose}
                             className="menu"
                         >
-                            <MenuItem onClick={() => redirect()}>My Profile</MenuItem>
+                            <MenuItem onClick={() => redirectProfile()}>My Profile</MenuItem>
+                            <MenuItem onClick={() => redirectPayments()}>Payments</MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
                     </>

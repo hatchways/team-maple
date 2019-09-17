@@ -71,6 +71,7 @@ router.get(
 
 router.put(
   "/:contestId/subWinner",
+  passport.authenticate("jwt", { session: false }),
   contestController.putWinner
 );
 
