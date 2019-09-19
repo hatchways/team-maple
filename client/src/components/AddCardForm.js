@@ -6,11 +6,19 @@ import { CardElement, injectStripe } from 'react-stripe-elements';
 import {
   Button,
   withStyles,
+  Grid,
+  Typography,
 } from "@material-ui/core";
 
 const styles = theme => ({
   button: {
     padding: theme.spacing(1, 3),
+  },
+  cardContainer: {
+    margin: theme.spacing(2),
+  },
+  buttonContainer: {
+    margin: theme.spacing(2, 0),
   }
 })
 
@@ -24,7 +32,6 @@ const AddCardForm = ({ classes, stripe, getCardDetails }) => {
   const handleStartSetup = async e => {
     try {
       const res = await axios.get("/stripe/setupIntent");
-      console.log(res);
       setClientSecret(res.data.clientSecret);
       setDisabled(false);
     } catch (e) {
@@ -38,12 +45,10 @@ const AddCardForm = ({ classes, stripe, getCardDetails }) => {
       setProcessing(true);
       
       const payload = await stripe.handleCardSetup(clientSecret);
-      console.log(payload);
       if (payload.error) {
         setError(`Error: ${payload.error.message}`);
       } else {
         setSucceeded(true);
-        console.log('[SetupIntent]', payload.setupIntent);
         await axios.post("/stripe/addCard", { setupIntent: payload.setupIntent });
 
         await getCardDetails();
@@ -57,24 +62,40 @@ const AddCardForm = ({ classes, stripe, getCardDetails }) => {
   }
   return (
     <div>
-      { !clientSecret ? 
-        <Button variant="outlined" color="inherit" className={classes.button} onClick={handleStartSetup}>
-            Add Card
-        </Button>
+      { !clientSecret ?
+        <Grid container alignItems="center" justify="center" className={classes.buttonContainer}>  
+          <Button variant="outlined" color="inherit" className={classes.button} onClick={handleStartSetup}>
+              Add Card
+          </Button>
+        </Grid>
         :
         <form onSubmit={handleSubmit}>
-          <CardElement />
-          {error && <div className="error">{error}</div> }
+          <Grid container alignItems="center" justify="center" className={classes.cardContainer}>
+            <Grid item xs={6}>
+              <CardElement style={{
+                base: {
+                  fontSize: "18px",
+                },
+              }}/>
+            </Grid>
+          </Grid>
+          {error && 
+            <Typography variant="h6" align="center">
+              {error}
+            </Typography>
+          }
           {!succeeded && (
-            <Button
-              variant="outlined"
-              color="inherit"
-              className={classes.button}
-              disabled={disabled}
-              type="submit"
-            >
-               {processing ? 'Processing' : 'Setup'}
-            </Button>
+            <Grid container alignItems="center" justify="center" className={classes.buttonContainer}>
+              <Button
+                variant="outlined"
+                color="inherit"
+                className={classes.button}
+                disabled={disabled}
+                type="submit"
+              >
+                {processing ? 'Processing' : 'Setup'}
+              </Button>
+            </Grid>
           )}
         </form>
       }
