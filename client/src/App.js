@@ -27,6 +27,7 @@ import DiscoveryPage from './pages/Discovery';
 import ProfilePage from "./pages/Profile";
 import ChatPage from "./pages/Chat";
 import SummaryPage from './pages/SubmissionComplete';
+import NotificationsPage from './pages/Notification';
 
 import "./App.css";
 
@@ -66,6 +67,7 @@ function App() {
           <PrivateRoute exact path='/submitted/:subId' component={SummaryPage} />
           <PrivateRoute exact path='/profile/:id' component={ProfilePage} />
           <PrivateRoute exact path='/chat' component={ChatPage} />
+          <PrivateRoute exact path='/notifications' component={NotificationsPage} />
         </BrowserRouter>
       </MuiThemeProvider>
     </Provider>

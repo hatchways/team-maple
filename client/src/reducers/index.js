@@ -16,5 +16,5 @@ export default combineReducers({
     chat: chatReducer,
     currentChat: currentChatReducer,
     online: onlineStatusReducer,
-    notification: notificationsReducer
+    notifications: notificationsReducer
 });
