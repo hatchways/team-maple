@@ -10,8 +10,12 @@ import {
     Avatar,
     Menu,
     MenuItem,
+    Badge,
     withStyles,
 } from "@material-ui/core";
+import {
+    orange,
+  } from "@material-ui/core/colors";
 import { logoutUser } from "../actions/authActions"; 
 
 const styles = theme => ({
@@ -23,6 +27,10 @@ const styles = theme => ({
         textTransform: "uppercase",
         letterSpacing: theme.spacing(1),
         flexGrow: 1,
+    },
+    badge: {
+        backgroundColor: orange[400],
+        padding: theme.spacing(1),
     },
     button: {
         color: "white",
@@ -38,7 +46,7 @@ const styles = theme => ({
 const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
 const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
 
-const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
+const NavBar = ({ classes, auth, logoutUser, history, profile, chat }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const handleClick = (e) => setAnchorEl(e.currentTarget);
     const handleClose = (e) => setAnchorEl(null);
@@ -73,7 +81,14 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
                     :
                     <>
                         <Link component="button" variant="body2" to="/contests" className={classes.link}>Discover</Link>
-                        <Link component="button" variant="body2" to="/chat" className={classes.link}>Messages</Link>
+                        {chat && Object.values(chat).some(c => !c.read) ? (
+                                <Badge overlap="rectangle" badgeContent=" " variant="dot" classes={{ badge: classes.badge}}>
+                                    <Link component="button" variant="body2" to="/chat" className={classes.link}>Messages</Link>
+                                </Badge>
+                            ) : (
+                                <Link component="button" variant="body2" to="/chat" className={classes.link}>Messages</Link>
+                            )
+                        }
                         <Link component="button" variant="body2" to="#" className={classes.link}>Notifications</Link>
                         <Button variant="outlined" color="inherit" className={classes.button} component={createContestLink}>
                             Create Contest
@@ -102,9 +117,10 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
     )
 }
 
-const mapStateToProps = ({ auth, profile }) => ({
+const mapStateToProps = ({ auth, profile, chat }) => ({
     auth,
     profile,
+    chat,
 });
 
 const enhance = compose(

@@ -7,6 +7,9 @@ import {
   SET_CURRENT_CHAT,
   UPDATE_ONLINE_STATUS,
   ALL_ONLINE_STATUS,
+  SET_READ_CHAT,
+  UPDATE_READ_CHAT,
+  SET_UNREAD_CHAT,
 } from "../actions/types";
 
 const createSocketMiddleware = () => {
@@ -60,6 +63,21 @@ const createSocketMiddleware = () => {
             payload: body,
           });
         });
+        socket.on("setUnreadConversation", body => {
+          const currentChat = store.getState().currentChat;
+          // if they are already on the current chat page and are in /chat, emit a setRead
+          if (currentChat && currentChat.id === body && currentChat.onPage) {
+            store.dispatch({
+              type: SET_READ_CHAT,
+              payload: { conversationId: body },
+            })
+          } else {
+            store.dispatch({
+              type: SET_UNREAD_CHAT,
+              payload: body,
+            })
+          }
+        })
         return;
       }
       case CLOSE_SOCKET: {
@@ -70,6 +88,10 @@ const createSocketMiddleware = () => {
         socket.emit("message", action.payload, (error) => {
           console.log("ERROR from message: " + error);
         });
+        store.dispatch({
+          type: SET_READ_CHAT,
+          payload: { conversationId: action.payload.conversationId },
+        })
         return;
       }
       case "startConversation": {
@@ -81,6 +103,17 @@ const createSocketMiddleware = () => {
             });
           };
         })
+        return;
+      }
+      case SET_READ_CHAT: {
+        socket.emit("setReadChat", action.payload, body => {
+          if (body.success) {
+            store.dispatch({
+              type: UPDATE_READ_CHAT,
+              payload: body.conversationId, 
+            });
+          }
+        });
         return;
       }
       default: {

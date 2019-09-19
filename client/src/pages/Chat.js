@@ -1,5 +1,6 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
 import { 
   Grid,
   withStyles,
@@ -7,6 +8,7 @@ import {
 } from "@material-ui/core";
 import ChatInbox from "../components/ChatInbox";
 import ChatWindow from "../components/ChatWindow";
+import { onChatPage, offChatPage } from "../actions/currentChatActions";
 
 const styles = theme => ({
   container : {
@@ -17,7 +19,13 @@ const styles = theme => ({
   },
 })
 
-const Chat = ({ classes }) => {
+const Chat = ({ classes, onChatPage, offChatPage }) => {
+  useEffect(() => {
+    onChatPage();
+    return cleanup => {
+      offChatPage();
+    }
+  }, []);
   return (
     <>
       <Grid container className={classes.container}>
@@ -36,4 +44,9 @@ const Chat = ({ classes }) => {
   )
 }
 
-export default withStyles(styles)(Chat);
+const enhance = compose(
+  withStyles(styles),
+  connect(null, { onChatPage, offChatPage })
+);
+
+export default enhance(Chat);
