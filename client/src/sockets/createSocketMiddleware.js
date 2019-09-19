@@ -7,7 +7,8 @@ import {
   SET_CURRENT_CHAT,
   UPDATE_ONLINE_STATUS,
   ALL_ONLINE_STATUS,
-  NOTIFICATION_NEW_SUBMISSION
+  NOTIFICATION_NEW_SUBMISSION,
+  UPDATE_NOTIFICATIONS
 } from "../actions/types";
 
 const createSocketMiddleware = () => {
@@ -61,6 +62,14 @@ const createSocketMiddleware = () => {
             payload: body
           });
         });
+
+        socket.on('newSubmission', body => {
+          console.log('im here', body.notification);
+          store.dispatch({
+            type: UPDATE_NOTIFICATIONS,
+            payload: body
+          });
+        })
         return;
       }
       case CLOSE_SOCKET: {

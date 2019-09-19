@@ -15,14 +15,23 @@ const styles = theme => ({});
 class Notification extends Component {
   render() {
     const { classes, notifications } = this.props;
-    console.log(notifications);
+    console.log("from notification page", notifications);
     return (
       <div>
         this is notifications:{" "}
         {notifications &&
-          notifications.map(notif => {
-            return <div>{notif.message}</div>;
+          notifications.map((notif, i) => {
+            return (
+              <div key={i}>
+                <div>message: {notif.message}</div>
+                <div>id: {notif._id}</div>
+                <div>read: {notif.read}</div>
+                <div>priority: {notif.priority}</div>
+                <br></br>
+              </div>
+            );
           })}
+        <div></div>
       </div>
     );
   }
