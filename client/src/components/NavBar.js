@@ -14,7 +14,7 @@ import {
     withStyles,
 } from "@material-ui/core";
 import {
-    orange,
+    green,
   } from "@material-ui/core/colors";
 import { logoutUser } from "../actions/authActions"; 
 
@@ -29,8 +29,8 @@ const styles = theme => ({
         flexGrow: 1,
     },
     badge: {
-        backgroundColor: orange[400],
-        padding: theme.spacing(1),
+        backgroundColor: green[400],
+        padding: theme.spacing(0.5),
     },
     button: {
         color: "white",
@@ -46,7 +46,7 @@ const styles = theme => ({
 const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
 const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
 
-const NavBar = ({ classes, auth, logoutUser, history, profile, chat }) => {
+const NavBar = ({ classes, auth, logoutUser, history, profile, chatNotificationNum }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const handleClick = (e) => setAnchorEl(e.currentTarget);
     const handleClose = (e) => setAnchorEl(null);
@@ -81,8 +81,8 @@ const NavBar = ({ classes, auth, logoutUser, history, profile, chat }) => {
                     :
                     <>
                         <Link component="button" variant="body2" to="/contests" className={classes.link}>Discover</Link>
-                        {chat && Object.values(chat).some(c => !c.read) ? (
-                                <Badge overlap="rectangle" badgeContent=" " variant="dot" classes={{ badge: classes.badge}}>
+                        {chatNotificationNum ? (
+                                <Badge overlap="circle" badgeContent={chatNotificationNum} classes={{ badge: classes.badge}}>
                                     <Link component="button" variant="body2" to="/chat" className={classes.link}>Messages</Link>
                                 </Badge>
                             ) : (
@@ -120,7 +120,7 @@ const NavBar = ({ classes, auth, logoutUser, history, profile, chat }) => {
 const mapStateToProps = ({ auth, profile, chat }) => ({
     auth,
     profile,
-    chat,
+    chatNotificationNum: chat && Object.values(chat).filter(c => !c.read).length || 0,
 });
 
 const enhance = compose(
