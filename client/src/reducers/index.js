@@ -6,6 +6,7 @@ import profileReducer from "./profileReducer";
 import chatReducer from "./chatReducer";
 import currentChatReducer from "./currentChatReducer";
 import onlineStatusReducer from "./onlineStatusReducer";
+import notificationsReducer from './notificationReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -15,4 +16,5 @@ export default combineReducers({
     chat: chatReducer,
     currentChat: currentChatReducer,
     online: onlineStatusReducer,
+    notification: notificationsReducer
 });

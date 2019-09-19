@@ -9,6 +9,8 @@ import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { getProfile } from "./actions/profileActions";
 import { getConversations } from "./actions/conversationActions";
 import { initializeSocket } from "./actions/socketActions";
+import { getNotifications } from './actions/notificationActions';
+
 import store from "./store";
 
 import { theme } from "./themes/theme";
@@ -43,6 +45,7 @@ if (tokenStorage.getAuthToken()) {
     store.dispatch(getProfile(decoded.userId));
     store.dispatch(getConversations(decoded.userId));
     store.dispatch(initializeSocket(token));
+    store.dispatch(getNotifications());
   }
 }
 
