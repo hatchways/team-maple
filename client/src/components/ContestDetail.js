@@ -211,7 +211,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
             <Grid container alignItems="center">
               <Avatar alt={auth.user.email} src={url} className={`${classes.avatar} ${classes.clickable}`} onClick={handleCreatorClick} />
               <Typography variant="subtitle2" onClick={handleCreatorClick} className={classes.clickable}>
-                {`By ${creator.name}`}
+                {/* {`By ${name}`} */}
               </Typography>
             </Grid>
           </Grid>

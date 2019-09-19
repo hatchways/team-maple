@@ -105,7 +105,7 @@ class UpSubmission extends Component {
 // });
 
 const enhance = compose(
-  withRouter(),
+  withRouter,
   withStyles(styles),
   // connect(
   //   null,
