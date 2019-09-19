@@ -6,6 +6,9 @@ import Submit from "../pages/Submit";
 import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { notificationNewSubmission } from "../actions/socketActions";
 
 const styles = theme => ({
   root: {
@@ -31,70 +34,83 @@ const styles = theme => ({
   }
 });
 
-export default withRouter(
-  withStyles(styles)(
-    class extends Component {
-      state = {
-        file: null
-      };
+class UpSubmission extends Component {
+  state = {
+    file: null
+  };
 
-      onSelectHandler = event => {
-        console.log(event.target.files);
-        this.setState({
-          file: event.target.files[0]
-        });
-      };
+  onSelectHandler = event => {
+    console.log(event.target.files);
+    this.setState({
+      file: event.target.files[0]
+    });
+  };
 
-      submissionHandler = async () => {
-        const { file } = this.state;
-        const { match, history } = this.props;
-        if (file) {
-          const uploadConfig = await axios.post("/upload/submission", {
-            contestId: match.params.id
-          });
+  submissionHandler = async () => {
+    const { file } = this.state;
+    const { match, history } = this.props;
+    if (file) {
+      const uploadConfig = await axios.post("/upload/submission", {
+        contestId: match.params.id
+      });
 
-          setAuthToken();
-          await axios.put(uploadConfig.data.url, file, {
-            headers: {
-              "Content-type": file.type,
-              "Cache-Control": "public, max-age=31536000"
-            }
-          });
-          setAuthToken(tokenStorage.getAuthToken());
-
-          axios
-            .post("/submit", {
-              imageUrl: uploadConfig.data.key,
-              contestId: match.params.id
-            })
-            .then(result => {
-              history.push(`/submitted/${result.data.result._id}`);
-            });
+      setAuthToken();
+      await axios.put(uploadConfig.data.url, file, {
+        headers: {
+          "Content-type": file.type,
+          "Cache-Control": "public, max-age=31536000"
         }
-      };
+      });
+      setAuthToken(tokenStorage.getAuthToken());
 
-      render() {
-        const { classes } = this.props;
-        const { file } = this.state;
-        return (
-          <div style={{ margin: "auto", textAlign: "center" }}>
-            <Grid
-              container
-              direction="column"
-              spacing={4}
-              justify="center"
-              className={classes.grid}
-            >
-              <Submit
-                file={file}
-                classes={classes}
-                onSelect={this.onSelectHandler}
-                submit={this.submissionHandler}
-              />
-            </Grid>
-          </div>
-        );
-      }
+      axios
+        .post("/submit", {
+          imageUrl: uploadConfig.data.key,
+          contestId: match.params.id
+        })
+        .then(result => {
+          // this.props.notificationNewSubmission({ msg: "this is the body" });
+          history.push(`/submitted/${result.data.result._id}`);
+        });
     }
-  )
+  };
+
+  render() {
+    const { classes } = this.props;
+    const { file } = this.state;
+    return (
+      <div style={{ margin: "auto", textAlign: "center" }}>
+        <Grid
+          container
+          direction="column"
+          spacing={4}
+          justify="center"
+          className={classes.grid}
+        >
+          <Submit
+            file={file}
+            classes={classes}
+            onSelect={this.onSelectHandler}
+            submit={this.submissionHandler}
+          />
+        </Grid>
+      </div>
+    );
+  }
+}
+
+// const mapStateToProps = ({ chat, currentChat }) => ({
+//   chat: chat[currentChat],
+//   currentChat,
+// });
+
+const enhance = compose(
+  withRouter(),
+  withStyles(styles),
+  // connect(
+  //   null,
+  //   { notificationNewSubmission }
+  // )
 );
+
+export default enhance(UpSubmission);
