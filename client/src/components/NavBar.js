@@ -50,6 +50,10 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
         history.push(`/payment`);
         handleClose(e);
     }
+    const redirectAccounts = (e) => {
+        history.push(`/account`);
+        handleClose(e);
+    }
     const handleLogout = (e) => {
         handleClose(e);
         logoutUser(history);
@@ -88,6 +92,7 @@ const NavBar = ({ classes, auth, logoutUser, history, profile }) => {
                         >
                             <MenuItem onClick={() => redirectProfile()}>My Profile</MenuItem>
                             <MenuItem onClick={() => redirectPayments()}>Payments</MenuItem>
+                            <MenuItem onClick={() => redirectAccounts()}>Account</MenuItem>
                             <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
                     </>

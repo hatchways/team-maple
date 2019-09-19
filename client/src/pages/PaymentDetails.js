@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
-import { Elements, StripeProvider } from 'react-stripe-elements';
+import { Elements } from 'react-stripe-elements';
 import {
   Grid,
   Typography,
@@ -35,32 +35,30 @@ const PaymentDetails = ({ classes }) => {
     getCardDetails();
   }, []);
   return (
-    <StripeProvider apiKey={process.env.REACT_APP_STRIPE_KEY}>
-      <>
-        <Grid container className={classes.container} justify="center">
-          <Grid item xs={12} className={classes.titleRow}>
-            <Typography variant="h4" align="center">
-              Payment Details
-            </Typography>
-          </Grid>
+    <>
+      <Grid container className={classes.container} justify="center">
+        <Grid item xs={12} className={classes.titleRow}>
+          <Typography variant="h4" align="center">
+            Payment Details
+          </Typography>
         </Grid>
-        <Grid container>
-          <Grid item xs={12} className={classes.subtitleRow}>
-            <Typography variant="h6" align="center">
-              Cards Registered
-            </Typography>
-          </Grid>
+      </Grid>
+      <Grid container>
+        <Grid item xs={12} className={classes.subtitleRow}>
+          <Typography variant="h6" align="center">
+            Cards Registered
+          </Typography>
         </Grid>
-        <Grid container justify="center">
-          <Grid item xs={3} align="center">
-            <ListCreditCards cards={cards} />
-          </Grid>
+      </Grid>
+      <Grid container justify="center">
+        <Grid item xs={3} align="center">
+          <ListCreditCards cards={cards} />
         </Grid>
-        <Elements>
-          <AddCardForm getCardDetails={getCardDetails} />
-        </Elements>
-      </>
-    </StripeProvider>
+      </Grid>
+      <Elements>
+        <AddCardForm getCardDetails={getCardDetails} />
+      </Elements>
+    </>
   )
 }
 

@@ -24,6 +24,9 @@ const UserSchema = new Schema({
     customerId: {
         type: String,
     },
+    accountId: {
+        type: String,
+    },
 },
     {
         toJSON: { virtuals: true },
