@@ -35,8 +35,6 @@ const BankAccountForm = ({ stripe, onSaveAccount, classes }) => {
       account_holder_name: accountHolderName,
       account_holder_type: accountHolderType,
     }).then(({ error, token }) => {
-      console.log("Received Stripe token: ", token);
-      console.log("Received Stripe error: ", error);
       const { id } = token;
       onSaveAccount(id);
     }).catch(err => {

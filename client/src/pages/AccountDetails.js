@@ -9,10 +9,16 @@ import {
   Grid,
   Button,
   Link,
+  CircularProgress,
 } from "@material-ui/core/";
 import BankAccountForm from "../components/BankAccountForm";
 
 const styles = theme => ({
+  loaderContainer: {
+    marginTop: theme.spacing(5),
+    display: "flex",
+    justifyContent: "center",
+  },
   container: {
     margin: theme.spacing(2),
     padding: theme.spacing(2),
@@ -80,8 +86,6 @@ const AccountDetails = ({ classes }) => {
   };
 
   const saveFieldsNeeded = async (e) => {
-    console.log("saving fields");
-
     setIsLoading(true);
     const res = await axios.post("/stripe/account/save", fieldsNeededForm);
     const { success, message } = res.data;
@@ -96,8 +100,6 @@ const AccountDetails = ({ classes }) => {
   }
 
   const onSaveAccount = async (id) => {
-    console.log("saving account", id);
-
     setIsLoading(true);
     const res = await axios.post("/stripe/account/save/account", {
       stripeTokenId: id,
@@ -115,7 +117,9 @@ const AccountDetails = ({ classes }) => {
 
   if (isLoading) {
     return (
-      <p>Loading...</p>
+      <div className={classes.loaderContainer}>
+        <CircularProgress/>
+      </div>
     );
   };
   

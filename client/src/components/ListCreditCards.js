@@ -13,7 +13,6 @@ const ListCreditCards = ({ cards }) => {
   return (
     <div>
       { cards ? cards.map(card => {
-        console.log(card);
         return (
           <CreditCardDetails key={card.id} card={card.card} />
         );
