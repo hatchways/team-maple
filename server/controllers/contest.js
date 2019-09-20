@@ -28,7 +28,7 @@ exports.putWinner = async (req, res, next) => {
       return res.status(404).json({ msg: "contest not found" });
     }
     const { users, io } = req.app.io;
-    const notification = new Notification({
+    const winnerNotification = new Notification({
       message:
         "congratulations you have been chosen as the winner of the contest!",
       priority: "high",
@@ -37,10 +37,25 @@ exports.putWinner = async (req, res, next) => {
       link: `/contest/${contestId}`
     });
 
-    await notification.save();
+    await winnerNotification.save();
     if (users[creator._id]) {
       io.in(users[creator._id]).emit("addNotification", {
-        notification
+        notification: winnerNotification
+      });
+    }
+
+    const paymentNotification = new Notification({
+      message:"Your payment has been made",
+      priority: "high",
+      read: false,
+      notifOwner: creator,
+      link: `/contest/${contestId}`
+    });
+
+    await paymentNotification.save();
+    if (users[creator._id]) {
+      io.in(users[creator._id]).emit("addNotification", {
+        notification: paymentNotification
       });
     }
 
