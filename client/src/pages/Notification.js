@@ -14,6 +14,7 @@ import { orange } from "@material-ui/core/colors";
 import { withStyles } from "@material-ui/core/styles";
 import { setReadNotification } from "../actions/notificationActions";
 import { Link } from 'react-router-dom'
+import formatDate from "../utils/formatDate";
 
 const styles = theme => ({
   title: {
@@ -86,13 +87,13 @@ class Notification extends Component {
                       </div>
                     )}
                     <Typography variant="h5" component="h6">
-                      message: {notif.message}
+                      Message: {notif.message}
                     </Typography>
                     <Typography variant="h6" component="h6">
-                      Go to <Link to={notif.link}>Contest Page</Link>
+                      <Link to={notif.link}>Link</Link>
                     </Typography>
                     <Typography variant="h6" component="h6">
-                      date: {new Date(notif.createdAt).toString()}
+                      Date: {formatDate(notif.createdAt)}
                     </Typography>
                     <br></br>
                   </Grid>

@@ -70,13 +70,15 @@ exports.putWinner = async (req, res, next) => {
       .status(200)
       .json({ msg: "selected a winner successful", contest: response });
 
+    // Add socket io to route
+
+    const { users, io } = req.app.io;
 
     // Try to transfer to other account
     const submission = await Submission
     .findById(subId)
     .populate("creator");
     let accountId = submission.creator.accountId;
-    console.log("account ID originally: ", accountId);
     
     if (accountId) {
       console.log("account id being transferred to: ", accountId);
@@ -108,13 +110,26 @@ exports.putWinner = async (req, res, next) => {
             transfer_group,
             description: `Prize for ${contest.title}`,
           });
-          console.log("transfer is ", transfer);
+          
+          const paymentNotification = new Notification({
+            message: "You need to activate your account to get your money",
+            priority: "high",
+            read: false,
+            notifOwner: user.id,
+            link: `/account`
+          });
+      
+          await paymentNotification.save();
+          if (users[creator._id]) {
+            io.in(users[creator._id]).emit("addNotification", {
+              notification: paymentNotification
+            });
+          }
       })
     }
 
     // Notifications
 
-    const { users, io } = req.app.io;
     const winnerNotification = new Notification({
       message:
         `congratulations you have been chosen as the winner of the contest: ${contest.title}!`,
@@ -131,22 +146,7 @@ exports.putWinner = async (req, res, next) => {
       });
     }
     
-    const paymentNotification = new Notification({
-      message: "Your payment has been made",
-      priority: "high",
-      read: false,
-      notifOwner: creator,
-      link: `/contest/${contestId}`
-    });
-
-    await paymentNotification.save();
-    if (users[creator._id]) {
-      io.in(users[creator._id]).emit("addNotification", {
-        notification: paymentNotification
-      });
-    }
-    
-     const notificationsArray = [];
+    const notificationsArray = [];
     for (let i = 0; i < response.submissions.length; i++) {
       const endedNotification = new Notification({
         message: `the contest ${response.title} has ended`,
