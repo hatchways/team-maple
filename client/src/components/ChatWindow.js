@@ -93,7 +93,7 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
     e.preventDefault();
     const body = {
       content,
-      conversationId: currentChat,
+      conversationId: currentChat.id,
     }
     sendMessage(body);
     setContent("");
@@ -127,7 +127,7 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
       <Grid item xs={12} className={classes.footerContainer}>
         <Paper className={classes.footer}>
           <form onSubmit={handleSubmit} className={classes.form}>
-            <Grid item xs={12} alignItems="center" justify="center" className={classes.inputContainer}>
+            <Grid item xs={12} className={classes.inputContainer}>
               <TextField
                 className={classes.input}
                 margin="normal"
@@ -149,7 +149,7 @@ const ChatWindow = ({ classes, chat, sendMessage, currentChat }) => {
 }
 
 const mapStateToProps = ({ chat, currentChat }) => ({
-  chat: chat[currentChat],
+  chat: chat[currentChat.id],
   currentChat,
 });
 

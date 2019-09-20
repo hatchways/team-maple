@@ -2,6 +2,8 @@ import {
   SET_CHAT,
   UPDATE_CHAT,
   UPDATE_CONVERSATION,
+  UPDATE_READ_CHAT,
+  SET_UNREAD_CHAT,
 } from "../actions/types";
 
 const initialState = {};
@@ -13,6 +15,7 @@ export default (state = initialState, action) => {
 
       const chatObject = data.reduce((prev, curr) => {
         const user = action.payload.userId;
+        const read = curr.user1.id === user ? curr.user1Read : curr.user2Read;
         const other = curr.user1.id !== user ? curr.user1 : curr.user2;
 
         let lastMessage = "";
@@ -31,6 +34,7 @@ export default (state = initialState, action) => {
           user: other,
           lastMessage,
           messages: curr.messages,
+          read,
         };
         prev[curr.id] = conversationObject;
         return prev;
@@ -62,6 +66,24 @@ export default (state = initialState, action) => {
           lastMessage: "",
         },
       };
+    }
+    case UPDATE_READ_CHAT: {
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          read: true,
+        },
+      };
+    }
+    case SET_UNREAD_CHAT: {
+      return {
+        ...state,
+        [action.payload]: {
+          ...state[action.payload],
+          read: false,
+        },
+      }
     }
     default:
       return state;
