@@ -65,6 +65,7 @@ class Notification extends Component {
           <Paper className={classes.paper}>
             {notifications &&
               notifications.map((notif, i) => {
+                console.log(notif);
                 return (
                   <Grid
                     item

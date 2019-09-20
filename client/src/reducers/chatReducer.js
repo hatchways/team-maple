@@ -64,6 +64,7 @@ export default (state = initialState, action) => {
           user: user1.id === otherId ? user1 : user2,
           messages: [],
           lastMessage: "",
+          read: true,
         },
       };
     }

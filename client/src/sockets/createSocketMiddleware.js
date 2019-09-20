@@ -68,9 +68,10 @@ const createSocketMiddleware = () => {
         });
 
         socket.on('addNotification', body => {
+          body.notification.createdAt = Date.now();
           store.dispatch({
             type: ADD_NOTIFICATIONS,
-            payload: body
+            payload: body,
           });
            return;
         });

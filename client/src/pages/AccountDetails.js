@@ -67,6 +67,7 @@ const AccountDetails = ({ classes }) => {
   }
 
   const fetchBalance = async () => {
+    console.log("fetch balance is running");
     const res = await axios.get("/stripe/balance");
     const { success, balance: retrievedBalance } = res.data;
     if (success) {
@@ -158,6 +159,20 @@ const AccountDetails = ({ classes }) => {
             </Link>
           </Typography>
         </Grid>
+        {balance && (
+        <Paper className={classes.container}>
+          <Typography className={classes.balanceTitle}>Account Balance</Typography>
+          <Typography variant="body1" className={classes.balanceBody}>
+            {`Available Balance: $ ${(balance.available.reduce((acc, curr) => acc + curr.amount, 0) / 100).toFixed(2)}`}
+          </Typography>
+          <Typography variant="body1" className={classes.balanceBody}>
+            {`Pending Balance: $ ${(balance.pending.reduce((acc, curr) => acc + curr.amount, 0) / 100).toFixed(2)}`}
+          </Typography>
+          <Typography variant="subtitle2" align="center">
+            Once payouts are enabled, available funds will be transferred to your bank account every 7 days
+          </Typography>
+        </Paper>
+      )}
       </>
     )
   }
