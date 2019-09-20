@@ -109,7 +109,6 @@ const NavBar = ({
                 badgeContent=" "
                 variant="dot"
                 classes={{ badge: classes.badge }}
-                anchorOriginTopLeftRectangle
               >
                 <Link
                   component="button"

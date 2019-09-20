@@ -31,9 +31,3 @@ export const startConversation = body => {
   };
 };
 
-export const notificationNewSubmission = body => {
-  return {
-    type: NOTIFICATION_NEW_SUBMISSION,
-    payload: body
-  };
-};
