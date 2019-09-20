@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { withRouter } from "react-router-dom";
 import {
   withStyles,
   Grid,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@material-ui/core";
 import CreateContestForm from "../components/CreateContestForm";
 
@@ -16,7 +24,21 @@ const styles = theme => ({
   },
 })
 
-const CreateContest = ({ classes }) => {
+const CreateContest = ({ classes, history }) => {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const listCards = async () => {
+      const response = await axios.get("/stripe/listCards");
+      if (response.data.status === "error") {
+        setOpen(true);
+      }
+    }
+    listCards();
+  }, []);
+  const handleClose = () => {
+    setOpen(false);
+    history.push("/payment");
+  }
   return (
     <>
       <Grid container spacing={0} alignItems="center" justify="center">
@@ -31,8 +53,26 @@ const CreateContest = ({ classes }) => {
           <CreateContestForm />
         </Grid>
       </Grid>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="No Credit Card Added"
+        aria-describedby="Credit card needed for creating contests"
+      >
+        <DialogTitle id="alert-dialog-title">{"Add a credit card"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Please add a credit card to your account before creating a contest
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   )
 }
 
-export default withStyles(styles)(CreateContest);
+export default withRouter(withStyles(styles)(CreateContest));

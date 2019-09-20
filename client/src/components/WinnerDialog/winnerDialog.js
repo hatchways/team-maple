@@ -28,6 +28,9 @@ const styles = theme => ({
   },
   cardContent: {
     flexGrow: 1
+  },
+  toc: {
+    marginTop: theme.spacing(2),
   }
 });
 
@@ -60,7 +63,16 @@ export default withStyles(styles)(props => {
               title="Image Title"
             />
             <CardContent className={classes.cardContent}>
-              <Typography>{sub ? sub.creator.name : null}</Typography>
+              <Typography>{sub ? `Submitted by: ${sub.creator.name}` : null}</Typography>
+              { isCreator &&
+                <Typography className={classes.toc}>
+                  {
+                    `By selecting this submission, you agree to pay 
+                    $${contest.prize.toFixed(2)} to 
+                    ${sub ? sub.creator.name : "this submission's creator"}`
+                  }
+                </Typography>
+              }
             </CardContent>
           </Card>
         </DialogContent>
