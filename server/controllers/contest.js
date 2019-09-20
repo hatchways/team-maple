@@ -45,7 +45,7 @@ exports.putWinner = async (req, res, next) => {
     
     contest.winner = subId;
     contest.status = "COMPLETED";
-    contest.save();
+    await contest.save();
 
     const response = await Contest
       .findById(contestId)
