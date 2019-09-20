@@ -13,14 +13,15 @@ import {
 import { orange } from "@material-ui/core/colors";
 import { withStyles } from "@material-ui/core/styles";
 import { setReadNotification } from "../actions/notificationActions";
+import { Link } from 'react-router-dom'
 
 const styles = theme => ({
   title: {
     margin: theme.spacing(2)
   },
   outerPaper: {
-    margin: '2px auto',
-    height: '100vh'
+    margin: "2px auto",
+    height: "100vh"
   },
   paper: {
     maxWidth: "60%",
@@ -42,7 +43,6 @@ const styles = theme => ({
 
 class Notification extends Component {
   handleClicked = notif => {
-    console.log("read message", notif);
     if (!notif.read) {
       this.props.setReadNotification(notif._id);
     }
@@ -53,52 +53,53 @@ class Notification extends Component {
     console.log("from notification page", notifications);
     return (
       <div>
-          <Typography
-            variant="h3"
-            component="h5"
-            align="center"
-            className={classes.title}
-          >
-            Notifications
-          </Typography>
-          <Grid container>
-            <Paper className={classes.paper}>
-              {notifications &&
-                notifications.map((notif, i) => {
-                  return (
-                    <Grid
-                      item
-                      key={i}
-                      onClick={() => this.handleClicked(notif)}
-                      className={classes.gridItem}
-                    >
-                      {notif.read ? null : (
-                        <div
-                          style={{ marginLeft: "auto", width: "min-content" }}
+        <Typography
+          variant="h3"
+          component="h5"
+          align="center"
+          className={classes.title}
+        >
+          Notifications
+        </Typography>
+        <Grid container>
+          <Paper className={classes.paper}>
+            {notifications &&
+              notifications.map((notif, i) => {
+                return (
+                  <Grid
+                    item
+                    key={i}
+                    onClick={() => this.handleClicked(notif)}
+                    className={classes.gridItem}
+                  >
+                    {notif.read ? null : (
+                      <div style={{ marginLeft: "auto", width: "min-content" }}>
+                        <Badge
+                          overlap="circle"
+                          badgeContent=" "
+                          variant="dot"
+                          classes={{ badge: classes.badge }}
                         >
-                          <Badge
-                            overlap="circle"
-                            badgeContent=" "
-                            variant="dot"
-                            classes={{ badge: classes.badge }}
-                          >
-                              <div />
-                          </Badge>
-                        </div>
-                      )}
-                      <div>id: {notif._id}</div>
-                      <div>message: {notif.message}</div>
-                      <div>
-                        read: {notif.read ? "has been read" : "not read"}
+                          <div />
+                        </Badge>
                       </div>
-                      <div>priority: {notif.priority}</div>
-                      <br></br>
-                    </Grid>
-                  );
-                })}
-              <div></div>
-            </Paper>
-          </Grid>
+                    )}
+                    <Typography variant="h5" component="h6">
+                      message: {notif.message}
+                    </Typography>
+                    <Typography variant="h6" component="h6">
+                      Go to <Link to={notif.link}>Contest Page</Link>
+                    </Typography>
+                    <Typography variant="h6" component="h6">
+                      date: {new Date(notif.createdAt).toString()}
+                    </Typography>
+                    <br></br>
+                  </Grid>
+                );
+              })}
+            <div></div>
+          </Paper>
+        </Grid>
       </div>
     );
   }
