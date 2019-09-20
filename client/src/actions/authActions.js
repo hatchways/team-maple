@@ -40,7 +40,6 @@ export const loginUser = userData => async dispatch => {
     dispatch(getProfile(decoded.userId));
     dispatch(getConversations(decoded.userId));
     dispatch(initializeSocket(token));
-    
     dispatch(getNotifications());
   } catch (err) {
     dispatch({

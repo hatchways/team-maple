@@ -113,12 +113,6 @@ const mapDispatchToProps = {
   setReadNotification
 };
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     setReadNotification: (id) => dispatch(setReadNotification(id))
-//   };
-// };
-
 const enhance = compose(
   withStyles(styles),
   connect(

@@ -66,7 +66,6 @@ const createSocketMiddleware = () => {
         });
 
         socket.on('addNotification', body => {
-          console.log('im here', body.notification);
           store.dispatch({
             type: ADD_NOTIFICATIONS,
             payload: body
@@ -81,7 +80,6 @@ const createSocketMiddleware = () => {
       case SET_READ_NOTIFICATION: {
         const notificationId = action.payload;
         socket.emit('setReadNotification', notificationId, body => {
-          console.log(body);
           if(body.success) {
             store.dispatch({
               type: UPDATE_NOTIFICATIONS,

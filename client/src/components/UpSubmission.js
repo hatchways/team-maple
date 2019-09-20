@@ -67,7 +67,6 @@ class UpSubmission extends Component {
           contestId: match.params.id
         })
         .then(result => {
-          // this.props.notificationNewSubmission({ msg: "this is the body" });
           history.push(`/submitted/${result.data.result._id}`);
         });
     }

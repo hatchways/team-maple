@@ -15,7 +15,6 @@ exports.postSubmission = (req, res, next) => {
   submission
     .save()
     .then(result => {
-      console.log("created submission");
       return res.status(200).json({ message: "submission created", result });
     })
     .catch(err => console.log(err));

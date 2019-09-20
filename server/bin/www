@@ -183,13 +183,10 @@ io.on("connection", socket => {
   });
 
   socket.on("setReadNotification", async (body, cb) => {
-    console.log("im in setRead notification server", body);
-
     try {
-      const notification = await Notification.findByIdAndUpdate(body, {
+      await Notification.findByIdAndUpdate(body, {
         read: true
       });
-      console.log("updated notification");
       cb({ message: "read notification updated", success: true });
     } catch (e) {
       console.log(e);

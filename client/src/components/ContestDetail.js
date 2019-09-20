@@ -144,14 +144,13 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     }
     
     if (isCreator) {
-      if (new Date() <= new Date(contest.deadline)) {
+      if (new Date() >= new Date(contest.deadline)) {
         if (!contest.winner) {
           axios
             .put(url, {
               creator: sub.creator
             })
             .then(res => {
-              console.log(res);
               setContest(res.data.contest);
               handleClose();
             })
