@@ -10,7 +10,6 @@ export const getNotifications = () => async dispatch => {
 };
 
 export const setReadNotification = id => {
-    console.log('in the setReadNotification action', id);
     return {
       type: SET_READ_NOTIFICATION,
       payload: id

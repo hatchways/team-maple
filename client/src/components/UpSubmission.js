@@ -7,8 +7,6 @@ import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import tokenStorage from "../utils/tokenStorage";
 import { compose } from "redux";
-import { connect } from "react-redux";
-import { notificationNewSubmission } from "../actions/socketActions";
 
 const styles = theme => ({
   root: {
@@ -99,18 +97,9 @@ class UpSubmission extends Component {
   }
 }
 
-// const mapStateToProps = ({ chat, currentChat }) => ({
-//   chat: chat[currentChat],
-//   currentChat,
-// });
-
 const enhance = compose(
   withRouter,
-  withStyles(styles),
-  // connect(
-  //   null,
-  //   { notificationNewSubmission }
-  // )
+  withStyles(styles)
 );
 
 export default enhance(UpSubmission);

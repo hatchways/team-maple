@@ -142,11 +142,10 @@ const ContestDetail = ({ classes, auth, match, history }) => {
       console.log("winner already chosen");
       return;
     }
-    console.log('chooseWinner', sub);
     
     if (isCreator) {
-    //   if (new Date() <= new Date(contest.deadline)) {
-    //     if (!contest.winner) {
+      if (new Date() <= new Date(contest.deadline)) {
+        if (!contest.winner) {
           axios
             .put(url, {
               creator: sub.creator
@@ -157,14 +156,14 @@ const ContestDetail = ({ classes, auth, match, history }) => {
               handleClose();
             })
             .catch(err => console.log(err));
-    //     } else {
-    //       console.log("already picked a winner");
-    //     }
-    //   } else {
-    //     console.log("contest still running");
-    //   }
-    // } else {
-    //   console.log("only contest creator can choose a winner");
+        } else {
+          console.log("already picked a winner");
+        }
+      } else {
+        console.log("contest still running");
+      }
+    } else {
+      console.log("only contest creator can choose a winner");
     }
   };
 

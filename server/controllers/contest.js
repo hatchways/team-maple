@@ -26,11 +26,14 @@ exports.putWinner = async (req, res, next) => {
       .select("-createdAt -updatedAt");
     if (!contest) {
       return res.status(404).json({ msg: "contest not found" });
+    } else {
+      res.status(200).json({ msg: "selected a winner successful", contest });
     }
+
     const { users, io } = req.app.io;
     const winnerNotification = new Notification({
       message:
-        "congratulations you have been chosen as the winner of the contest!",
+        `congratulations you have been chosen as the winner of the contest: ${contest.title}!`,
       priority: "high",
       read: false,
       notifOwner: creator,
@@ -45,7 +48,7 @@ exports.putWinner = async (req, res, next) => {
     }
 
     const paymentNotification = new Notification({
-      message:"Your payment has been made",
+      message: "Your payment has been made",
       priority: "high",
       read: false,
       notifOwner: creator,
@@ -62,7 +65,7 @@ exports.putWinner = async (req, res, next) => {
     const notificationsArray = [];
     for (let i = 0; i < contest.submissions.length; i++) {
       const endedNotification = new Notification({
-        message: "the contest has ended",
+        message: `the contest ${contest.title} has ended`,
         priority: "medium",
         read: false,
         notifOwner: contest.submissions[i].creator._id,
@@ -72,15 +75,15 @@ exports.putWinner = async (req, res, next) => {
     }
 
     const unique = notificationsArray.reduce(
-      (a, b) => {
-        let id = b.notifOwner;
+      (acc, curr) => {
+        let id = curr.notifOwner;
 
-        if (a.temp.indexOf(id) === -1) {
-          a.out.push(b);
-          a.temp.push(id);
+        if (acc.temp.indexOf(id) === -1) {
+          acc.out.push(curr);
+          acc.temp.push(id);
         }
 
-        return a;
+        return acc;
       },
       {
         temp: [],
@@ -92,15 +95,11 @@ exports.putWinner = async (req, res, next) => {
 
     for (let i = 0; i < unique.length; i++) {
       if (users[unique[i].notifOwner]) {
-          io.in(users[unique[i].notifOwner]).emit("addNotification", {
-            notification: unique[i]
-          });
-        }
+        io.in(users[unique[i].notifOwner]).emit("addNotification", {
+          notification: unique[i]
+        });
       }
-
-    return res
-      .status(200)
-      .json({ msg: "selected a winner successful", contest });
+    }
   } catch (err) {
     console.log(err);
     return res.status(422).json({ msg: "error updating contest", error: err });
