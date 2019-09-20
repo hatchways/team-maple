@@ -10,6 +10,8 @@ import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { getProfile } from "./actions/profileActions";
 import { getConversations } from "./actions/conversationActions";
 import { initializeSocket } from "./actions/socketActions";
+import { getNotifications } from './actions/notificationActions';
+
 import store from "./store";
 
 import { theme } from "./themes/theme";
@@ -26,6 +28,7 @@ import DiscoveryPage from './pages/Discovery';
 import ProfilePage from "./pages/Profile";
 import ChatPage from "./pages/Chat";
 import SummaryPage from './pages/SubmissionComplete';
+import NotificationsPage from './pages/Notification';
 import PaymentDetailPage from "./pages/PaymentDetails";
 import AccountDetailPage from "./pages/AccountDetails";
 
@@ -46,6 +49,7 @@ if (tokenStorage.getAuthToken()) {
     store.dispatch(getProfile(decoded.userId));
     store.dispatch(getConversations(decoded.userId));
     store.dispatch(initializeSocket(token));
+    store.dispatch(getNotifications());
   }
 }
 
@@ -67,6 +71,7 @@ function App() {
             <PrivateRoute exact path='/submitted/:subId' component={SummaryPage} />
             <PrivateRoute exact path='/profile/:id' component={ProfilePage} />
             <PrivateRoute exact path='/chat' component={ChatPage} />
+            <PrivateRoute exact path='/notifications' component={NotificationsPage} />
             <PrivateRoute exact path="/payment" component={PaymentDetailPage} />
             <PrivateRoute exact path="/account" component={AccountDetailPage} />
           </BrowserRouter>

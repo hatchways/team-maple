@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
@@ -43,10 +43,23 @@ const styles = theme => ({
     }
 })
 
-const signInLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/login" {...props} />);
-const createContestLink = React.forwardRef((props, ref) => <Link innerRef={ref} to="/create" {...props} />);
+const signInLink = React.forwardRef((props, ref) => (
+  <Link innerRef={ref} to="/login" {...props} />
+));
+const createContestLink = React.forwardRef((props, ref) => (
+  <Link innerRef={ref} to="/create" {...props} />
+));
 
-const NavBar = ({ classes, auth, logoutUser, history, profile, chatNotificationNum }) => {
+const NavBar = ({
+  classes,
+  auth,
+  logoutUser,
+  history,
+  profile,
+  notifications
+}) => {
+
+const NavBar = ({ classes, auth, logoutUser, history, profile, chatNotificationNum, notifications }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const handleClick = (e) => setAnchorEl(e.currentTarget);
     const handleClose = (e) => setAnchorEl(null);
@@ -89,7 +102,33 @@ const NavBar = ({ classes, auth, logoutUser, history, profile, chatNotificationN
                                 <Link component="button" variant="body2" to="/chat" className={classes.link}>Messages</Link>
                             )
                         }
-                        <Link component="button" variant="body2" to="#" className={classes.link}>Notifications</Link>
+                        {notifications && notifications.some(notification => !notification.read) ? (
+              <Badge
+                overlap="circle"
+                badgeContent=" "
+                variant="dot"
+                classes={{ badge: classes.badge }}
+              >
+                <Link
+                  component="button"
+                  variant="body2"
+                  to="/notifications"
+                  className={classes.link}
+                >
+                  Notifications
+                </Link>
+              </Badge>
+            ) : (
+              <Link
+                component="button"
+                variant="body2"
+                to="/notifications"
+                className={classes.link}
+              >
+                Notifications
+              </Link>
+            )}
+  
                         <Button variant="outlined" color="inherit" className={classes.button} component={createContestLink}>
                             Create Contest
                         </Button>
@@ -117,16 +156,21 @@ const NavBar = ({ classes, auth, logoutUser, history, profile, chatNotificationN
     )
 }
 
-const mapStateToProps = ({ auth, profile, chat }) => ({
+const mapStateToProps = ({ auth, profile, chat, notifications }) => ({
     auth,
     profile,
+    notifications,
     chatNotificationNum: chat && Object.values(chat).filter(c => !c.read).length || 0,
+
 });
 
 const enhance = compose(
-    withRouter,
-    withStyles(styles),
-    connect(mapStateToProps, { logoutUser }),
+  withRouter,
+  withStyles(styles),
+  connect(
+    mapStateToProps,
+    { logoutUser }
+  )
 );
 
 export default enhance(NavBar);

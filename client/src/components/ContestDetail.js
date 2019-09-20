@@ -68,10 +68,10 @@ const styles = theme => ({
     padding: theme.spacing(2, 4)
   },
   icon: {
-    color: "white",
+    color: "white"
   },
   clickable: {
-    cursor: "pointer",
+    cursor: "pointer"
   },
   gridListContainer: {
     position: "relative"
@@ -110,7 +110,6 @@ const submitLink = React.forwardRef((props, ref) => {
   return <Link innerRef={ref} to={`${id}/submit`} {...props} />;
 });
 
-
 const ContestDetail = ({ classes, auth, match, history }) => {
   const [tabPage, setTabPage] = useState(0);
   const [sub, setSub] = useState(null);
@@ -129,23 +128,23 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     history.push(`/profile/${creator._id}`);
   };
 
-  const chooseWinner = subId => {
-    let url = "/contest/" + contest._id + "/subWinner?winner=" + subId;
+  const chooseWinner = sub => {
+    let url = "/contest/" + contest._id + "/subWinner?winner=" + sub._id;
     const isCreator = contest.creator._id === auth.user.userId;
 
-
     if (contest.winner) {
-      console.log('winner already chosen');
+      console.log("winner already chosen");
       return;
     }
-
+    
     if (isCreator) {
       if (new Date() >= new Date(contest.deadline)) {
         if (!contest.winner) {
           axios
-            .put(url)
+            .put(url, {
+              creator: sub.creator
+            })
             .then(res => {
-              console.log(res);
               setContest(res.data.contest);
               handleClose();
             })
@@ -173,8 +172,12 @@ const ContestDetail = ({ classes, auth, match, history }) => {
   function handleClose() {
     setOpen(false);
   }
-  
-  const url = contest ? `${process.env.REACT_APP_S3_URL}/${contest.creator.profileUrl}` : '';
+
+  const url = contest
+    ? `${process.env.REACT_APP_S3_URL}/${contest.creator.profileUrl}`
+    : "";
+
+    console.log('contest', contest);  
   return (
     <>
       {contest ? <Grid container className={classes.container}>
@@ -211,153 +214,183 @@ const ContestDetail = ({ classes, auth, match, history }) => {
           </Grid>
           {contest.creator._id !== auth.user.userId && (
             <Grid>
-              <Button
-                variant="outlined"
-                color="inherit"
-                className={classes.button}
-                component={submitLink}
-                match={match}
-              >
-                Submit Design
-              </Button>
+              <Grid container alignItems="center">
+                <Typography variant="h5" className={classes.title}>
+                  {contest.title}
+                </Typography>
+                <Typography variant="body2" className={classes.prize}>
+                  {`$${contest.prize.toFixed(2)}`}
+                </Typography>
+              </Grid>
+              <Grid container alignItems="center">
+                <Avatar
+                  alt={auth.user.email}
+                  src={url}
+                  className={`${classes.avatar} ${classes.clickable}`}
+                  onClick={handleCreatorClick}
+                />
+                <Typography
+                  variant="subtitle2"
+                  onClick={handleCreatorClick}
+                  className={classes.clickable}
+                >
+                  {/* {`By ${name}`} */}
+                </Typography>
+              </Grid>
             </Grid>
-          )}
+            {contest.creator._id !== auth.user.userId && (
+              <Grid>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  className={classes.button}
+                  component={submitLink}
+                  match={match}
+                >
+                  Submit Design
+                </Button>
+              </Grid>
+            )}
+          </Grid>
+          <Paper className={classes.tabRoot}>
+            <Tabs
+              value={tabPage}
+              onChange={(e, tabNum) => setTabPage(tabNum)}
+              className={classes.tabHeader}
+              classes={{ indicator: classes.indicator }}
+              centered
+              variant="fullWidth"
+            >
+              <Tab label={`Designs (${contest.submissions.length})`} />
+              <Tab label="Brief" />
+            </Tabs>
+            <Box className={classes.tabPanelContainer}>
+              <TabPanel value={tabPage} index={0}>
+                <GridList
+                  cellHeight={260}
+                  className={classes.gridList}
+                  spacing={8}
+                  cols={4}
+                >
+                  {contest.submissions.length !== 0 ? (
+                    contest.submissions.map(submission => {
+                      const { url, creator, _id } = submission;
+                      if (
+                        contest.winner &&
+                        contest.winner.toString() === _id.toString()
+                      ) {
+                        return (
+                          <GridListTile
+                            key={url}
+                            cols={1}
+                            className={classes.gridListContainer}
+                            onClick={() => handleClickOpen(submission)}
+                          >
+                            <img
+                              src={`${process.env.REACT_APP_S3_URL}/${url}`}
+                              alt={"tattoo"}
+                              className={classes.selectedImage}
+                            />
+                            <div className={classes.centered}>
+                              <h1 style={{ margin: "0" }}>
+                                <strong>Winner</strong>
+                              </h1>
+                              <IconButton
+                                align="center"
+                                style={{ padding: "0" }}
+                              >
+                                <CheckOutlined
+                                  className={classes.checkOutLined}
+                                />
+                              </IconButton>
+                            </div>
+                            <GridListTileBar
+                              title={`by: ${creator.name}`}
+                              actionIcon={
+                                <IconButton
+                                  aria-label={`info about ${creator}`}
+                                  className={classes.icon}
+                                  onClick={() => handleInfoClick(creator)}
+                                >
+                                  <InfoIcon />
+                                </IconButton>
+                              }
+                            />
+                          </GridListTile>
+                        );
+                      } else
+                        return (
+                          <GridListTile
+                            key={url}
+                            cols={1}
+                            onClick={() => handleClickOpen(submission)}
+                          >
+                            <img
+                              src={`${process.env.REACT_APP_S3_URL}/${url}`}
+                              alt={"tattoo"}
+                            />
+                            <GridListTileBar
+                              title={`by: ${creator.name}`}
+                              actionIcon={
+                                <IconButton
+                                  aria-label={`info about ${creator}`}
+                                  className={classes.icon}
+                                  onClick={() => handleInfoClick(creator)}
+                                >
+                                  <InfoIcon />
+                                </IconButton>
+                              }
+                            />
+                          </GridListTile>
+                        );
+                    })
+                  ) : (
+                    <Grid
+                      container
+                      spacing={0}
+                      alignItems="center"
+                      justify="center"
+                      className={classes.textContainer}
+                    >
+                      <Typography variant="h5">No Submissions</Typography>
+                    </Grid>
+                  )}
+                </GridList>
+              </TabPanel>
+              <TabPanel value={tabPage} index={1}>
+                <Typography variant="h6" className={classes.tabPanelLabel}>
+                  Description
+                </Typography>
+                <Typography
+                  variant="body1"
+                  className={classes.contestDescription}
+                >
+                  {contest.description}
+                </Typography>
+                <Typography variant="h6" className={classes.tabPanelLabel}>
+                  Designs I liked
+                </Typography>
+                <GridList
+                  cellHeight={260}
+                  className={classes.gridList}
+                  spacing={8}
+                  cols={4}
+                >
+                  {contest.images &&
+                    contest.images.map(image => (
+                      <GridListTile key={image} cols={1}>
+                        <img
+                          src={`${process.env.REACT_APP_S3_URL}/default/${image}`}
+                          alt={"tattoo"}
+                        />
+                      </GridListTile>
+                    ))}
+                </GridList>
+              </TabPanel>
+            </Box>
+          </Paper>
         </Grid>
-        <Paper className={classes.tabRoot}>
-          <Tabs
-            value={tabPage}
-            onChange={(e, tabNum) => setTabPage(tabNum)}
-            className={classes.tabHeader}
-            classes={{ indicator: classes.indicator }}
-            centered
-            variant="fullWidth"
-          >
-            <Tab label={`Designs (${contest.submissions.length})`} />
-            <Tab label="Brief" />
-          </Tabs>
-          <Box className={classes.tabPanelContainer}>
-            <TabPanel value={tabPage} index={0}>
-              <GridList
-                cellHeight={260}
-                className={classes.gridList}
-                spacing={8}
-                cols={4}
-              >
-                {contest.submissions.length !== 0 ? (
-                  contest.submissions.map(submission => {
-                    const { url, creator, _id } = submission;
-                    if (
-                      contest.winner &&
-                      contest.winner.toString() === _id.toString()
-                    ) {
-                      return (
-                        <GridListTile
-                          key={url}
-                          cols={1}
-                          className={classes.gridListContainer}
-                          onClick={() => handleClickOpen(submission)}
-                        >
-                          <img
-                            src={`${process.env.REACT_APP_S3_URL}/${url}`}
-                            alt={"tattoo"}
-                            className={classes.selectedImage}
-                          />
-                          <div className={classes.centered}>
-                            <h1 style={{ margin: "0" }}>
-                              <strong>Winner</strong>
-                            </h1>
-                            <IconButton align="center" style={{ padding: "0" }}>
-                              <CheckOutlined
-                                className={classes.checkOutLined}
-                              />
-                            </IconButton>
-                          </div>
-                          <GridListTileBar
-                            title={`by: ${creator.name}`}
-                            actionIcon={
-                              <IconButton
-                                aria-label={`info about ${creator}`}
-                                className={classes.icon}
-                                onClick={() => handleInfoClick(creator)}
-                              >
-                                <InfoIcon />
-                              </IconButton>
-                            }
-                          />
-                        </GridListTile>
-                      );
-                    } else
-                      return (
-                        <GridListTile
-                          key={url}
-                          cols={1}
-                          onClick={() => handleClickOpen(submission)}
-                        >
-                          <img
-                            src={`${process.env.REACT_APP_S3_URL}/${url}`}
-                            alt={"tattoo"}
-                          />
-                          <GridListTileBar
-                            title={`by: ${creator.name}`}
-                            actionIcon={
-                              <IconButton
-                                aria-label={`info about ${creator}`}
-                                className={classes.icon}
-                                onClick={() => handleInfoClick(creator)}
-                              >
-                                <InfoIcon />
-                              </IconButton>
-                            }
-                          />
-                        </GridListTile>
-                      );
-                  })
-                ) : (
-                  <Grid
-                    container
-                    spacing={0}
-                    alignItems="center"
-                    justify="center"
-                    className={classes.textContainer}
-                  >
-                    <Typography variant="h5">No Submissions</Typography>
-                  </Grid>
-                )}
-              </GridList>
-            </TabPanel>
-            <TabPanel value={tabPage} index={1}>
-              <Typography variant="h6" className={classes.tabPanelLabel}>
-                Description
-              </Typography>
-              <Typography
-                variant="body1"
-                className={classes.contestDescription}
-              >
-                {contest.description}
-              </Typography>
-              <Typography variant="h6" className={classes.tabPanelLabel}>
-                Designs I liked
-              </Typography>
-              <GridList
-                cellHeight={260}
-                className={classes.gridList}
-                spacing={8}
-                cols={4}
-              >
-                {contest.images &&
-                  contest.images.map(image => (
-                    <GridListTile key={image} cols={1}>
-                      <img
-                        src={`${process.env.REACT_APP_S3_URL}/default/${image}`}
-                        alt={"tattoo"}
-                      />
-                    </GridListTile>
-                  ))}
-              </GridList>
-            </TabPanel>
-          </Box>
-        </Paper>
-      </Grid>: null}
+      ) : null}
     </>
   );
 };

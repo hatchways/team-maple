@@ -4,25 +4,25 @@ import {
   SET_READ_CHAT,
 } from "./types";
 
-export const initializeSocket = (token) => {
+export const initializeSocket = token => {
   return {
     type: INITIALIZE_SOCKET,
-    payload: token,
-  }
-}
+    payload: token
+  };
+};
 
 export const closeSocket = () => {
   return {
-    type: CLOSE_SOCKET,
-  }
-}
+    type: CLOSE_SOCKET
+  };
+};
 
 export const sendMessage = body => {
   return {
     type: "message",
-    payload: body,
-  }
-}
+    payload: body
+  };
+};
 
 export const startConversation = body => {
   return {
@@ -37,3 +37,4 @@ export const setReadChat = body => {
     payload: body,
   };
 }
+

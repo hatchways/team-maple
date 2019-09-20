@@ -13,6 +13,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
+const Notification = require("../models/Notification");
 
 /**
  * Get port from environment and store in Express.
@@ -36,8 +37,9 @@ const io = socket.listen(server);
 
 const users = {};
 
+app.io = { io, users };
+
 io.use((socket, next) => {
-  
   console.log("Middleware was run!");
   let token = socket.handshake.headers["authorization"];
   if (!token) {
@@ -62,11 +64,11 @@ io.use((socket, next) => {
     console.log("Already connected in another socket");
     return next(new Error("Already connected in another socket"));
   }
-  users[decoded.userId] = socket.id;
-  socket.userId = decoded.userId;
+  users[userId] = socket.id;
+  socket.userId = userId;
   console.log("User authenticated!");
   return next();
-})
+});
 
 io.on("connection", socket => {
   const userId = socket.userId;
@@ -76,30 +78,29 @@ io.on("connection", socket => {
   console.log(users);
   socket.broadcast.emit("statusUpdate", {
     user: userId,
-    status: "online",
+    status: "online"
   });
   io.in(socketId).emit("allOnline", { online: Object.keys(users) });
-  
 
   socket.on("disconnect", () => {
-    console.log("A socket disconnected: ",socketId);
+    console.log("A socket disconnected: ", socketId);
     console.log("User id: " + userId);
     delete users[userId];
     console.log(users);
     socket.broadcast.emit("statusUpdate", {
       user: userId,
-      status: "offline",
+      status: "offline"
     });
   });
 
   socket.on("message", async body => {
-    console.log("Got here")
-    const id = userId;
     const { content, conversationId } = body;
     try {
       const conversationExist = await Conversation.findById(conversationId);
       if (!conversationExist) {
-        return socket.emit("message", { message: "Conversation doesn't exist!" });
+        return socket.emit("message", {
+          message: "Conversation doesn't exist!"
+        });
       }
       const { user1, user2 } = conversationExist;
       const user1Str = user1.toString();
@@ -110,7 +111,7 @@ io.on("connection", socket => {
       const message = new Message({
         content,
         sender: userId,
-        conversation: conversationId,
+        conversation: conversationId
       });
       const body = await message.save();
       console.log("Message sent: " + body);
@@ -161,11 +162,14 @@ io.on("connection", socket => {
         console.log("user doesn't exist");
         return; // add error handling
       }
-  
-      const [ user1, user2 ] = [userId, otherId].sort((a, b) => a > b);
+
+      const [user1, user2] = [userId, otherId].sort((a, b) => a > b);
       const conversationExist = await Conversation.find({ user1, user2 });
       if (conversationExist.length) {
-        return cb({ message: "conversation exist", conversationId: conversationExist[0].id });
+        return cb({
+          message: "conversation exist",
+          conversationId: conversationExist[0].id
+        });
       }
       const conversation = new Conversation({ user1, user2, user1Read: true, user2Read: true, });
       await conversation.save();
@@ -173,16 +177,24 @@ io.on("connection", socket => {
         .populate("user1")
         .populate("user2");
       console.log(body);
-  
+
       const user1Str = user1.toString();
       const user2Str = user2.toString();
       if (users[user1Str]) {
         console.log("emitting for user 1");
-        io.in(users[user1Str]).emit("updateConversation", { body, user: user2, starter: user1 !== otherId });
+        io.in(users[user1Str]).emit("updateConversation", {
+          body,
+          user: user2,
+          starter: user1 !== otherId
+        });
       }
       if (users[user2Str]) {
         console.log("emitting for user 2");
-        io.in(users[user2Str]).emit("updateConversation", {body, user: user1, starter: user2 !== otherId });
+        io.in(users[user2Str]).emit("updateConversation", {
+          body,
+          user: user1,
+          starter: user2 !== otherId
+        });
       }
     } catch (err) {
       console.log(err);
@@ -190,7 +202,18 @@ io.on("connection", socket => {
     }
   });
 
-  socket.on("setReadChat", async (body, cb) => {
+  socket.on("setReadNotification", async (body, cb) => {
+    try {
+      await Notification.findByIdAndUpdate(body, {
+        read: true
+      });
+      cb({ message: "read notification updated", success: true });
+    } catch (e) {
+      console.log(e);
+    }
+  });
+  
+   socket.on("setReadChat", async (body, cb) => {
     const user = userId;
     const { conversationId } = body;
     try {
@@ -206,7 +229,8 @@ io.on("connection", socket => {
       console.log(err);
     }
   });
-})
+  
+});
 
 /**
  * Listen on provided port, on all network interfaces.
