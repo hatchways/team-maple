@@ -184,29 +184,19 @@ io.on("connection", socket => {
     }
   });
 
-  // socket.on("newSubmission", async body => {
-  //   //get data
-  //   const { creatorId, contestTitle } = body.data;
+  socket.on("setReadNotification", async (body, cb) => {
+    console.log("im in setRead notification server", body);
 
-  //   const user = await User.findById(userId);
-  //   if (!user) {
-  //     console.log("user doesnt exist");
-  //     return;
-  //   }
-
-  //   const notification = new Notification({
-  //     message: `Your contest ${contestTitle} has a new submission!`,
-  //     read: false,
-  //     priority: "medium",
-  //     notifOwner: creatorId
-  //   });
-
-  //   await notification.save();
-  //   if(users[creatorId]) {
-  //     io.in(users[creatorId]).emit('notifSubmission', notification)
-  //   }
-
-  // });
+    try {
+      const notification = await Notification.findByIdAndUpdate(body, {
+        read: true
+      });
+      console.log("updated notification");
+      cb({ message: "read notification updated", success: true });
+    } catch (e) {
+      console.log(e);
+    }
+  });
 });
 
 /**

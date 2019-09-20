@@ -12,13 +12,13 @@ exports.postSubmission = (req, res, next) => {
     contest: contestId
   });
 
-  submission
-    .save()
-    .then(result => {
-      console.log("created submission");
-      return res.status(200).json({ message: "submission created", result });
-    })
-    .catch(err => console.log(err));
+  // submission
+  //   .save()
+  //   .then(result => {
+  //     console.log("created submission");
+  //     return res.status(200).json({ message: "submission created", result });
+  //   })
+  //   .catch(err => console.log(err));
 
   // update notifications table
   Contest.findById(contestId)
@@ -38,9 +38,16 @@ exports.postSubmission = (req, res, next) => {
       const { users, io } = req.app.io;
       console.log('users', users, 'io', io);
       if (users[contest.creator]) {
-        io.in(users[contest.creator]).emit("newSubmission", {
+        io.in(users[contest.creator]).emit("addNotification", {
           notification
         });
+        console.log('contest.deadline', contest.deadline);
+
+        if(new Date() >= new Date(contest.deadline)) {
+          //should be >= but deadlines are too far away
+          console.log('deadline passed');
+        }
+
       }
     })
     .catch(err => console.log(err));

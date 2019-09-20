@@ -9,10 +9,18 @@ import {
   Button
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import { setReadNotification } from "../actions/notificationActions";
 
 const styles = theme => ({});
 
 class Notification extends Component {
+  handleClicked = notif => {
+    console.log("read message", notif);
+    if (!notif.read) {
+      this.props.setReadNotification(notif._id);
+    }
+  };
+
   render() {
     const { classes, notifications } = this.props;
     console.log("from notification page", notifications);
@@ -22,10 +30,10 @@ class Notification extends Component {
         {notifications &&
           notifications.map((notif, i) => {
             return (
-              <div key={i}>
+              <div key={i} onClick={() => this.handleClicked(notif)}>
                 <div>message: {notif.message}</div>
                 <div>id: {notif._id}</div>
-                <div>read: {notif.read}</div>
+                <div>read: {notif.read ? "has been read" : "not read"}</div>
                 <div>priority: {notif.priority}</div>
                 <br></br>
               </div>
@@ -41,9 +49,22 @@ const mapStateToProps = ({ notifications }) => ({
   notifications
 });
 
+const mapDispatchToProps = {
+  setReadNotification
+};
+
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     setReadNotification: (id) => dispatch(setReadNotification(id))
+//   };
+// };
+
 const enhance = compose(
   withStyles(styles),
-  connect(mapStateToProps)
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 );
 
 export default enhance(Notification);

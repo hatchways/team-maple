@@ -8,6 +8,8 @@ import {
   UPDATE_ONLINE_STATUS,
   ALL_ONLINE_STATUS,
   NOTIFICATION_NEW_SUBMISSION,
+  ADD_NOTIFICATIONS,
+  SET_READ_NOTIFICATION,
   UPDATE_NOTIFICATIONS
 } from "../actions/types";
 
@@ -63,10 +65,10 @@ const createSocketMiddleware = () => {
           });
         });
 
-        socket.on('newSubmission', body => {
+        socket.on('addNotification', body => {
           console.log('im here', body.notification);
           store.dispatch({
-            type: UPDATE_NOTIFICATIONS,
+            type: ADD_NOTIFICATIONS,
             payload: body
           });
         })
@@ -76,6 +78,19 @@ const createSocketMiddleware = () => {
         socket.close();
         return;
       }
+      case SET_READ_NOTIFICATION: {
+        const notificationId = action.payload;
+        socket.emit('setReadNotification', notificationId, body => {
+          console.log(body);
+          if(body.success) {
+            store.dispatch({
+              type: UPDATE_NOTIFICATIONS,
+              payload: notificationId
+            });
+          }
+        })
+        return;
+      } 
       case "message": {
         socket.emit("message", action.payload, error => {
           console.log("ERROR from message: " + error);
@@ -93,11 +108,6 @@ const createSocketMiddleware = () => {
         });
         return;
       }
-      case NOTIFICATION_NEW_SUBMISSION:
-        console.log('in the newsub socket and the payload is', action.payload);
-        // socket.emit("newSubmission", action.payload, err => {
-        //   console.log(err);
-        // });
       default: {
         return next(action);
       }
