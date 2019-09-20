@@ -1,7 +1,7 @@
 import {
   INITIALIZE_SOCKET,
   CLOSE_SOCKET,
-  NOTIFICATION_NEW_SUBMISSION
+  SET_READ_CHAT,
 } from "./types";
 
 export const initializeSocket = token => {
@@ -27,7 +27,14 @@ export const sendMessage = body => {
 export const startConversation = body => {
   return {
     type: "startConversation",
-    payload: body
+    payload: body,
+  }
+}
+
+export const setReadChat = body => {
+  return {
+    type: SET_READ_CHAT,
+    payload: body,
   };
-};
+}
 

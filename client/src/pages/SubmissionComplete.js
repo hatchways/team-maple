@@ -85,7 +85,6 @@ export default withStyles(styles)(
                     <Grid
                       container
                       direction="column"
-                      justify
                       spacing={1}
                       justify="flex-start"
                     >

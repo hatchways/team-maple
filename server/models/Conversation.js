@@ -20,6 +20,14 @@ const conversationSchema = new Schema(
         message: "Users must be different people",
       },
     },
+    user1Read: {
+      type: Boolean,
+      required: true,
+    },
+    user2Read: {
+      type: Boolean,
+      required: true,
+    },
   },
   { 
     toJSON: { virtuals: true },

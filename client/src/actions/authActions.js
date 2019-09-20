@@ -62,13 +62,16 @@ export const setUserLoading = () => {
   };
 };
 
-export const logoutUser = () => async dispatch => {
-  tokenStorage.deleteAuthToken();
-  setAuthToken(false);
-  dispatch(setCurrentUser({}));
-  dispatch(clearProfile());
-  dispatch(closeSocket());
-};
+export const logoutUser = (history) => async dispatch => {
+    tokenStorage.deleteAuthToken();
+    setAuthToken(false);
+    dispatch(setCurrentUser({}));
+    dispatch(clearProfile());
+    dispatch(closeSocket());
+    if (history) {
+        history.push("/login");
+    }
+}
 
 export const clearLoginErrors = () => {
   return {

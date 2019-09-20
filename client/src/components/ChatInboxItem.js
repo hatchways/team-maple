@@ -13,8 +13,10 @@ import {
 import {
   grey,
   green,
+  orange,
 } from "@material-ui/core/colors";
 import { setCurrentChat } from "../actions/currentChatActions";
+import { setReadChat } from "../actions/socketActions";
 
 const styles = theme => ({
   container: {
@@ -26,6 +28,10 @@ const styles = theme => ({
   },
   badge: {
     backgroundColor: green[400],
+    padding: theme.spacing(1),
+  },
+  readBadge: {
+    backgroundColor: orange[400],
     padding: theme.spacing(1),
   },
   name: {
@@ -45,6 +51,8 @@ const ChatInboxItem = ({
     setCurrentChat,
     online,
     userId,
+    read,
+    setReadChat,
   }) => {
   const url = profileUrl ? `${process.env.REACT_APP_S3_URL}/${profileUrl}` : "";
   
@@ -76,6 +84,7 @@ const ChatInboxItem = ({
   }
   const handleClick = (e) => {
     setCurrentChat(conversationId);
+    setReadChat({conversationId});
   }
   return (
     <>
@@ -96,9 +105,18 @@ const ChatInboxItem = ({
               {lastMessage.content}
             </Typography>
           </Grid>
-          <Typography variant="subtitle1" className={classes.subtitle}>
-            {timeString}
-          </Typography>
+          { read ? (
+              <Typography variant="subtitle1" className={classes.subtitle}>
+                {timeString}
+              </Typography>
+            ) : (
+              <Badge overlap="rectangle" badgeContent=" " variant="dot" classes={{ badge: classes.readBadge}}>
+                <Typography variant="subtitle1" className={classes.subtitle}>
+                  {timeString}
+                </Typography>
+              </Badge>
+            )
+          }
         </Grid>
       </Paper>
     </>
@@ -111,7 +129,7 @@ const mapStateToProps = ({ online }) => ({
 
 const enhance = compose(
   withStyles(styles),
-  connect(mapStateToProps, { setCurrentChat }),
+  connect(mapStateToProps, { setCurrentChat, setReadChat }),
 );
 
 export default enhance(ChatInboxItem);

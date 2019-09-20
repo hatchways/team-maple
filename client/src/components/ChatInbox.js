@@ -36,7 +36,7 @@ const ChatInbox = ({ classes, chat }) => {
               return new Date(b[1].lastMessage.createdAt) - new Date(a[1].lastMessage.createdAt);
             })
             .map(( [id, conversation] ) => {
-            const { lastMessage } = conversation;
+            const { lastMessage, read } = conversation;
             const { name, profileUrl, id: userId } = conversation.user;
             return (
               <ChatInboxItem key={id}
@@ -45,6 +45,7 @@ const ChatInbox = ({ classes, chat }) => {
                 name={name}
                 profileUrl={profileUrl}
                 userId={userId}
+                read={read}
               />
             );
           })

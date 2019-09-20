@@ -21,12 +21,6 @@ import {
 import { Info as InfoIcon, CheckOutlined } from "@material-ui/icons";
 import axios from "axios";
 import WinnerDialog from "./WinnerDialog/winnerDialog";
-import TextField from "@material-ui/core/TextField";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 
 const styles = theme => ({
   firstRow: {
@@ -186,23 +180,39 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     console.log('contest', contest);  
   return (
     <>
-      {contest ? (
-        <Grid container className={classes.container}>
-          <WinnerDialog
-            open={open}
-            handleClose={handleClose}
-            handleClickOpen={handleClickOpen}
-            sub={sub}
-            contest={contest}
-            chooseWinner={chooseWinner}
-            isCreator={contest.creator._id === auth.user.userId}
-          />
-          <Grid
-            container
-            className={classes.firstRow}
-            justify="space-between"
-            alignItems="center"
-          >
+      {contest ? <Grid container className={classes.container}>
+        <WinnerDialog
+          open={open}
+          handleClose={handleClose}
+          handleClickOpen={handleClickOpen}
+          sub={sub}
+          contest={contest}
+          chooseWinner={chooseWinner}
+          isCreator={contest.creator._id === auth.user.userId}
+        />
+        <Grid
+          container
+          className={classes.firstRow}
+          justify="space-between"
+          alignItems="center"
+        >
+          <Grid>
+            <Grid container alignItems="center">
+              <Typography variant="h5" className={classes.title}>
+                {contest.title}
+              </Typography>
+              <Typography variant="body2" className={classes.prize}>
+                {`$${contest.prize.toFixed(2)}`}
+              </Typography>
+            </Grid>
+            <Grid container alignItems="center">
+              <Avatar alt={auth.user.email} src={url} className={`${classes.avatar} ${classes.clickable}`} onClick={handleCreatorClick} />
+              <Typography variant="subtitle2" onClick={handleCreatorClick} className={classes.clickable}>
+                {`By ${contest.creator.name}`}
+              </Typography>
+            </Grid>
+          </Grid>
+          {contest.creator._id !== auth.user.userId && (
             <Grid>
               <Grid container alignItems="center">
                 <Typography variant="h5" className={classes.title}>

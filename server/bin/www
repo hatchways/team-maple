@@ -116,13 +116,33 @@ io.on("connection", socket => {
       const body = await message.save();
       console.log("Message sent: " + body);
 
+      // Set user to read, other user to not read
+      if (conversationExist.user1.toString() === id) {
+        conversationExist.user1Read = true;
+        conversationExist.user2Read = false;
+      } else if (conversationExist.user2.toString() === id) {
+        conversationExist.user2Read = true;
+        conversationExist.user1Read = false;
+      } else {
+        console.log("not matching anything");
+      }
+      await conversationExist.save();
+     
       if (users[user1Str]) {
         console.log("emitting for user 1");
         io.in(users[user1Str]).emit("updateChat", body);
+        // not the user who sent it thus need to have his chat set to unread
+        if (user1Str !== id) {
+          io.in(users[user1Str]).emit("setUnreadConversation", conversationId);
+        }
       }
       if (users[user2Str]) {
         console.log("emitting for user 2");
         io.in(users[user2Str]).emit("updateChat", body);
+        // not the user who sent it thus need to have his chat set to unread
+        if (user2Str !== id) {
+          io.in(users[user2Str]).emit("setUnreadConversation", conversationId);
+        }
       }
     } catch (e) {
       console.log(e);
@@ -151,7 +171,7 @@ io.on("connection", socket => {
           conversationId: conversationExist[0].id
         });
       }
-      const conversation = new Conversation({ user1, user2 });
+      const conversation = new Conversation({ user1, user2, user1Read: true, user2Read: true, });
       await conversation.save();
       const body = await Conversation.findOne({ user1, user2 })
         .populate("user1")
@@ -192,6 +212,24 @@ io.on("connection", socket => {
       console.log(e);
     }
   });
+  
+   socket.on("setReadChat", async (body, cb) => {
+    const user = userId;
+    const { conversationId } = body;
+    try {
+      const conversation = await Conversation.findById(conversationId);
+      if (conversation.user1.toString() === user) {
+        conversation.user1Read = true;
+      } else if (conversation.user2.toString() === user) {
+        conversation.user2Read = true;
+      } 
+      await conversation.save();
+      cb({ conversationId, success: true });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+  
 });
 
 /**

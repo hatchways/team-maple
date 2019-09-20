@@ -89,7 +89,7 @@ const styles = theme => ({
 const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createContest, history }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [prize, setPrize] = useState(0);
+  const [prize, setPrize] = useState(10);
   const [deadline, setDeadline] = useState(Date.now());
   const [selectedLinks, setSelectedLinks] = useState([]);
   

@@ -20,6 +20,8 @@ import conversationRouter from "./routes/conversation";
 import messageRouter from "./routes/message";
 import contestsRouter from './routes/discovery';
 import notificationRouter from './routes/notification';
+import stripeRouter from './routes/stripe';
+
 
 var app = express();
 
@@ -44,6 +46,7 @@ app.use("/message", messageRouter);
 app.use(submitRoutes);
 app.use(contestsRouter);
 app.use('/notification', notificationRouter);
+app.use("/stripe", stripeRouter);
 
 
 // catch 404 and forward to error handler
