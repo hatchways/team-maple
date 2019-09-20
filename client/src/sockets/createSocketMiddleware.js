@@ -9,7 +9,7 @@ import {
   ALL_ONLINE_STATUS,
   ADD_NOTIFICATIONS,
   SET_READ_NOTIFICATION,
-  UPDATE_NOTIFICATIONS
+  UPDATE_NOTIFICATIONS,
   SET_READ_CHAT,
   UPDATE_READ_CHAT,
   SET_UNREAD_CHAT,
@@ -68,12 +68,13 @@ const createSocketMiddleware = () => {
         });
 
         socket.on('addNotification', body => {
+          body.notification.createdAt = Date.now();
           store.dispatch({
             type: ADD_NOTIFICATIONS,
-            payload: body
+            payload: body,
           });
            return;
-        }
+        });
 
         socket.on("setUnreadConversation", body => {
           const currentChat = store.getState().currentChat;
@@ -90,7 +91,8 @@ const createSocketMiddleware = () => {
             })
           }
         })
-       
+        return;
+      }
       case CLOSE_SOCKET: {
         socket.close();
         return;

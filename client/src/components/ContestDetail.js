@@ -180,7 +180,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     console.log('contest', contest);  
   return (
     <>
-      {contest ? <Grid container className={classes.container}>
+      {contest ? ( <Grid container className={classes.container}>
         <WinnerDialog
           open={open}
           handleClose={handleClose}
@@ -214,43 +214,17 @@ const ContestDetail = ({ classes, auth, match, history }) => {
           </Grid>
           {contest.creator._id !== auth.user.userId && (
             <Grid>
-              <Grid container alignItems="center">
-                <Typography variant="h5" className={classes.title}>
-                  {contest.title}
-                </Typography>
-                <Typography variant="body2" className={classes.prize}>
-                  {`$${contest.prize.toFixed(2)}`}
-                </Typography>
-              </Grid>
-              <Grid container alignItems="center">
-                <Avatar
-                  alt={auth.user.email}
-                  src={url}
-                  className={`${classes.avatar} ${classes.clickable}`}
-                  onClick={handleCreatorClick}
-                />
-                <Typography
-                  variant="subtitle2"
-                  onClick={handleCreatorClick}
-                  className={classes.clickable}
-                >
-                  {/* {`By ${name}`} */}
-                </Typography>
-              </Grid>
+              <Button
+                variant="outlined"
+                color="inherit"
+                className={classes.button}
+                component={submitLink}
+                match={match}
+              >
+                Submit Design
+              </Button>
             </Grid>
-            {contest.creator._id !== auth.user.userId && (
-              <Grid>
-                <Button
-                  variant="outlined"
-                  color="inherit"
-                  className={classes.button}
-                  component={submitLink}
-                  match={match}
-                >
-                  Submit Design
-                </Button>
-              </Grid>
-            )}
+          )}
           </Grid>
           <Paper className={classes.tabRoot}>
             <Tabs

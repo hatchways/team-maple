@@ -347,4 +347,32 @@ router.post("/account/save/account",
     }
 });
 
+router.get("/balance",
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const stripe_account = req.user.accountId;
+    if (!stripe_account) {
+      res.status(200).send({
+        success: false,
+        balance: null
+      });
+    } else {
+      stripe.balance.retrieve({
+        stripe_account,
+      }, (err, balance) => {
+        if (err) {
+          res.status(200).send({
+            success: false,
+            balance: null
+          });
+        } else {
+          res.status(200).send({
+            success: true,
+            balance,
+          })
+        }
+      })
+    }
+});
+
 module.exports = router;

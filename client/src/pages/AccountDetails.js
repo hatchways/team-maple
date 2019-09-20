@@ -34,6 +34,12 @@ const styles = theme => ({
   },
   buttonContainer: {
     marginTop: theme.spacing(2),
+  },
+  balanceTitle: {
+    margin: theme.spacing(2),
+  },
+  balanceBody: {
+    margin: theme.spacing(1, 4),
   }
 })
 
@@ -43,6 +49,7 @@ const AccountDetails = ({ classes }) => {
   const [error, setError] = useState(null);
   const [account, setAccount] = useState(null);
   const [fieldsNeededForm, setFieldsNeededForm] = useState({ "type": "individual" });
+  const [balance, setBalance] = useState(null);
   
   // Called first to see if account exists to skip account initialization
   const fetchAccount = async () => {
@@ -58,8 +65,18 @@ const AccountDetails = ({ classes }) => {
     }
     setIsLoading(false);
   }
+
+  const fetchBalance = async () => {
+    console.log("fetch balance is running");
+    const res = await axios.get("/stripe/balance");
+    const { success, balance: retrievedBalance } = res.data;
+    if (success) {
+      setBalance(retrievedBalance);
+    };
+  }
   useEffect(() => {
     fetchAccount();
+    fetchBalance();
   }, []);
 
   const startAccountSetup = async () => {
@@ -142,6 +159,20 @@ const AccountDetails = ({ classes }) => {
             </Link>
           </Typography>
         </Grid>
+        {balance && (
+        <Paper className={classes.container}>
+          <Typography className={classes.balanceTitle}>Account Balance</Typography>
+          <Typography variant="body1" className={classes.balanceBody}>
+            {`Available Balance: $ ${(balance.available.reduce((acc, curr) => acc + curr.amount, 0) / 100).toFixed(2)}`}
+          </Typography>
+          <Typography variant="body1" className={classes.balanceBody}>
+            {`Pending Balance: $ ${(balance.pending.reduce((acc, curr) => acc + curr.amount, 0) / 100).toFixed(2)}`}
+          </Typography>
+          <Typography variant="subtitle2" align="center">
+            Once payouts are enabled, available funds will be transferred to your bank account every 7 days
+          </Typography>
+        </Paper>
+      )}
       </>
     )
   }
@@ -338,6 +369,20 @@ const AccountDetails = ({ classes }) => {
           }
         </Paper>
       }
+      {balance && (
+        <Paper className={classes.container}>
+          <Typography className={classes.balanceTitle}>Account Balance</Typography>
+          <Typography variant="body1" className={classes.balanceBody}>
+            {`Available Balance: $ ${(balance.available.reduce((acc, curr) => acc + curr.amount, 0) / 100).toFixed(2)}`}
+          </Typography>
+          <Typography variant="body1" className={classes.balanceBody}>
+            {`Pending Balance: $ ${(balance.pending.reduce((acc, curr) => acc + curr.amount, 0) / 100).toFixed(2)}`}
+          </Typography>
+          <Typography variant="subtitle2" align="center">
+            Once payouts are enabled, available funds will be transferred to your bank account every 7 days
+          </Typography>
+        </Paper>
+      )}
     </div>
   );
 };
