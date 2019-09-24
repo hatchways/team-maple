@@ -48,7 +48,7 @@ class UpSubmission extends Component {
     const { file } = this.state;
     const { match, history } = this.props;
     if (file) {
-      const uploadConfig = await axios.post("/upload/submission", {
+      const uploadConfig = await axios.post("/api/upload/submission", {
         contestId: match.params.id
       });
 

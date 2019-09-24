@@ -42,7 +42,7 @@ export default withStyles(styles)(
       const { subId } = this.props.match.params;
       console.log("subId", subId);
       axios
-        .get("/submitted/" + subId)
+        .get("/api/submitted/" + subId)
         .then(response => {
           console.log(response.data);
           this.setState({
