@@ -38,7 +38,7 @@ app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/upload", uploadRouter);
-app.use("/contest", contestRouter);
+app.use("/api/contest", contestRouter);
 app.use("/api/profile", profileRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
