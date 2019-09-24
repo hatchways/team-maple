@@ -32,7 +32,7 @@ export default withStyles(styles)(
 
     componentDidMount() {
       axios
-        .get("/contests")
+        .get("api/contests")
         .then(response => {
           this.setState({
             contests: response.data.contests
