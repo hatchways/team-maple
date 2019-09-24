@@ -12,7 +12,6 @@ import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
 import submitRoutes from "./routes/submission";
-const uuidv4 = require("uuid/v4");
 import uploadRouter from "./routes/upload";
 import contestRouter from "./routes/contest";
 import profileRouter from "./routes/profile";
