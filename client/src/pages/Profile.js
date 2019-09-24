@@ -51,7 +51,7 @@ const Profile = ({ classes, match }) => {
   
   useEffect(() => {
     const getProfileDetails = async () => {
-      const { data } = await axios.get(`/profile/${match.params.id}`);
+      const { data } = await axios.get(`/api/profile/${match.params.id}`);
       setProfile(data);
       setLoading(false);
     }
@@ -59,7 +59,7 @@ const Profile = ({ classes, match }) => {
   }, [match.params.id]);
 
   const refresh = async () => {
-    const { data } = await axios.get(`/profile/${match.params.id}`);
+    const { data } = await axios.get(`/api/profile/${match.params.id}`);
     setProfile(data);
   };
 
