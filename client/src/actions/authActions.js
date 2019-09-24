@@ -84,3 +84,24 @@ export const clearSignupErrors = () => {
     type: CLEAR_SIGNUP_ERRORS
   };
 };
+
+export const demoUser = () => async dispatch => {
+  try {
+    const res = await axios.get("/auth/demo");
+    const { token, userId } = res.data;
+    tokenStorage.saveAuthToken(token);
+    localStorage.setItem("userId", userId);
+    setAuthToken(token);
+    const decoded = jwtDecode(token);
+    dispatch(setCurrentUser(decoded));
+    dispatch(getProfile(decoded.userId));
+    dispatch(getConversations(decoded.userId));
+    dispatch(initializeSocket(token));
+    dispatch(getNotifications());
+  } catch (err) {
+    dispatch({
+      type: SET_LOGIN_ERRORS,
+      payload: err.response.data
+    });
+  }
+};

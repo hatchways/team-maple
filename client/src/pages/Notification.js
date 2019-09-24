@@ -89,9 +89,11 @@ class Notification extends Component {
                     <Typography variant="h5" component="h6">
                       Message: {notif.message}
                     </Typography>
-                    <Typography variant="h6" component="h6">
-                      <Link to={notif.link}>Link</Link>
-                    </Typography>
+                    { notif.link &&
+                      <Typography variant="h6" component="h6">
+                        <Link to={notif.link}>Link</Link>
+                      </Typography>
+                    }
                     <Typography variant="h6" component="h6">
                       Date: {formatDate(notif.createdAt)}
                     </Typography>
