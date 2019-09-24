@@ -30,14 +30,14 @@
     "socket.io": "^2.2.0",
     "stripe": "^7.9.0",
     "uuid": "^3.3.3",
-    "validator": "^11.1.0"
-  },
-  "devDependencies": {
+    "validator": "^11.1.0",
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@babel/register": "^7.5.5",
+    "@babel/register": "^7.5.5"
+  },
+  "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "cross-env": "^5.2.0",
