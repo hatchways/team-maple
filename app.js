@@ -48,6 +48,21 @@ app.use(contestsRouter);
 app.use('/notification', notificationRouter);
 app.use("/stripe", stripeRouter);
 
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true
+  })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
+
+if (['production', 'ci'].includes(process.env.NODE_ENV)) {
+  app.use(express.static('client/build'));
+  
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve('client', 'build', 'index.html'));
+  });
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -65,21 +80,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({ error: err });
 });
-
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true
-  })
-  .then(() => console.log("MongoDB successfully connected"))
-  .catch(err => console.log(err));
-
-if (['production', 'ci'].includes(process.env.NODE_ENV)) {
-  app.use(express.static('client/build'));
-  
-  const path = require('path');
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve('client', 'build', 'index.html'));
-  });
-}
 
 module.exports = app;
