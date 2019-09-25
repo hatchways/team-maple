@@ -16,16 +16,18 @@ import { getConversations } from "./conversationActions";
 import { initializeSocket, closeSocket } from "./socketActions";
 import { getNotifications } from "./notificationActions";
 
-export const registerUser = userData => async dispatch => {
-  try {
-    await axios.post("/auth/signup", userData);
-    dispatch({ type: SET_SIGNUP_SUCCESS });
-  } catch (err) {
-    dispatch({
-      type: SET_SIGNUP_ERRORS,
-      payload: err.response.data
-    });
-  }
+export const registerUser = userData => {
+  return async dispatch => {
+    try {
+      await axios.post("/auth/signup", userData);
+      dispatch({ type: SET_SIGNUP_SUCCESS });
+    } catch (err) {
+      dispatch({
+        type: SET_SIGNUP_ERRORS,
+        payload: err.response.data
+      });
+    }
+  };
 };
 
 export const loginUser = userData => async dispatch => {
@@ -42,6 +44,7 @@ export const loginUser = userData => async dispatch => {
     dispatch(initializeSocket(token));
     dispatch(getNotifications());
   } catch (err) {
+    console.log(err);
     dispatch({
       type: SET_LOGIN_ERRORS,
       payload: err.response.data
@@ -62,16 +65,16 @@ export const setUserLoading = () => {
   };
 };
 
-export const logoutUser = (history) => async dispatch => {
-    tokenStorage.deleteAuthToken();
-    setAuthToken(false);
-    dispatch(setCurrentUser({}));
-    dispatch(clearProfile());
-    dispatch(closeSocket());
-    if (history) {
-        history.push("/login");
-    }
-}
+export const logoutUser = history => async dispatch => {
+  tokenStorage.deleteAuthToken();
+  setAuthToken(false);
+  dispatch(setCurrentUser({}));
+  dispatch(clearProfile());
+  dispatch(closeSocket());
+  if (history) {
+    history.push("/login");
+  }
+};
 
 export const clearLoginErrors = () => {
   return {
