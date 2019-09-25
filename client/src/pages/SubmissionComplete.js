@@ -63,7 +63,6 @@ export default withStyles(styles)(
     render() {
       const { classes } = this.props;
       const { submission } = this.state;
-      console.log(submission);
       let display = null;
       if (submission) {
         display = (

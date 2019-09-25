@@ -51,7 +51,6 @@ class Notification extends Component {
 
   render() {
     const { classes, notifications } = this.props;
-    console.log("from notification page", notifications);
     return (
       <div>
         <Typography
@@ -66,7 +65,6 @@ class Notification extends Component {
           <Paper className={classes.paper}>
             {notifications &&
               notifications.map((notif, i) => {
-                console.log(notif);
                 return (
                   <Grid
                     item

@@ -177,7 +177,6 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     ? `${process.env.REACT_APP_S3_URL}/${contest.creator.profileUrl}`
     : "";
 
-    console.log('contest', contest);  
   return (
     <>
       {contest ? ( <Grid container className={classes.container}>

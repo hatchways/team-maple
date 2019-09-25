@@ -15,9 +15,6 @@ const styles = theme => ({
 })
 
 const ChatInbox = ({ classes, chat }) => {
-
-    console.log('chat', chat);
-
   return (
     <>
       <Paper>

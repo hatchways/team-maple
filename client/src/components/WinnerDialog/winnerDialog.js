@@ -44,7 +44,6 @@ export default withStyles(styles)(props => {
     contest,
     isCreator
   } = props;
-  // console.log("winner dialog", contest);
   return (
     <div>
       <Dialog

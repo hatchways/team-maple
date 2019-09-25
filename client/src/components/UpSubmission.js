@@ -38,7 +38,6 @@ class UpSubmission extends Component {
   };
 
   onSelectHandler = event => {
-    console.log(event.target.files);
     this.setState({
       file: event.target.files[0]
     });
