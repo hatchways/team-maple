@@ -50,12 +50,14 @@ exports.login = (req, res, next) => {
           .json({ message: "invalid email/password combination" });
       }
 
+      const secret = process.env.SECRETORKEY || 'some secret key for local dev';
+
       const token = jwt.sign(
         {
           email: loggedUser.email,
           userId: loggedUser._id.toString()
         },
-        process.env.SECRETORKEY,
+        secret,
         { expiresIn: "1h" }
       );
 

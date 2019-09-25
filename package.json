@@ -3,9 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --exec babel-node ./bin/www",
+    "start": "node server.js",
     "dev": "nodemon --exec babel-node ./bin/www",
-    "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --require @babel/register --exit --timeout 30000"
+    "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --require @babel/register --exit --timeout 30000",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
+  },
+  "engines": {
+    "node": "10.15.0"
   },
   "dependencies": {
     "aws-sdk": "^2.522.0",

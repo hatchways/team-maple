@@ -69,7 +69,7 @@ app.use(function(err, req, res, next) {
 });
 
 mongoose
-  .connect(process.env.MONGODB_URI, {
+  .connect(process.env.MONGODB_URI || "mongodb://team-maple:map1e-password@ds133137.mlab.com:33137/team-maple", {
     useNewUrlParser: true
   })
   .then(() => console.log("MongoDB successfully connected"))
