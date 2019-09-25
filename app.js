@@ -18,10 +18,9 @@ import contestRouter from "./routes/contest";
 import profileRouter from "./routes/profile";
 import conversationRouter from "./routes/conversation";
 import messageRouter from "./routes/message";
-import contestsRouter from './routes/discovery';
-import notificationRouter from './routes/notification';
-import stripeRouter from './routes/stripe';
-
+import contestsRouter from "./routes/discovery";
+import notificationRouter from "./routes/notification";
+import stripeRouter from "./routes/stripe";
 
 var app = express();
 
@@ -31,11 +30,11 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use(express.static(join(__dirname, "images")));
+app.use(express.static(join(__dirname, "client", "build")));
 
 app.use(passport.initialize());
 require("./services/passport")(passport);
-app.use('/auth', authRoutes);
+app.use("/auth", authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/upload", uploadRouter);
@@ -45,9 +44,12 @@ app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
 app.use(submitRoutes);
 app.use(contestsRouter);
-app.use('/notification', notificationRouter);
+app.use("/notification", notificationRouter);
 app.use("/stripe", stripeRouter);
 
+app.get("*", (req, res) => {
+  res.sendFile(join(__dirname, "client", "build", "index.html"));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
