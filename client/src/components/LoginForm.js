@@ -18,7 +18,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { amber } from '@material-ui/core/colors'
 import { withStyles } from "@material-ui/core/styles";
 import { CssBaseline, TextField } from '@material-ui/core';
-import { loginUser, clearLoginErrors } from "../actions/authActions";
+import { loginUser, clearLoginErrors, demoUser } from "../actions/authActions";
 
 const styles = theme => ({
     root: {
@@ -44,15 +44,19 @@ const styles = theme => ({
     errorSnackBar: {
         backgroundColor: amber[700],
     },
+    demoContainer: {
+        marginTop: theme.spacing(2),
+    },
 })
 
 const signUpLink = React.forwardRef((props, ref) => <RouterLink innerRef={ref} to="/signup" {...props} />);
 
-const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors }) => {
+const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors, demoUser }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [openError, setOpenError] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     useEffect(() => {
         if (auth.isAuthenticated) {
             history.push("/home");
@@ -60,8 +64,8 @@ const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors
     }, [auth]);
     const validatePassword = (password) => {
         setPassword(password);
-        if (password.length < 6) {
-            setPasswordError("Password must be at least 6 characters long")
+        if (password.length < 8) {
+            setPasswordError("Password must be at least 8 characters long")
         } else {
             setPasswordError("")
         }
@@ -72,6 +76,13 @@ const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors
             const userData = { email, password };
             loginUser(userData);
         }
+    }
+
+    const handleDemoClick = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        await demoUser();
+        setSubmitting(false);
     }
 
     const handleErrorsClose = () => {
@@ -154,8 +165,19 @@ const LoginForm = ({ classes, loginUser, auth, history, errors, clearLoginErrors
                     className={classes.submit}
                 >
                     Sign In
-                </Button>`
+                </Button>
             </form>
+            <Grid container justify="center" className={classes.demoContainer}>
+                <Button
+                    variant="contained"
+                    size="large"
+                    onClick={handleDemoClick}
+                    className={classes.submit}
+                    disabled={submitting}
+                >
+                    Sign in as Demo User
+                </Button>
+            </Grid>
             <Snackbar
                 anchorOrigin={{
                     vertical: 'bottom',
@@ -193,6 +215,7 @@ const mapStateToProps = ({auth, errors}) => ({
 const mapDispatchToProps = {
     loginUser,
     clearLoginErrors,
+    demoUser,
 };
 
 const enhance = compose(

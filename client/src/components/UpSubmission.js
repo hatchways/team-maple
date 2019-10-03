@@ -38,7 +38,6 @@ class UpSubmission extends Component {
   };
 
   onSelectHandler = event => {
-    console.log(event.target.files);
     this.setState({
       file: event.target.files[0]
     });
@@ -62,7 +61,7 @@ class UpSubmission extends Component {
       setAuthToken(tokenStorage.getAuthToken());
 
       axios
-        .post("/submit", {
+        .post("/api/submit", {
           imageUrl: uploadConfig.data.key,
           contestId: match.params.id
         })

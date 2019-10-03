@@ -4,7 +4,7 @@ const passport = require("passport");
 const contestsController = require("../controllers/contests");
 
 router.get(
-  "/contests",
+  "/api/contests",
   passport.authenticate("jwt", { session: false }),
   contestsController.getContests
 );

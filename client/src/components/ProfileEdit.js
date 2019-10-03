@@ -61,14 +61,14 @@ const ProfileEdit = ({ classes, profile, getProfile, refresh, handleClose }) => 
       });
       setAuthToken(tokenStorage.getAuthToken());
 
-      await axios.patch("/profile", {
+      await axios.patch("/api/profile", {
         name: newName,
         profileUrl: uploadConfig.data.key,
       });
 
       await refetch();
     } else if (nameChanged && !file) {
-      await axios.patch("/profile", {
+      await axios.patch("/api/profile", {
         name: newName,
       });
 

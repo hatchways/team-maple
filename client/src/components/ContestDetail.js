@@ -118,7 +118,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
 
   useEffect(() => {
     const getContestDetails = async () => {
-      const { data } = await axios.get(`/contest/${match.params.id}`);
+      const { data } = await axios.get(`/api/contest/${match.params.id}`);
       setContest(data);
     };
     getContestDetails();
@@ -129,7 +129,7 @@ const ContestDetail = ({ classes, auth, match, history }) => {
   };
 
   const chooseWinner = sub => {
-    let url = "/contest/" + contest._id + "/subWinner?winner=" + sub._id;
+    let url = "/api/contest/" + contest._id + "/subWinner?winner=" + sub._id;
     const isCreator = contest.creator._id === auth.user.userId;
 
     if (contest.winner) {
@@ -177,7 +177,6 @@ const ContestDetail = ({ classes, auth, match, history }) => {
     ? `${process.env.REACT_APP_S3_URL}/${contest.creator.profileUrl}`
     : "";
 
-    console.log('contest', contest);  
   return (
     <>
       {contest ? ( <Grid container className={classes.container}>

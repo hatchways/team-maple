@@ -51,7 +51,6 @@ class Notification extends Component {
 
   render() {
     const { classes, notifications } = this.props;
-    console.log("from notification page", notifications);
     return (
       <div>
         <Typography
@@ -66,7 +65,6 @@ class Notification extends Component {
           <Paper className={classes.paper}>
             {notifications &&
               notifications.map((notif, i) => {
-                console.log(notif);
                 return (
                   <Grid
                     item
@@ -89,9 +87,11 @@ class Notification extends Component {
                     <Typography variant="h5" component="h6">
                       Message: {notif.message}
                     </Typography>
-                    <Typography variant="h6" component="h6">
-                      <Link to={notif.link}>Link</Link>
-                    </Typography>
+                    { notif.link &&
+                      <Typography variant="h6" component="h6">
+                        <Link to={notif.link}>Link</Link>
+                      </Typography>
+                    }
                     <Typography variant="h6" component="h6">
                       Date: {formatDate(notif.createdAt)}
                     </Typography>

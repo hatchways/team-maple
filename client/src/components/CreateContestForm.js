@@ -108,7 +108,7 @@ const CreateContestForm = ({ classes, defaultImages, getDefaultImages, createCon
       deadline,
       images: selectedLinks,
     };
-    const contest = await axios.post("/contest/create", newContest);
+    const contest = await axios.post("/api/contest/create", newContest);
     const { _id } = contest.data;
     history.push(`/contest/${_id}`);
   }

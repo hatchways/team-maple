@@ -12,7 +12,6 @@ import indexRouter from "./routes/index";
 import pingRouter from "./routes/ping";
 import authRoutes from "./routes/auth";
 import submitRoutes from "./routes/submission";
-const uuidv4 = require("uuid/v4");
 import uploadRouter from "./routes/upload";
 import contestRouter from "./routes/contest";
 import profileRouter from "./routes/profile";
@@ -39,8 +38,8 @@ app.use('/auth', authRoutes);
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/upload", uploadRouter);
-app.use("/contest", contestRouter);
-app.use("/profile", profileRouter);
+app.use("/api/contest", contestRouter);
+app.use("/api/profile", profileRouter);
 app.use("/conversation", conversationRouter);
 app.use("/message", messageRouter);
 app.use(submitRoutes);
@@ -48,6 +47,21 @@ app.use(contestsRouter);
 app.use('/notification', notificationRouter);
 app.use("/stripe", stripeRouter);
 
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true
+  })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
+
+if (['production', 'ci'].includes(process.env.NODE_ENV)) {
+  app.use(express.static('client/build'));
+  
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve('client', 'build', 'index.html'));
+  });
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -65,12 +79,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({ error: err });
 });
-
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true
-  })
-  .then(() => console.log("MongoDB successfully connected"))
-  .catch(err => console.log(err));
 
 module.exports = app;
